@@ -1,0 +1,29 @@
+{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"properties":{
+		"kind":{
+			"enum":[
+				"SAMLIdentities"
+			]
+			
+		},
+		"items":{
+			"type":"array",
+			"items":{
+				"oneOf":[
+					{
+						"$ref":"SAMLIdentity.json"
+					}
+				]
+			}
+			
+		}
+		
+	},
+	"required":[
+		"kind",
+		"items"
+	]
+}
