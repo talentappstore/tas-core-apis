@@ -1,0 +1,35 @@
+#%RAML 0.8
+---
+title: TAS core
+baseUri: http://talentappstore.com/{version}
+version: v1
+
+/apps:
+  /{consumingApp}:
+    description: the name of the app consuming the API, typically the one asking for an accessor
+    /tenants:
+      /{tenant}:
+      description: tenant name
+        /accessors:
+          /{apiDeveloper}:
+            /{apiUriTemplate}:
+              get:
+                description: 
+                  obtain a single or multiple accessor(s) to call a specific API that we consume, on any/all
+                  apps that produce it.
+                  invalidates any existing tokens - SAY WHAT? SURELY JUST RETURNS EXISTING ONES? WHAT ABOUT EXPIRY?
+                queryParameters:
+                  jwtId:
+                    description: id of the JWT containing user identity, as obtained from the SAML assertion and stored by TAS
+                  accessToken:
+                    description: |
+                      the access token passed in to the consuming app, which indirectly identifies the principal.
+                      Once this API call has created new tokens, no relationship (expiry or otherwise) exists
+                      to this token. 
+                responses:
+                  200:
+                    body:
+                      application/json:
+                        schema: !include ../schemas/accessors.json
+                        example: !include ../examples/accessors.json
+
