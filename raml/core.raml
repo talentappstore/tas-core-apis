@@ -12,11 +12,12 @@ version: v1
       description: tenant name
         /accessors:
           /{apiDeveloper}:
+            description: the developer who owns the API
             /{apiUriTemplate}:
+              description: the URI template (as per RFC blah) of the API
               get:
                 description: 
-                  obtain a single or multiple accessor(s) to call a specific API that we consume, on any/all
-                  apps that produce it.
+                  obtain accessor(s) for each producer of a specific API that we wish to consume
                   invalidates any existing tokens - SAY WHAT? SURELY JUST RETURNS EXISTING ONES? WHAT ABOUT EXPIRY?
                 queryParameters:
                   jwtId:
@@ -32,4 +33,27 @@ version: v1
                       application/json:
                         schema: !include ../schemas/accessors.json
                         example: !include ../examples/accessors.json
+              /{producingApp}:
+                /credentials:
+                  description: get credentials for the specified accessor
+                  get:
+
+
+{
+    "accessors": [
+	{
+		"kind": "accessor",
+		"producer": "crazyjobs",
+		"location": "https://acme.crazyjobs:2109/api/v3.2/tenants/{tenant}",
+		"auth": {"type": "HMAC", "credentials": {"publicKey": "kjh876gk96rf0978", "secretKey": "k8763216548hppou", "expires": "23-OCT-2099-13:00:23:45" }}
+	},
+	{
+		"kind": "accessor",
+		"producer": "jobcopier",
+		"location": "https://jobcopier.com:2102/acme/api/v3/cust/{tenant}",
+		"auth": {"type": "HMAC", "credentials": {"publicKey": "89ujg764447786gh", "secretKey": "06jjj765hgu76511", "expires": "23-OCT-2099-13:00:23:45" }}
+	}
+    ]
+}
+
 
