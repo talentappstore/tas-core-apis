@@ -1,0 +1,25 @@
+{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"properties":{
+		"kind":{
+			"enum":[
+	   		"tenant"
+			],
+			"description":"always set to: tenant"
+		},
+		"incarnation":{
+			"type":"integer",
+			"description":"a number representing the 'install state' of this tenant. Incremented on any changes to the installed apps."
+		},
+		"status":{ "enum": ["ready", "shuttingDown", "dormant", "startingUp", "broken"],
+			"description":"The tenant's current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is 'ready' or 'startingUp'."
+		}
+	},
+	"required":[
+		"kind",
+		"incarnation",
+		"status"
+	]
+}

@@ -5,16 +5,16 @@
 	"properties":{
 		"kind":{
 			"enum":[
-				"deployments"
+				"routes"
 			],
-			"description":"always set to: deployments"
+			"description":"always set to: routes"
 		},
 		"items":{
 			"type":"array",
 			"items":{
 				"oneOf":[
 					{
-						"$ref":"deployment.json"
+						"$ref":"route.json"
 					}
 				]
 			}

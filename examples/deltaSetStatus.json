@@ -1,0 +1,33 @@
+{
+  "kind": "deltaSetStatus",
+  "launchKey": 563064573256483661,
+  "applyStatus": "complete",
+  "latestEvent": 23,
+  "incarnationPrior": 145,
+  "events": [
+    {"seq": 0, "event": {"kind": "deltaApplyStart"}},
+    {"seq": 1, "event": { "kind": "tenantDownStart"}},
+    {"seq": 2, "event": { "kind": "appDownRequest", "app": "tas-zoom"}},
+    {"seq": 3, "event": { "kind": "appDownRequest", "app": "hrlabs-fratly"}},
+    {"seq": 4, "event": { "kind": "appDownComplete", "app": "tas-zoom"}},
+    {"seq": 5, "event": { "kind": "appDownRequest", "app": "tas-uberapply"}},
+    {"seq": 6, "event": { "kind": "appDownComplete", "app": "tas-uberapply"}},
+    {"seq": 7, "event": { "kind": "appDownComplete", "app": "hrlabs-fratly"}},
+    {"seq": 8, "event": { "kind": "appDownComplete", "app": "tas-dummyjobs"}},
+    {"seq": 9, "event": { "kind": "tenantDownComplete", "elapsedTime": 2033}},
+    {"seq": 10, "event": { "kind": "applyIndividualDeltasStart"}},
+    {"seq": 11, "event": { "kind": "appInstallComplete", "app": "tas-tracker"}},
+    {"seq": 12, "event": { "kind": "appInstallComplete", "app": "supersoft-refly"}},
+    {"seq": 13, "event": { "kind": "appEditComplete", "app": "tas-zoom"}},
+    {"seq": 14, "event": { "kind": "appUnInstallComplete", "app": "tas-dummyjobs"}},
+    {"seq": 15, "event": { "kind": "applyIndividualDeltasComplete", "elapsedTime": 3122}},
+    {"seq": 16, "event": { "kind": "tenantUpStart"}},
+    {"seq": 17, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
+    {"seq": 18, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
+    {"seq": 19, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
+    {"seq": 20, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
+    {"seq": 21, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
+    {"seq": 22, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
+    {"seq": 23, "event": { "kind": "deltaApplyComplete", "elapsedTime": 9603, "newIncarnation": 146}}
+  ]
+}

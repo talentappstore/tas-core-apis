@@ -1,0 +1,22 @@
+{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "type":"object",
+  "additionalProperties":false,
+  "required":[
+    "kind",
+    "shutDownCompletionKey"
+  ],
+  "properties":{
+    "kind":{
+      "enum":[
+        "shutDownRequest"
+      ],
+      "description":"always set to: shutDownRequest"
+    },
+    "shutDownCompletionKey":{
+      "type":"integer",
+      "description":"an unguessable value that the app should use in POST /{tenant}/installs/{app}/shutdownCompletions/{shutdownCompletionKey}, with an empty body once it has completed this shutdown."
+    }
+    
+  }
+}

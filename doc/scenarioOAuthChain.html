@@ -1,0 +1,161 @@
+move shell script to web:
+
+wget -O - http://dl.dropbox.com/u/11210438/flockonus-stack.sh | bash
+
+Java library:
+
+// the implementation caches access tokens in a shared in-memory database, and only
+// requests new tokens when it has to. minimumLifetime should be as short as possible to maximise
+// token use, or zero to request maximum lifetime tokens.
+accessToken = getToken(principalAuthnID,     // if a web server
+                       accessToken ancestor, // OR if an API server
+                       String apiDeveloper,
+                       String apiURI,
+                       int minimumLifetime); // how long should this token be good for (short as possible for maximum reuse)
+
+Add call outwards to signal authentications
+
+create a tenant, with a single storefront app installed
+- must set up the correct SAML stuff for store maintainers
+
+
+
+                
+PrincipalAuthn JWT has:
+- principalAuthnID (possibly redundant)
+- SessionNotOnOrAfter value (indicates how long the user session can last for)
+- expires
+
+TAS database changes
+- API type
+  OAuth
+  impersonal
+    basic auth
+    HMAC
+    
+- APIs have allowable methods declared against them
+
+- consumers declare the subset of the API's allowable methods that they consume
+
+  
+say whiat the     
+- allowable methods AND source Of Truth matrix
+
+- link from app to principal type, e.g. to validate calls to:
+/{acme}/samlMetadata/tas/candidate
+
+- private (signing) keys for apps to communicate with core (HMAC)
+
+- apps to be marked (by TAS staff only) as:
+  - authListeners
+  - storeFronts
+
+- capture "all possible methods" on API URI templates (as opposed to what a consumer may do).
+
+
+
+
+
+<pre>
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+app: zoom
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// user Fred has logged in, so we have a SAML assertion for him
+
+// on behalf of the tenant "acme", get details of all producers of the
+// /positionOpenings API that we (the app "zoom") want to consume
+
+GET https://talentappstore.com/core/tenants/{acme}/consumptions/{zoom}/{tas}/{positionOpenings}
+
+Response:
+{
+   "consumption": {"id": 134255, "producer": "moto", "location": "https://moto.com/api/{tenant}", "auth": {"type": "OAuth"}} 
+}
+
+// request a token so we can call the API on the moto app on behalf of our logged in user Fred
+
+POST https://talentappstore.com/core/tenants/{acme}/consumptions/{134255}/tokens/byJwt/{88702232}
+
+Response:
+{
+    "accessToken": {"value": "iuytg8975fgpoyig56dfydt87o", "expires": "23-OCT-2014-13:00:23:45" }
+}
+
+// phew - now make the API call
+
+GET https://moto.com/api/{acme}/positionOpenings
+Auth: iuytg8975fgpoyig56dfydt87o
+
+Response:
+... we wait...
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+app: moto
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// the moto app unpacks the self-contained data within the token (itself a JWT) to authenticate the incoming call (in real life, outcomes might be cached)
+
+// token contains...
+{
+  "consumer": "zoom"
+  .. plus perhaps some other required JWT housekeeping stuff..
+}
+
+// moto app now asks TAS for details of the principal associated with the token (i.e., who is this API call on behalf of?)
+
+GET https://talentappstore.com/core/tenants/{acme}/principals/iuytg8975fgpoyig56dfydt87o
+
+Response:
+200
+{
+	"identity":{
+		"principalDeveloper":"tas",
+		"principalType":"employee",
+		"nameId":"fred-bloggs-223",
+		"entityId":"acmeIdP"
+	},
+	"personDetail":{
+		"kind":"personDetail",
+		"email":"fred@hotmail.com",
+		"title":"Mr.",
+		"firstName":"Fred",
+		"lastName":"Bloggs"
+	}
+}
+
+// moto can now start its API work. First up, moto needs to use the information from the JWT (i.e., as passed across from
+// the IdP when the employee logged in) to locate the employee within the SAML identity list for employees.
+
+GET https://talentappstore.com/core/tenants/{acme}/consumptions/{moto}/{tas}/{employeeSamlIdentities}
+
+Response:
+200
+{
+   "consumption": {"id": 134256, "producer": "loginspy", "location": "https://loginspy.com/api/{tenant}",
+   "auth": {"type": "HMAC", "signingKey": "jhtg8975d978p"}, "expires": "23-OCT-2014-13:00:23:45"} 
+}
+
+// looks like Acme has installed the loginspy app. It is a privileged app delivered by TAS that listens to SAML logins and
+// pushes them out via a tenant API to allow SAML identities to be squirted in at the same time the employee logs in.
+// Of course Acme might instead have installed some other app that served up SAML identities straight out of the IdP - or whatever.
+
+// calculate HMAC (not shown) for auth then use it to query up the id for Fred's SAML identity
+
+GET https://loginspy.com/api/{acme}/employeeSamlIdentities?nameID=fred-bloggs-223&entityID=acmeIdP&fields=firstName,lastName,id
+Auth: 12897kjhipv68fou56rfo
+
+Response:
+200
+{
+  "firstName": "Fred",
+  "lastName": "Bloggs",
+  "id": 1004523
+}
+
+// we now have the ID of the SAML identity for the employee - 1004523. We might next use that to query up the "Employment"
+// resource, which would then allows us to access things like Fred's workgroup, etc.
+ 
+
+</pre>

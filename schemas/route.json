@@ -1,0 +1,142 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+    	"consumedMethods": {
+    		"description": "The subset of the methods available on this API that the consumer has declared that they use.",
+    		"type": "array",
+    		"uniqueItems": true,
+    		"items":  {
+                    "enum": [
+                        "HEAD", "GET", "OPTIONS", "DELETE", "PATCH", "POST", "PUT"
+                    ]
+                } 
+    	},
+        "hmacCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "signingKey",
+                "expires"
+            ],
+            "properties": {
+                "signingKey": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "basicAuthCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "user",
+                "password",
+                "expires"
+            ],
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "authChoices": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "kind",
+                        "hmacCredentials"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "hmacAuth"
+                            ]
+                        },
+                        "hmacCredentials": {
+                            "$ref": "#/definitions/hmacCredentials"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "kind",
+                        "basicAuthCredentials"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "basicAuth"
+                            ]
+                        },
+                        "basicAuthCredentials": {
+                            "$ref": "#/definitions/basicAuthCredentials"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "kind"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "oauthAuth"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "kind",
+        "producer",
+        "location",
+        "auth",
+        "consumedMethods"
+    ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "route"
+            ],
+            "description": "always set to: route"
+        },
+        "consumer": {
+            "type": "string",
+            "description": "the app consuming this API"
+        },
+        "producer": {
+            "type": "string",
+            "description": "the app producing this API"
+        },
+        "location": {
+            "type": "string",
+            "description": "a URI template as per RFC 6570 which has had the template parameter replaced with the actual value for this tenant, and that should be used to prefix the API URI to make the call"
+        },
+        "auth": {
+            "$ref": "#/definitions/authChoices"
+        },
+        "consumedMethods": {
+            "$ref": "#/definitions/consumedMethods"
+        }
+    }
+}

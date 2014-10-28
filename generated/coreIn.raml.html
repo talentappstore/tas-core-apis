@@ -1,0 +1,2024 @@
+<!DOCTYPE HTML><html><head><title>TAS core incoming (app -&gt; TAS) API documentation</title><meta http-equiv=X-UA-Compatible content="IE=edge"><meta http-equiv=Content-Type content="text/html; charset=utf-8"><meta name=generator content="https://github.com/kevinrenskers/raml2html 1.0.4"><link rel=stylesheet href=http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css><link rel=stylesheet href=http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css><script type=text/javascript src=http://code.jquery.com/jquery-1.11.0.min.js></script><script type=text/javascript src=http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js></script><script type=text/javascript src=http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js></script><script type=text/javascript>
+        $(document).ready(function() {
+            $('.page-header pre code, .top-resource-description pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
+
+            $('[data-toggle]').click(function() {
+                var selector = $(this).data('target') + ' pre code';
+                $(selector).each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+        });
+    </script><style>
+        .hljs {
+            background: transparent;
+        }
+        .parent {
+            color: #999;
+        }
+        .list-group-item > .badge {
+            float: none;
+            margin-right: 6px;
+        }
+        .panel-title > .methods {
+            float: right;
+        }
+        .badge {
+            border-radius: 0;
+            text-transform: uppercase;
+            width: 70px;
+            font-weight: normal;
+            color: #f3f3f6;
+            line-height: normal;
+        }
+        .badge_get {
+            background-color: #63a8e2;
+        }
+        .badge_post {
+            background-color: #6cbd7d;
+        }
+        .badge_put {
+            background-color: #22bac4;
+        }
+        .badge_delete {
+            background-color: #d26460;
+        }
+        .list-group, .panel-group {
+            margin-bottom: 0;
+        }
+        .panel-group .panel+.panel-white {
+            margin-top: 0;
+        }
+        .panel-group .panel-white {
+            border-bottom: 1px solid #F5F5F5;
+            border-radius: 0;
+        }
+        .panel-white:last-child {
+            border-bottom-color: white;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+        .panel-white .panel-heading {
+            background: white;
+        }
+        .tab-pane ul {
+            padding-left: 2em;
+        }
+        .tab-pane h2 {
+            font-size: 1.2em;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-pane h3 {
+            font-size: 1.1em;
+        }
+        .tab-content {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        #sidebar {
+            margin-top: 30px;
+        }
+        .top-resource-description {
+            border-bottom: 1px solid #ddd;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .resource-description {
+            border-bottom: 1px solid #fcfcfc;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .list-group .badge {
+            float: left;
+        }
+        .method_description {
+            margin-left: 85px;
+        }
+        .method_description p:last-child {
+            margin: 0;
+        }
+        .list-group-item {
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background-color: #f5f5f5;
+        }
+    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core incoming (app -&gt; TAS) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=__tenant_ class=panel-title>/{tenant}</h3></div><div class=panel-body><div class=top-resource-description><p>A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls that your app makes to TAS are within the context of a single tenant.</p></div><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant_><span class=parent></span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the tenant, including the current status and incarnation. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check whats been going on while its been offline.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent></span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the tenant, including the current status and incarnation. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check whats been going on while its been offline.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"properties":{
+		"kind":{
+			"enum":[
+	   		"tenant"
+			],
+			"description":"always set to: tenant"
+		},
+		"incarnation":{
+			"type":"integer",
+			"description":"a number representing the &#x27;install state&#x27; of this tenant. Incremented on any changes to the installed apps."
+		},
+		"status":{ "enum": ["ready", "shuttingDown", "dormant", "startingUp", "broken"],
+			"description":"The tenant&#x27;s current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is &#x27;ready&#x27; or &#x27;startingUp&#x27;."
+		}
+	},
+	"required":[
+		"kind",
+		"incarnation",
+		"status"
+	]
+}
+</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"kind": "tenant",
+	"incarnation": 23,
+	"status": "shuttingDown" 
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata><span class=parent>/{tenant}</span>/samlMetadata</a> <span class=methods></span></h4></div><div id=panel___tenant__samlMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>SAML metadata is a package of XML information about identity providers, certificates, etc., that your app&#39;s SSO implementation needs to do its thing (assuming your app is a web server, rather than an API server).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata__principalDeveloper___principalType_><span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__samlMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__samlMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__samlMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__samlMetadata__principalDeveloper___principalType__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/xml</strong></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications><span class=parent>/{tenant}</span>/authentications</a> <span class=methods></span></h4></div><div id=panel___tenant__authentications class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Authentications are recently captured SSO (Single Sign On) logins.</p><p>Each authentication represents a principal (i.e. a user) logging in at an SSO-protected web site presented by an app.</p><p>An authentication object contains details about the user&#39;s identity (name, email, SAML identifiers, etc.).</p><p>Your app may need an authentication object so as to understand who the current user is, and enforce business rules about what they can see or do. There are two ways your app can obtain the authentication object for the current user:<ol><li>If your app is an SSO-protected web site, then at login time, it will receive a SAML assertion, which can be exchanged for an authentication object. <b>The mechanism by which the principalAuthnID is made available to the SSO app is not yet confirmed. It may be a custom attribute injected into the SAML assertion by the TAS SAML proxy, or it may be queried from an as yet undefined core API using a hash of the SAML assertion&#39;s entire contents.</b></li><li>If your app is an API server, then the incoming access token can be exchanged for an authentication object.</li></ol></p><p>This secure mechanism for passing the user&#39;s identity down through a chain of API calls allows each API producing app in the chain to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p><p>Because the authentication object itself is never passed down within the API calls, malicious apps are prevented from acting on behalf of a user who has not logged in.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications_viaSso__principalAuthnID_><span class=parent>/{tenant}/authentications/viaSso</span>/{principalAuthnID}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications_viaSso__principalAuthnID__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__authentications_viaSso__principalAuthnID_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications_viaSso__principalAuthnID__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the logged in principal in the case where your app is an SSO-protected web server. You can obtain the id from the incoming SAML assertion. TAS verifies that the authentication was made at your app.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications_viaSso__principalAuthnID__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/authentications/viaSso</span>/{principalAuthnID}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the logged in principal in the case where your app is an SSO-protected web server. You can obtain the id from the incoming SAML assertion. TAS verifies that the authentication was made at your app.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications_viaSso__principalAuthnID__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__authentications_viaSso__principalAuthnID__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications_viaSso__principalAuthnID__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalAuthnID</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__authentications_viaSso__principalAuthnID__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"required":[
+		"identity",
+		"personDetail"
+	],
+	"properties":{
+		"id":"integer",
+		"identity":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"principalDeveloper",
+				"principalType",
+				"entityId",
+				"nameId"
+			],
+			"properties":{
+				"principalDeveloper":{
+					"type":"string",
+					"description":"the developer who defines this principal type"
+				},
+				"principalType":{
+					"type":"string",
+					"description":"the type of principal, e.g. the developer TAS defines &#x27;candidate&#x27; and &#x27;employee&#x27;"
+				},
+				"principleSubTypes":{
+					"type":"array",
+					"items":{
+						"type":"string",
+						"minimum":1
+					},
+					"description":"further refinements of the principal type, e.g. the developer TAS defines subtypes of &#x27;internal&#x27; and &#x27;external&#x27; for the principal type of &#x27;candidate&#x27;"
+				},
+				"entityId":{
+					"type":"string",
+					"description":"globally unique identifier of the identity provider (IdP) this principal authenticated via"
+				},
+				"nameId":{
+					"type":"string",
+					"description":"identifier (unique within IdP) of this principal"
+				}
+			}
+			
+		},
+		"personDetail":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"kind"
+			],
+			"properties":{
+				"kind":{
+					"enum":[
+						"personDetail"
+					]
+				},
+				"email":"string",
+				"title":"string",
+				"firstName":"string",
+				"lastName":"string",
+				"phone":"string",
+				"locale":"string",
+				"language":"string",
+				"timeZone":"string"
+			}
+		},
+		"employeeDetail":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"kind"
+			],
+			"properties":{
+				"kind":{
+					"enum":[
+						"employeeDetail"
+					]
+					
+				},
+				"companyRef":"string",
+				"profileId":"integer",
+				"roleI":"integer"
+			}
+		}
+		
+	}
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"identity":{
+		"principalDeveloper":"tas",
+		"principalType":"employee",
+		"nameId":"102ghfirhr784",
+		"entityId":"acmeidp",
+		"isActive":true
+	},
+	"personDetail":{
+		"kind":"personDetail",
+		"email":"fred@hotmail.com",
+		"title":"Mr.",
+		"firstName":"Fred",
+		"lastName":"Bloggs",
+		"phone":"415-123-1234",
+		"locale":"en_NZ",
+		"language":"en_US",
+		"timeZone":"America/Los_Angeles"
+	},
+	"employeeDetail": {
+		"kind":"employeeDetail",
+		"companyName":"Acme",
+		"profileId":1001,
+		"roleId":1002
+	}
+	
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications_viaToken__accessToken_><span class=parent>/{tenant}/authentications/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications_viaToken__accessToken__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__authentications_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications_viaToken__accessToken__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the logged in principal in the case where your app is producing an OAuth tenant API consumed by some other app (possibly an SSO-protected web site, or possibly another API server higher up in the chain). For accessToken, use the access token that was passed to your app via the Authentication header in the incoming OAuth API call.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications_viaToken__accessToken__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/authentications/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the logged in principal in the case where your app is producing an OAuth tenant API consumed by some other app (possibly an SSO-protected web site, or possibly another API server higher up in the chain). For accessToken, use the access token that was passed to your app via the Authentication header in the incoming OAuth API call.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications_viaToken__accessToken__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__authentications_viaToken__accessToken__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications_viaToken__accessToken__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__authentications_viaToken__accessToken__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"required":[
+		"identity",
+		"personDetail"
+	],
+	"properties":{
+		"id":"integer",
+		"identity":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"principalDeveloper",
+				"principalType",
+				"entityId",
+				"nameId"
+			],
+			"properties":{
+				"principalDeveloper":{
+					"type":"string",
+					"description":"the developer who defines this principal type"
+				},
+				"principalType":{
+					"type":"string",
+					"description":"the type of principal, e.g. the developer TAS defines &#x27;candidate&#x27; and &#x27;employee&#x27;"
+				},
+				"principleSubTypes":{
+					"type":"array",
+					"items":{
+						"type":"string",
+						"minimum":1
+					},
+					"description":"further refinements of the principal type, e.g. the developer TAS defines subtypes of &#x27;internal&#x27; and &#x27;external&#x27; for the principal type of &#x27;candidate&#x27;"
+				},
+				"entityId":{
+					"type":"string",
+					"description":"globally unique identifier of the identity provider (IdP) this principal authenticated via"
+				},
+				"nameId":{
+					"type":"string",
+					"description":"identifier (unique within IdP) of this principal"
+				}
+			}
+			
+		},
+		"personDetail":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"kind"
+			],
+			"properties":{
+				"kind":{
+					"enum":[
+						"personDetail"
+					]
+				},
+				"email":"string",
+				"title":"string",
+				"firstName":"string",
+				"lastName":"string",
+				"phone":"string",
+				"locale":"string",
+				"language":"string",
+				"timeZone":"string"
+			}
+		},
+		"employeeDetail":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"kind"
+			],
+			"properties":{
+				"kind":{
+					"enum":[
+						"employeeDetail"
+					]
+					
+				},
+				"companyRef":"string",
+				"profileId":"integer",
+				"roleI":"integer"
+			}
+		}
+		
+	}
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"identity":{
+		"principalDeveloper":"tas",
+		"principalType":"employee",
+		"nameId":"102ghfirhr784",
+		"entityId":"acmeidp",
+		"isActive":true
+	},
+	"personDetail":{
+		"kind":"personDetail",
+		"email":"fred@hotmail.com",
+		"title":"Mr.",
+		"firstName":"Fred",
+		"lastName":"Bloggs",
+		"phone":"415-123-1234",
+		"locale":"en_NZ",
+		"language":"en_US",
+		"timeZone":"America/Los_Angeles"
+	},
+	"employeeDetail": {
+		"kind":"employeeDetail",
+		"companyName":"Acme",
+		"profileId":1001,
+		"roleId":1002
+	}
+	
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes><span class=parent>/{tenant}</span>/routes</a> <span class=methods></span></h4></div><div id=panel___tenant__routes class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p><p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:<ul><li>The actual endpoint (where the producer&#39;s server sits on the internet)</li><li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li></ul></p><p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.) that the consumer is allowed to call.</p><p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT APIs, there can be many consumers and many producers, and hence a route between each unique consumer/producer pair.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp_><span class=parent>/{tenant}/routes</span>/{consumingApp}</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The app consuming the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper_><span class=parent>/{tenant}/routes/{consumingApp}</span>/{apiDeveloper}</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The developer who owns/defines the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}</span>/{apiUriTemplate}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The URI template (as per <a href=https://tools.ietf.org/html/rfc6570>https://tools.ietf.org/html/rfc6570</a>) of the API.</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API. The example below is for a non-OAuth, non-SoT API.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}</span>/{apiUriTemplate}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API. The example below is for a non-OAuth, non-SoT API.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"properties":{
+		"kind":{
+			"enum":[
+				"routes"
+			],
+			"description":"always set to: routes"
+		},
+		"items":{
+			"type":"array",
+			"items":{
+				"oneOf":[
+					{
+						"$ref":"route.json"
+					}
+				]
+			}
+			
+		}
+		
+	},
+	"required":[
+		"kind",
+		"items"
+	]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "kind": "routes",
+    "items": [
+        {
+            "kind": "route",
+            "consumer": "tas-jobboard",
+            "producer": "hrlabs-crazyjobs",
+            "location": "https://acme.crazyjobs.com:2109/api/v3.2/openJobs",
+            "auth": {
+                "kind": "hmacAuth",
+                "hmacCredentials": {
+                    "signingKey": "k8763216548hppou",
+                    "expires": "2014-10-21T15:04:30Z"
+                }
+            },
+            "consumedMethods": [
+                "POST",
+                "DELETE"
+            ]
+        },
+        {
+            "kind": "route",
+            "consumer": "tas-jobboard",
+            "producer": "hrlabs-jobcopier",
+            "location": "https://jobcopier.com:2102/acme/api/v3/cust/openJobs",
+            "auth": {
+                "kind": "basicAuth",
+                "basicAuthCredentials": {
+                    "user": "barry@ibm.com",
+                    "password": "secret1",
+                    "expires": "2014-10-21T15:04:30Z"
+                }
+            },
+            "consumedMethods": [
+                "POST",
+                "DELETE"
+            ]
+        }
+    ]
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}</span>/{producer}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route, from the given consumer, to the producer (which must be your app) of a specific API. Since both consuming and producing apps are specified, there can only be one or zero routes in the response.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}</span>/{producer}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route, from the given consumer, to the producer (which must be your app) of a specific API. Since both consuming and producing apps are specified, there can only be one or zero routes in the response.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+    	"consumedMethods": {
+    		"description": "The subset of the methods available on this API that the consumer has declared that they use.",
+    		"type": "array",
+    		"uniqueItems": true,
+    		"items":  {
+                    "enum": [
+                        "HEAD", "GET", "OPTIONS", "DELETE", "PATCH", "POST", "PUT"
+                    ]
+                } 
+    	},
+        "hmacCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "signingKey",
+                "expires"
+            ],
+            "properties": {
+                "signingKey": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "basicAuthCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "user",
+                "password",
+                "expires"
+            ],
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "authChoices": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "kind",
+                        "hmacCredentials"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "hmacAuth"
+                            ]
+                        },
+                        "hmacCredentials": {
+                            "$ref": "#/definitions/hmacCredentials"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "kind",
+                        "basicAuthCredentials"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "basicAuth"
+                            ]
+                        },
+                        "basicAuthCredentials": {
+                            "$ref": "#/definitions/basicAuthCredentials"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "kind"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "oauthAuth"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "kind",
+        "producer",
+        "location",
+        "auth",
+        "consumedMethods"
+    ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "route"
+            ],
+            "description": "always set to: route"
+        },
+        "consumer": {
+            "type": "string",
+            "description": "the app consuming this API"
+        },
+        "producer": {
+            "type": "string",
+            "description": "the app producing this API"
+        },
+        "location": {
+            "type": "string",
+            "description": "a URI template as per RFC 6570 which has had the template parameter replaced with the actual value for this tenant, and that should be used to prefix the API URI to make the call"
+        },
+        "auth": {
+            "$ref": "#/definitions/authChoices"
+        },
+        "consumedMethods": {
+            "$ref": "#/definitions/consumedMethods"
+        }
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  "kind":"route",
+  "consumer":"tas-jobboard",
+  "producer":"hrlabs-crazyjobs",
+  "location":"https://acme.crazyjobs.com:2109/api/v3.2/openJobs",
+  "auth":{
+    "kind":"hmacAuth",
+    "hmacCredentials":{
+      "signingKey":"k8763216548hppou",
+      "expires":"2014-10-21T15:04:30Z"
+    }
+  },
+  "consumedMethods":[
+    "POST",
+    "DELETE"
+  ]
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}</span>/tokens</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token) that authorize a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p><p>Because access tokens are self-contained and signed, producers can validate incoming tokens without any reference to the auth server (i.e. TAS).</p><p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or (as per <a href=http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html>http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter.</p><p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate. For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token is too close to expiry to serve the needs of the consumer.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaSso</span>/{principalAuthnID}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The id of the current authentication, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaSso</span>/{principalAuthnID}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li><li><strong>principalAuthnID</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
+	"properties":{
+		"sub":{
+			"type":"integer",
+			"description":"subject, i.e. the id of the principal&#x27;s authorization as available from TAS via SAML assertion"
+		},
+		"cons":{
+			"type":"string",
+			"description":"the app consuming the API"
+		},
+		"dev":{
+			"type":"string",
+			"description":"developer who owns/defines the API"
+		},
+		"uri":{
+			"type":"string",
+			"description":"URI template of the API"
+		},
+		"aud":{
+			"type":"string",
+			"description":"audience - the app producing the API, i.e. the one consuming the token"
+		},
+		"inc":{
+			"type":"integer",
+			"description":"incarnation of the tenant (store) at the time the token was issued"
+		},
+		"iat":{
+			"type":"string",
+			"description":"time the token was issued, as per the spec."
+		},
+		"exp":{
+			"type":"string",
+			"description":"time the token expires, as per the spec."
+		}
+		
+	},
+	"required":[
+		"sub",
+		"cons",
+		"dev",
+		"uri",
+		"aud",
+		"inc",
+		"iat",
+		"exp"
+	]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"sub": 100232,
+	"cons": "tas-uberapply",
+	"dev": "tas",
+	"uri": "/positionOpenings/{positionId}",
+	"aud": "tas-ats",
+	"inc": 24,
+	"iat": "31 Dec 1999",
+	"exp": "31 Dec 1999"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The OAuth access token (a JWT) passed in to the producing app, which has:<ul><li>the producing app as the "aud" field</li><li>the principal via its "sub" field</li></ul></p><p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g., if the ancestor token expires, that does not tokens created from it.</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
+	"properties":{
+		"sub":{
+			"type":"integer",
+			"description":"subject, i.e. the id of the principal&#x27;s authorization as available from TAS via SAML assertion"
+		},
+		"cons":{
+			"type":"string",
+			"description":"the app consuming the API"
+		},
+		"dev":{
+			"type":"string",
+			"description":"developer who owns/defines the API"
+		},
+		"uri":{
+			"type":"string",
+			"description":"URI template of the API"
+		},
+		"aud":{
+			"type":"string",
+			"description":"audience - the app producing the API, i.e. the one consuming the token"
+		},
+		"inc":{
+			"type":"integer",
+			"description":"incarnation of the tenant (store) at the time the token was issued"
+		},
+		"iat":{
+			"type":"string",
+			"description":"time the token was issued, as per the spec."
+		},
+		"exp":{
+			"type":"string",
+			"description":"time the token expires, as per the spec."
+		}
+		
+	},
+	"required":[
+		"sub",
+		"cons",
+		"dev",
+		"uri",
+		"aud",
+		"inc",
+		"iat",
+		"exp"
+	]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"sub": 100232,
+	"cons": "tas-uberapply",
+	"dev": "tas",
+	"uri": "/positionOpenings/{positionId}",
+	"aud": "tas-ats",
+	"inc": 24,
+	"iat": "31 Dec 1999",
+	"exp": "31 Dec 1999"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSets><span class=parent>/{tenant}</span>/deltaSets</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser. The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog. This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) increments the tenant&#39;s incarnation, it will also invalidate any outstanding launchers. Also launchers expire within 10 minutes of being issued. Launchers are meant therefore to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSets</h4></div><div class=modal-body><div class="alert alert-info"><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser. The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog. This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) increments the tenant&#39;s incarnation, it will also invalidate any outstanding launchers. Also launchers expire within 10 minutes of being issued. Launchers are meant therefore to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSets_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSets_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSets_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "definitions":{
+    "basicAuthCredentials":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "user",
+        "password"
+      ],
+      "properties":{
+        "user":{
+          "type":"string"
+        },
+        "password":{
+          "type":"string"
+        }
+      }
+    },
+    "server":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "name",
+        "baseUri",
+        "basicAuthCredentials"
+      ],
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "baseUri":{
+          "type":"string"
+        },
+        "basicAuthCredentials":{
+          "$ref":"#/definitions/basicAuthCredentials"
+        }
+      }
+    },
+    "servers":{
+      "type":"array",
+      "items":{
+        "$ref":"#/definitions/server"
+      }
+    },
+    "app":{
+      "type":"string"
+    },
+    "installDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "installDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        },
+        "servers":{
+          "$ref":"#/definitions/servers"
+        }
+      }
+    },
+    "editDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "editDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        },
+        "servers":{
+          "$ref":"#/definitions/servers"
+        }
+      }
+    },
+    "unInstallDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "unInstallDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        }
+      }
+    }
+  },
+  "type":"object",
+  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+  "additionalProperties":false,
+  "required":[
+    "kind",
+    "targetIncarnation",
+    "items"
+  ],
+  "properties":{
+    "kind":{
+      "enum":[
+        "deltaSet"
+      ],
+      "description":"always set to: deltaSet"
+    },
+    "targetIncarnation":{
+      "type":"integer",
+      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "items":{
+      "type":"array",
+      "items":{
+        "oneOf":[
+          {
+            "$ref":"#/definitions/installDelta"
+          },
+          {
+            "$ref":"#/definitions/editDelta"
+          },
+          {
+            "$ref":"#/definitions/unInstallDelta"
+          }
+        ]
+      }
+    }
+  }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"kind":"deltaSet",
+	"targetIncarnation": 34,
+	"items":[
+		{
+			"kind":"installDelta",
+			"app":"tas-superats"
+		},
+  		{
+			"kind":"installDelta",
+			"app":"tas-atszero",
+			"servers":[
+				{
+					"name":"ats0",
+					"baseUri":"https://acme.atszero.com",
+					"basicAuthCredentials":{
+						"user":"fred",
+						"password":"secret1"
+					}
+				}
+			]
+		},
+		{
+			"kind":"editDelta",
+			"app":"supersoft-oldjobboard",
+			"servers":[
+				{
+					"name":"oldboard",
+					"baseUri":"https://oldboard.supersoft.com/acme",
+					"basicAuthCredentials":{
+						"user":"userX",
+						"password":"mypwd"
+					}
+				}
+			]
+		},
+		{
+			"kind":"unInstallDelta",
+			"app":"supersoft-boomchaka"
+		}
+	]
+}</code></pre></div><div class=tab-pane id=__tenant__deltaSets_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "definitions":{
+    "basicAuthCredentials":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "user",
+        "password"
+      ],
+      "properties":{
+        "user":{
+          "type":"string"
+        },
+        "password":{
+          "type":"string"
+        }
+      }
+    },
+    "server":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "name",
+        "baseUri",
+        "basicAuthCredentials"
+      ],
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "baseUri":{
+          "type":"string"
+        },
+        "basicAuthCredentials":{
+          "$ref":"#/definitions/basicAuthCredentials"
+        }
+      }
+    },
+    "servers":{
+      "type":"array",
+      "items":{
+        "$ref":"#/definitions/server"
+      }
+    },
+    "app":{
+      "type":"string"
+    },
+    "installDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "installDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        },
+        "servers":{
+          "$ref":"#/definitions/servers"
+        }
+      }
+    },
+    "editDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "editDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        },
+        "servers":{
+          "$ref":"#/definitions/servers"
+        }
+      }
+    },
+    "unInstallDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "unInstallDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        }
+      }
+    }
+  },
+  "type":"object",
+  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+  "additionalProperties":false,
+  "required":[
+    "kind",
+    "targetIncarnation",
+    "items"
+  ],
+  "properties":{
+    "kind":{
+      "enum":[
+        "deltaSet"
+      ],
+      "description":"always set to: deltaSet"
+    },
+    "targetIncarnation":{
+      "type":"integer",
+      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "items":{
+      "type":"array",
+      "items":{
+        "oneOf":[
+          {
+            "$ref":"#/definitions/installDelta"
+          },
+          {
+            "$ref":"#/definitions/editDelta"
+          },
+          {
+            "$ref":"#/definitions/unInstallDelta"
+          }
+        ]
+      }
+    }
+  }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"kind":"deltaSet",
+	"targetIncarnation": 34,
+	"items":[
+		{
+			"kind":"installDelta",
+			"app":"tas-superats"
+		},
+  		{
+			"kind":"installDelta",
+			"app":"tas-atszero",
+			"servers":[
+				{
+					"name":"ats0",
+					"baseUri":"https://acme.atszero.com",
+					"basicAuthCredentials":{
+						"user":"fred",
+						"password":"secret1"
+					}
+				}
+			]
+		},
+		{
+			"kind":"editDelta",
+			"app":"supersoft-oldjobboard",
+			"servers":[
+				{
+					"name":"oldboard",
+					"baseUri":"https://oldboard.supersoft.com/acme",
+					"basicAuthCredentials":{
+						"user":"userX",
+						"password":"mypwd"
+					}
+				}
+			]
+		},
+		{
+			"kind":"unInstallDelta",
+			"app":"supersoft-boomchaka"
+		}
+	]
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSetLaunchers><span class=parent>/{tenant}</span>/deltaSetLaunchers</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSetLaunchers class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets).</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSetLaunchers_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSetLaunchers</h4></div><div class=modal-body><div class="alert alert-info"><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets).</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSetLaunchers_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSetLaunchers_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSetLaunchers_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "definitions":{
+    "basicAuthCredentials":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "user",
+        "password"
+      ],
+      "properties":{
+        "user":{
+          "type":"string"
+        },
+        "password":{
+          "type":"string"
+        }
+      }
+    },
+    "server":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "name",
+        "baseUri",
+        "basicAuthCredentials"
+      ],
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "baseUri":{
+          "type":"string"
+        },
+        "basicAuthCredentials":{
+          "$ref":"#/definitions/basicAuthCredentials"
+        }
+      }
+    },
+    "servers":{
+      "type":"array",
+      "items":{
+        "$ref":"#/definitions/server"
+      }
+    },
+    "app":{
+      "type":"string"
+    },
+    "installDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "installDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        },
+        "servers":{
+          "$ref":"#/definitions/servers"
+        }
+      }
+    },
+    "editDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "editDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        },
+        "servers":{
+          "$ref":"#/definitions/servers"
+        }
+      }
+    },
+    "unInstallDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind",
+        "app"
+      ],
+      "properties":{
+        "kind":{
+          "enum":[
+            "unInstallDelta"
+          ]
+        },
+        "app":{
+          "$ref":"#/definitions/app"
+        }
+      }
+    }
+  },
+  "type":"object",
+  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+  "additionalProperties":false,
+  "required":[
+    "kind",
+    "targetIncarnation",
+    "items"
+  ],
+  "properties":{
+    "kind":{
+      "enum":[
+        "deltaSet"
+      ],
+      "description":"always set to: deltaSet"
+    },
+    "targetIncarnation":{
+      "type":"integer",
+      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "items":{
+      "type":"array",
+      "items":{
+        "oneOf":[
+          {
+            "$ref":"#/definitions/installDelta"
+          },
+          {
+            "$ref":"#/definitions/editDelta"
+          },
+          {
+            "$ref":"#/definitions/unInstallDelta"
+          }
+        ]
+      }
+    }
+  }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"kind":"deltaSet",
+	"targetIncarnation": 34,
+	"items":[
+		{
+			"kind":"installDelta",
+			"app":"tas-superats"
+		},
+  		{
+			"kind":"installDelta",
+			"app":"tas-atszero",
+			"servers":[
+				{
+					"name":"ats0",
+					"baseUri":"https://acme.atszero.com",
+					"basicAuthCredentials":{
+						"user":"fred",
+						"password":"secret1"
+					}
+				}
+			]
+		},
+		{
+			"kind":"editDelta",
+			"app":"supersoft-oldjobboard",
+			"servers":[
+				{
+					"name":"oldboard",
+					"baseUri":"https://oldboard.supersoft.com/acme",
+					"basicAuthCredentials":{
+						"user":"userX",
+						"password":"mypwd"
+					}
+				}
+			]
+		},
+		{
+			"kind":"unInstallDelta",
+			"app":"supersoft-boomchaka"
+		}
+	]
+}</code></pre></div><div class=tab-pane id=__tenant__deltaSetLaunchers_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "app": {
+            "type": "string"
+        },
+        "elapsedTime": {
+            "description": "elapsed time of the operation in milliseconds",
+            "type": "integer"
+        },
+        "deltaApplyStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "deltaApplyStart"
+                    ]
+                }
+            }
+        },
+        "tenantDownStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantDownStart"
+                    ]
+                }
+            }
+        },
+        "appDownRequest": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appDownRequest"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "appDownComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appDownComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "tenantDownComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantDownComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                }
+            }
+        },
+        "applyIndividualDeltasStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "applyIndividualDeltasStart"
+                    ]
+                }
+            }
+        },
+        "appInstallComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appInstallComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "appEditComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appEditComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "appUnInstallComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appUnInstallComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "applyIndividualDeltasComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "applyIndividualDeltasComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                }
+            }
+        },
+        "tenantUpStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantUpStart"
+                    ]
+                }
+            }
+        },
+        "appUpComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appUpComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "tenantUpComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantUpComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                }
+            }
+        },
+        "deltaApplyComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime",
+                "newIncarnation"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "deltaApplyComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                },
+                "newIncarnation": {
+                    "type": "integer"
+                }
+            }
+        },
+        "orderedEvent": {
+            "type": "object",
+            "properties": {
+                "seq": {
+                    "type": "integer"
+                },
+                "event": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/deltaApplyStart"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantDownStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appDownRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/appDownComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantDownComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/applyIndividualDeltasStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appInstallComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/appEditComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/appUnInstallComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/applyIndividualDeltasComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantUpStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appUpComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantUpComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/deltaApplyComplete"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "kind",
+        "launchKey",
+        "incarnationPrior",
+        "events"
+    ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "deltaSetStatus"
+            ]
+        },
+        "launchKey": {
+            "type": "integer"
+        },
+        "applyStatus": {
+            "enum": [
+                "complete",
+                "inProcess",
+                "notLaunched"
+            ]
+        },
+        "latestEvent": {
+            "type": "integer"
+        },
+        "incarnationPrior": {
+            "type": "integer"
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/orderedEvent"
+            }
+        }
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  "kind": "deltaSetStatus",
+  "launchKey": 563064573256483661,
+  "applyStatus": "complete",
+  "latestEvent": 23,
+  "incarnationPrior": 145,
+  "events": [
+    {"seq": 0, "event": {"kind": "deltaApplyStart"}},
+    {"seq": 1, "event": { "kind": "tenantDownStart"}},
+    {"seq": 2, "event": { "kind": "appDownRequest", "app": "tas-zoom"}},
+    {"seq": 3, "event": { "kind": "appDownRequest", "app": "hrlabs-fratly"}},
+    {"seq": 4, "event": { "kind": "appDownComplete", "app": "tas-zoom"}},
+    {"seq": 5, "event": { "kind": "appDownRequest", "app": "tas-uberapply"}},
+    {"seq": 6, "event": { "kind": "appDownComplete", "app": "tas-uberapply"}},
+    {"seq": 7, "event": { "kind": "appDownComplete", "app": "hrlabs-fratly"}},
+    {"seq": 8, "event": { "kind": "appDownComplete", "app": "tas-dummyjobs"}},
+    {"seq": 9, "event": { "kind": "tenantDownComplete", "elapsedTime": 2033}},
+    {"seq": 10, "event": { "kind": "applyIndividualDeltasStart"}},
+    {"seq": 11, "event": { "kind": "appInstallComplete", "app": "tas-tracker"}},
+    {"seq": 12, "event": { "kind": "appInstallComplete", "app": "supersoft-refly"}},
+    {"seq": 13, "event": { "kind": "appEditComplete", "app": "tas-zoom"}},
+    {"seq": 14, "event": { "kind": "appUnInstallComplete", "app": "tas-dummyjobs"}},
+    {"seq": 15, "event": { "kind": "applyIndividualDeltasComplete", "elapsedTime": 3122}},
+    {"seq": 16, "event": { "kind": "tenantUpStart"}},
+    {"seq": 17, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
+    {"seq": 18, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
+    {"seq": 19, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
+    {"seq": 20, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
+    {"seq": 21, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
+    {"seq": 22, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
+    {"seq": 23, "event": { "kind": "deltaApplyComplete", "elapsedTime": 9603, "newIncarnation": 146}}
+  ]
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSetLaunches__launchKey_><span class=parent>/{tenant}/deltaSetLaunches</span>/{launchKey}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSetLaunches__launchKey__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__deltaSetLaunches__launchKey_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSetLaunches__launchKey__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the latest events and the current summary details about a previous launch of a delta set apply.</p><p>If the apply is already "complete" then this call will return immediately, with any events that match the filter, up to the maximum events per call.</p><p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is available that matches the filter, or the apply becomes complete (which would always be acocmpanied by an event). If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the last event has been fetched.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSetLaunches__launchKey__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/deltaSetLaunches</span>/{launchKey}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the latest events and the current summary details about a previous launch of a delta set apply.</p><p>If the apply is already "complete" then this call will return immediately, with any events that match the filter, up to the maximum events per call.</p><p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is available that matches the filter, or the apply becomes complete (which would always be acocmpanied by an event). If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the last event has been fetched.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSetLaunches__launchKey__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSetLaunches__launchKey__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSetLaunches__launchKey__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>launchKey</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>After Event</strong>: <em>(integer)</em><p>The sequence of an existing event - this call should return events immediately <em>after</em> this event. Omitting this parameter returns the first events.</p><p><strong>Example</strong>:</p><pre><code>12</code></pre></li></ul></div><div class=tab-pane id=__tenant__deltaSetLaunches__launchKey__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "app": {
+            "type": "string"
+        },
+        "elapsedTime": {
+            "description": "elapsed time of the operation in milliseconds",
+            "type": "integer"
+        },
+        "deltaApplyStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "deltaApplyStart"
+                    ]
+                }
+            }
+        },
+        "tenantDownStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantDownStart"
+                    ]
+                }
+            }
+        },
+        "appDownRequest": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appDownRequest"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "appDownComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appDownComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "tenantDownComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantDownComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                }
+            }
+        },
+        "applyIndividualDeltasStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "applyIndividualDeltasStart"
+                    ]
+                }
+            }
+        },
+        "appInstallComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appInstallComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "appEditComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appEditComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "appUnInstallComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appUnInstallComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "applyIndividualDeltasComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "applyIndividualDeltasComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                }
+            }
+        },
+        "tenantUpStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantUpStart"
+                    ]
+                }
+            }
+        },
+        "appUpComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appUpComplete"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
+        "tenantUpComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantUpComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                }
+            }
+        },
+        "deltaApplyComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime",
+                "newIncarnation"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "deltaApplyComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                },
+                "newIncarnation": {
+                    "type": "integer"
+                }
+            }
+        },
+        "orderedEvent": {
+            "type": "object",
+            "properties": {
+                "seq": {
+                    "type": "integer"
+                },
+                "event": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/deltaApplyStart"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantDownStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appDownRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/appDownComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantDownComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/applyIndividualDeltasStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appInstallComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/appEditComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/appUnInstallComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/applyIndividualDeltasComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantUpStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appUpComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/tenantUpComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/deltaApplyComplete"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "kind",
+        "launchKey",
+        "incarnationPrior",
+        "events"
+    ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "deltaSetStatus"
+            ]
+        },
+        "launchKey": {
+            "type": "integer"
+        },
+        "applyStatus": {
+            "enum": [
+                "complete",
+                "inProcess",
+                "notLaunched"
+            ]
+        },
+        "latestEvent": {
+            "type": "integer"
+        },
+        "incarnationPrior": {
+            "type": "integer"
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/orderedEvent"
+            }
+        }
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  "kind": "deltaSetStatus",
+  "launchKey": 563064573256483661,
+  "applyStatus": "complete",
+  "latestEvent": 23,
+  "incarnationPrior": 145,
+  "events": [
+    {"seq": 0, "event": {"kind": "deltaApplyStart"}},
+    {"seq": 1, "event": { "kind": "tenantDownStart"}},
+    {"seq": 2, "event": { "kind": "appDownRequest", "app": "tas-zoom"}},
+    {"seq": 3, "event": { "kind": "appDownRequest", "app": "hrlabs-fratly"}},
+    {"seq": 4, "event": { "kind": "appDownComplete", "app": "tas-zoom"}},
+    {"seq": 5, "event": { "kind": "appDownRequest", "app": "tas-uberapply"}},
+    {"seq": 6, "event": { "kind": "appDownComplete", "app": "tas-uberapply"}},
+    {"seq": 7, "event": { "kind": "appDownComplete", "app": "hrlabs-fratly"}},
+    {"seq": 8, "event": { "kind": "appDownComplete", "app": "tas-dummyjobs"}},
+    {"seq": 9, "event": { "kind": "tenantDownComplete", "elapsedTime": 2033}},
+    {"seq": 10, "event": { "kind": "applyIndividualDeltasStart"}},
+    {"seq": 11, "event": { "kind": "appInstallComplete", "app": "tas-tracker"}},
+    {"seq": 12, "event": { "kind": "appInstallComplete", "app": "supersoft-refly"}},
+    {"seq": 13, "event": { "kind": "appEditComplete", "app": "tas-zoom"}},
+    {"seq": 14, "event": { "kind": "appUnInstallComplete", "app": "tas-dummyjobs"}},
+    {"seq": 15, "event": { "kind": "applyIndividualDeltasComplete", "elapsedTime": 3122}},
+    {"seq": 16, "event": { "kind": "tenantUpStart"}},
+    {"seq": 17, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
+    {"seq": 18, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
+    {"seq": 19, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
+    {"seq": 20, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
+    {"seq": 21, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
+    {"seq": 22, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
+    {"seq": 23, "event": { "kind": "deltaApplyComplete", "elapsedTime": 9603, "newIncarnation": 146}}
+  ]
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__installs><span class=parent>/{tenant}</span>/installs</a> <span class=methods></span></h4></div><div id=panel___tenant__installs class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Installs are currently installed apps at the tenant.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__installs__app_><span class=parent>/{tenant}/installs</span>/{app}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__installs__app__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__installs__app_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>An app</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__installs__app__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Called by a storefront app to get details about an already installed app, e.g. to obtain the server basic auth info.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__installs__app__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/installs</span>/{app}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by a storefront app to get details about an already installed app, e.g. to obtain the server basic auth info.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__installs__app__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__installs__app__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__installs__app__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>app</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__installs__app__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__installs__app__shutDownCompletions><span class=parent>/{tenant}/installs/{app}</span>/shutDownCompletions</a> <span class=methods></span></h4></div><div id=panel___tenant__installs__app__shutDownCompletions class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>A shutDownCompletion represents an app&#39;s completion of its shutdown processing, which it should achieve within a few seconds of receiving a call from TAS to POST /{tenant}/shutDowns.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__installs__app__shutDownCompletions__shutDownCompletionKey_><span class=parent>/{tenant}/installs/{app}/shutDownCompletions</span>/{shutDownCompletionKey}</a> <span class=methods></span></h4></div><div id=panel___tenant__installs__app__shutDownCompletions__shutDownCompletionKey_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The unguessable key passed by TAS in its call to POST /{tenant}/shutDowns</p></div><div class=list-group></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#__tenant_>/{tenant}</a></li></ul></div></div></div></div></body></html>

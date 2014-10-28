@@ -1,0 +1,51 @@
+{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
+	"properties":{
+		"sub":{
+			"type":"integer",
+			"description":"subject, i.e. the id of the principal's authorization as available from TAS via SAML assertion"
+		},
+		"cons":{
+			"type":"string",
+			"description":"the app consuming the API"
+		},
+		"dev":{
+			"type":"string",
+			"description":"developer who owns/defines the API"
+		},
+		"uri":{
+			"type":"string",
+			"description":"URI template of the API"
+		},
+		"aud":{
+			"type":"string",
+			"description":"audience - the app producing the API, i.e. the one consuming the token"
+		},
+		"inc":{
+			"type":"integer",
+			"description":"incarnation of the tenant (store) at the time the token was issued"
+		},
+		"iat":{
+			"type":"string",
+			"description":"time the token was issued, as per the spec."
+		},
+		"exp":{
+			"type":"string",
+			"description":"time the token expires, as per the spec."
+		}
+		
+	},
+	"required":[
+		"sub",
+		"cons",
+		"dev",
+		"uri",
+		"aud",
+		"inc",
+		"iat",
+		"exp"
+	]
+}

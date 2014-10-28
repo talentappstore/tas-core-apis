@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/raphael-min.js'></script>
+<script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/underscore-min.js'></script>
+<script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/sequence-diagram-min.js'></script>
+
+<script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/generated_toc.js'></script>
+
+<title>Talent App Store app developer guide</title>
+</head>
+<body>
+
+<h1>Talent App Store app developer guide</h1>
+
+<div id="generated-toc"></div>
+
+<script>
+            //Executes your code when the DOM is ready.  Acts the same as $(document).ready().
+              $(function() {
+                  //Calls the tocify method on your HTML div.
+                  $("#toc").tocify();
+              });
+              </script>
+
+<h1>External documents</h1>
+
+<ul>
+<li><a href='../index.html'>Core API documentation</a> (RAML and JSON Schema)
+<li>tas-core-apis on <a href='https://github.com/talentappstore/tas-core-apis'>GitHub</a>
+</ul>
+              
+<h1>Overview</h1>
+
+<p>Talent App Store is an open, vendor-neutral, multi-tenanted cloud API platform
+where customers can click to install pre-integrated SaaS talent management apps.</p>
+
+<h1>What is TAS?</h1>
+
+<p>To you, as the developer of a talent management app, Talent App Store acts as:
+
+<ul>
+<li><b>A sales channel.</b> Hundreds of customers are already using TAS, making thousands of API endpoints available. If you have a product that solves some talent management problem better than anyone else, you now have access to a ready market who can instantly trial your product with a single click.
+<li><b>A provisioning service.</b> TAS calls an API on your app to tell you in real time when new tenants install or uninstall your app. You respond to the provisioning API by inserting a row into your customer table, assigning a trained simian to start installing a server, or whatever.
+<li><b>An SSO (Single Sign On) service.</b> If your app presents a web user interface, then TAS handles logins to your app in a highly secure, customer-controlled way, and integrates tightly with customer-supplied identity providers via SAML 2.0. SAML support and SSO is increasing understood by customers to be a key part of an integrated talent management experience. TAS handles all of the heavy lifting of SSO and SAML for you, and removes you from the risky business of managing user authentication.
+<li><b>An API directory service.</b> TAS provides APIs for your app to dynamically locate API endpoints on other apps, based on the tenant's latest installation choices. For example, your app simply locates and then calls the GET /jobs endpoint, without needing to know which app is currently producing that endpoint. If the customer swaps out their ATS and replaces it with another, your app continues calling GET /jobs without interruption.
+<li><b>An API authentication service.</b> TAS provides access tokens and credentials for apps to call each others APIs securely, with user identity available to all endpoints.
+<li><b>An app lifecycle service.</b> TAS sends your app tenant-specific signals so that it can  shut down and start up cleanly as tenants make changes to their configuration (e.g. installing and uninstalling apps).
+<li><b>A demo packaging service.</b> With TAS, you can define shopping lists of microservices
+that support your app, such as databases of demo jobs, org structures, and wrap these around
+your app. Customers can install your app as a part of a complete, functioning technology stack,
+trial it, and then swap out the demo apps in the stack for real apps connected to their existing
+talent management platform.
+</ul>
+</p>
+
+<p>There are also some things that TAS is not:
+<ul>
+<li>TAS is not an IaaS or a hosting platform. You host your apps yourself on your own infrastructure.
+<li>TAS is not a programming language or a framework. You can write your apps in your language of choice, using whatever user interface framework you favour and storing your data in your chosen database. TAS helps you to communicate with other apps, and with TAS itself, via http-based REST APIs. TAS does provide a set of Java client libraries to help with writing apps.
+<li>TAS is not an ESB (Enterprise Service Bus). API traffic does not flow through any TAS servers. Instead, your app uses TAS to locate an API endpoint and obtain an access token. The actual API call is made directly from your app (the consumer) to the other app (the producer) over the internet, and not through TAS. TAS is not a bottleneck or a point of failure.
+</ul>
+
+<h1>How it works</h1>
+
+<h2>Multitenant architecture</h2>
+
+[diagram]
+
+<h2>Core and tenant API types</h2>
+
+<p>Within a single tenant, most of the action takes place when apps call APIs on other apps. We call these <b>tenant APIs</b>.
+As much as possible, TAS helps apps get set up to make tenant API calls to each other, then stays out of the way.</p>
+
+<p>Tenant APIs are business-oriented, like fetching the current list of open jobs.</p>
+
+<p>TAS itself also provides some <b>core APIs</b> that support meta functionality, like notifying your app that it has a new
+tenant, stopping and starting apps, locating API endpoints, etc.</p>
+
+<p>Core API calls are either inwards (where your app calls an endpoint on TAS) or
+outwards (where TAS calls an endpoint on the <b>control server</b> of your app).</p>
+
+<div class='seqdiag' id="apitypes" style="display:none;">
+participant TAS
+participant ATS app
+participant Career site app
+participant Social sharing app
+TAS->ATS app: outwards core API, e.g. stop tenant, start tenant,\nadd tenant, delete tenant
+TAS->Career site app:
+TAS->Social sharing app:
+ATS app->TAS: inwards core API, e.g. locate API endpoint,\nobtain access token, signal shutdown complete
+Career site app->TAS:
+Social sharing app->TAS:
+Career site app->ATS app:tenant API call, e.g. GET /openJobs
+Social sharing app->ATS app:tenant API call, e.g. GET /openJobs/{id}
+</div>
+
+<h2>Core APIs</h2>
+
+<p>TAS's core APIs provide meta functionality that your app uses to set up its communication paths with other apps.</p>
+
+<h3>Core API authentication</h3>
+
+<p>The core APIs are protected using HMAC-SHA256 authentication in a similar manner to <a href='http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html'>Amazon Web Service's approach.</a></p>
+
+<p>Essentially, incoming and outgoing core API calls contain an HTTP Authorization header which holds
+a message authentication code - a hashed representation of the entire HTTP request.</p>
+
+<p>For incoming core API calls (which are outgoing from the perspective of your app), your app must calculate the MAC and add the Authorization header to the request.</p>
+
+<p>For outgoing core API calls, your app must recalculate the MAC based on the incoming request, and compare it
+to the Authorization header found in the request. Your app should only consider the API call valid if the codes match.</p>
+
+<p>The MAC code is always calculated using your app's secret key - the value that is given to you by TAS when you register your app.</p>
+
+<h2>Tenant APIs</h2>
+
+<p>Tenant APIs are made from one app (the <b>consumer</b>) in the store to another (the <b>producer</b>).</p>
+
+<p>For example, a job board app might call <b>GET /jobs</b> to obtain a list of currently open jobs.</p>
+
+<p>Tenant API calls are always within the context of a single tenant. An app working on behalf of one tenant can never make a tenant API call to an app working on behalf of a diferent tenant. TAS provides no facilities for communicating between tenants.</p> 
+
+<p>Tenant API calls flow directly from one app to another over the internet, and do not pass through TAS itself.
+Once the consumer and producer are set up, any number - even thousands - of tenant API calls can be made without any traffic to TAS itself,
+and without the need for any TAS API calls. This makes TAS extremely scalable and resilient, and greatly reduces the chance of TAS
+becoming a bottleneck or point of failure.</p>
+
+<h3>TAS is decentralized</h3>
+
+<p>TAS is designed as an entirely decentralized platform. When your app consumes a tenant API, it cannot know by itself which app is producing that API.</p>
+
+<p>This is quite different to the APIs that you might find provided by a large vendor's system, when an API call is always either to, or sometimes from, the mothership.</p>
+
+<p>In TAS, there is no mothership. All apps are equal. Any app can produce any API, and any app can consume any API on any other app.
+In fact it is a contractual requirement that any developer defining an API in TAS releases the API under a suitable open source license,
+with the goal of removing legal impediments to a customer swapping out an app for another that produces the same APIs.</p>
+
+<p>This decentralization is deliberate, with the purpose of giving customers choice, preventing lock-in and making them masters of their own destiny by allowing
+them to swap out any app and replace it with another one.</p>
+
+<h3>Locating tenant API endpoints</h3>
+
+<p>The flip side of decentralization is that your app has no way to know how to call GET /jobs, since it does not know which app the
+customer (tenant) has installed to produce that API.</p>
+
+<p>Therefore, before calling a tenant API for the first time, your app must use a core API to ask TAS how to make the call.</p>
+
+<p>If your app is written in Java, you will probably use the TAS Java client libraries to hide this complexity (and to provide efficiencies
+such as caching endpoint locations and access tokens for as long as possible, clearning them down when the app is cycled, etc.).</p>
+
+<p>However for clarification the process of calling a tenant API is shown below at the raw API level.
+In this example, the job board app wants to call the GET /jobs API to get the list of currently open jobs.</p>
+
+<p>Note: as shown below, the first time through this stage is a little chatty in terms of API calls. However the results can be cached
+for a time period, or until the tenant disrupts their store (i.e., installs, edits or uninstalls apps), and therefore the overhead is
+only incurred once.</p>
+
+<div class='seqdiag' id="callingAnApi" style="display:none;">
+</div>
+MAKE SURE TO REFERENCE THE WAY THE API IS STORED WITH {tenant} in it, so we can demonstrate the URI replacement.
+
+Interaction - calling an API
+<--- GET /jobs --->
+in detail..
+<-- get access key -->
+
+
+participant blah
+participant ATS app
+participant Career site app
+participant Social sharing app
+TAS->ATS app: outwards core API, e.g. stop tenant, start tenant,\nadd tenant, delete tenant
+TAS->Career site app:
+TAS->Social sharing app:
+ATS app->TAS: inwards core API, e.g. locate API endpoint,\nobtain access token, signal shutdown complete
+Career site app->TAS:
+Social sharing app->TAS:
+Career site app->ATS app:tenant API call, e.g. GET /openJobs
+Social sharing app->ATS app:tenant API call, e.g. GET /openJobs/{id}
+
+<h3>Tenant API namespacing</h3>
+
+<p>TAS is an open, vendor-neutral platform where all apps are equal, and where any tenant API can be produced or consumed by any app.</p>
+
+<p>Any developer is free to add their own tenant APIs to TAS (subject to the TAS terms of service, which are designed to maintain the
+system's integrity, rather than to favour any one developer).
+There is no central authority that vets API names, checks for collisions, or otherwise enforces consistency on API naming.</p>
+
+<p>It follows that more than one developer may want to define, say, the /jobs API.</p>
+
+<p>Rather than using a "first in, first served" system, which would be vulnerable to name squatting, in TAS all tenant APIs are
+identified not just by their URI, but also by the name of the developer who defined the API. This means there may be multiple
+<b>/jobs</b> APIs defined, e.g.:
+<ul>
+<li><b>&lt;tas&gt;/jobs</b> (defined by Talent App Store Ltd)
+<li><b>&lt;smartsoft&gt;/jobs</b> (defined by SmartSoft Corp.)
+<li><b>&lt;acme-int&gt;/jobs</b> (defined by Acme Corp.)
+</ul>
+</p>
+
+<p>In some examples you may see the developer omitted for brevity. But it is always required, i.e. an app does not simply call <b>GET /jobs</b>, it specifically calls <b>GET &lt;tas&gt;/jobs</b>,
+or <b>GET &lt;smartsoft&gt;/jobs</b> or whatever.</p>
+
+<h3>Tenant API versioning</h3>
+
+<p>Owning an API means that a developer is in control of that API's definition.</p>
+
+<p>For example, they may choose to add an additional field to the APIs response body.</p>
+
+<p>However any changes to an API definition should be made in a non-breaking style.
+The following are guidelines as to what this means 
+(with thanks to <a href='https://wiki.openstack.org/wiki/APIChangeGuidelines'>openstack</a>):</p>
+
+<h4>Generally acceptable</h4>
+<ul>
+<li>The change is the only way to fix a security bug
+<li>Fixing a bug so that a request which resulted in an error response before is now successful
+<li>Adding a new response header
+<li>Changing an error response code to be more accurate
+<li>Adding a property to a resource representation
+<li>Adding an optional property to a resource representation which may be supplied by clients, assuming the API previously would ignore this property
+</ul>
+<h4>Generally not acceptable</h4>
+<ul>
+<li>A change such that a request which was successful before now results in an error response (unless the success reported previously was hiding an existing error condition)
+<li>Changing or removing a property in a resource representation
+<li>Changing the semantics of a property in a resource representation which may be supplied by clients
+<li>Changing or removing a response header
+<li>Changing which response code is returned on success
+</ul>
+
+<p>If it is essential that a non-breaking change is made, the owner of the API should instead define a new tenant API.</p>
+
+<h3>Ownership vs use of tenant APIs</h3>
+
+<p>While owning an API gives a developer control over the APIs, it does not provide any contol over who uses the API.
+Any developer is free to build an app that produces or consumes any API.<p>
+
+<p>For customers, this provides assurance that they can swap out apps and replace them if they need to
+(assuming that a replacement app that produces the same APIs is available).</p>
+
+<p>For developers of apps that consume APIs, this means not being commercially at the mercy of dependant on a single, larger entity.
+For example, as the developer of a job board, you can just consume GET &lt;tas&gt;/jobs, without caring which application tracking system
+(or any otehr source of open jobs) the tenant has installed. If the tenant swaps out their ATS, your app will keep working, without
+any changes.</p> 
+
+<p>As a developer, you are also free to define all your own APIs, rather than use any defined by other developers. Since you own
+the APIs, and the apps, this gives you complete control over your own destiny. Of course, unless you can persuade other developers
+to also use your APIs, your apps will effectively be an island (or an island chain).</p>  
+
+<h3>Sources of Truth</h3>   
+
+<h4>Source of Truth APIs</h4>   
+
+<p>In a talent management ecosystem based on microservices, each type of business object, such as jobs or job seekers,
+"belongs" to some app that acts as the single source of truth. That master app produces API endpoints like GET /jobs
+or GET /jobSeekers through which other apps can learn about the definitive set of business objects for a given customer (tenant).<p>
+
+<p>In TAS, APIs like this are called Source of Truth (SoT) APIs.</p>
+
+<p>As an app developer, SoT APIs are easier to deal with. If is only one source of truth for jobs, its easy for other apps
+to search jobs, report on them and generally manipulate them. An app only has to go to one known place for example to fetch
+all open jobs for the tenant.</p>
+
+<p>Most tenant APIs are SoT APIs.</p>
+
+<p>When an app is installed by a tenant, TAS checks that the app does not violate any SoT APIs. For example, if an app
+is installed that produces /jobs, TAS will not allow another app to be installed that also produces /jobs.</p>
+
+<h4>Non-Source of Truth APIs</h4>   
+
+<p>Some APIs are not SoT APIs.</p>
+
+<p>For example, maybe we want to enable the app holding the definitive set of open jobs to alert other
+apps that a new job has been posted (this example uses the simple replication convention described elsewhere for its API
+signatures).</p>
+
+<p>To do this, the "job master record" app would by convention call an API like this,
+<b>on every app that wished to be alerted about new jobs</b>:</p>
+ 
+<p><b>POST /m/jobs/{}/deltaPings</b></p> 
+
+<p>Because the URI of this API begins with the special sequence "/m" (short for "many"), TAS treats the API as a non-SoT API.</p>
+
+<p>Unlike an app producing a SoT API, TAS will allow any number of apps to be installed that all produce the same non-SoT API.
+So if the tenant wants to use 6 separate apps that all keep their own local copy of open jobs (a likely reason why they would
+want to be alerted about new open jobs), TAS will allow them all to be installed at the same time.</p>
+
+<p>Consuming non-SoT APIs is harder work for the app  developer.</p>
+
+<p>For example, in the case above, when new job 10223 is created, what happens if the calls to POST /m/jobs/10223/deltaPings
+succeeds for the first 2 producing apps, but then fails for the third? Should the app continue on POST-ing to the
+remaining 3 apps? These types of questions are harder to answer when an app is consuming an endpoint on many producers.</p>
+
+<h3>Tenant API authentication</h3>
+
+<p>There are two types of authentication on tenant APIs - OAuth and non-OAuth.<p>
+
+<p>No matter which authentication type is used, the general principle is that TAS provides the credentials
+to the consumer app (so that it can prepare an HTTP Authorization header) and to the producer app (so that
+it can validate incoming requests against the credentials).</p>
+
+<p>Except for basic authentication, TAS generates these credentials automatically, and scopes them down
+as tightly as possible. So for example, TAS will generate an HMAC signing key that is valid for:
+
+<ul>
+<li>a specific consumer;
+<li>of a specific API;
+<li>at a specific producer;
+<li>until a specific expiry time
+</ul>
+
+<p>..and will provide that key to both the consumer and the producer of the API.</p>
+
+<h4>OAuth APIs</h4>
+
+<p>OAuth APIs are more powerful that non-OAuth, as they carry the logged in user's identity with them. The identity
+is also carried down through a chain of API calls, allowing each app to enforce its own business rules based on the
+user's identity (and hence their roles, location within org structure, etc.).</p>
+
+<p>TAS's OAuth authentication is fully described in the RAML documentation.</p>
+
+<h4>Non-OAuth APIs</h4>
+
+<p>Non-OAuth APIs are further broken down into HMAC and basic authentication. HMAC is preferred, and is more secure.
+Basic auth is typically used where the app is fronting a legacy system already using basic authentication.</p>
+
+<p>TAS's HMAC and basic authentication is fully described in the RAML documentation.</p>
+
+
+<h2>App lifecycle</h2>
+
+[incomplete]
+
+
+<h2>Principal types and roles</h2>
+
+[incomplete]
+
+
+<script>
+function render(obj) {
+	// we first need to encode away the &gt; and &lt; chars we get back
+	var e = document.createElement('div');
+	e.innerHTML = $(obj).html();
+	
+	// create a div to hold the diagram
+	$(obj).after("<div id='" + $(obj).attr('id') + "-diag'></div>");
+
+	// then create diagram
+	var diagram = Diagram.parse(e.childNodes[0].nodeValue);
+	diagram.drawSVG($(obj).attr('id') + '-diag', {theme: 'simple'});
+}	
+
+$(document).ready(function() {
+	$('.seqdiag').each(function(i, obj) {
+	    render(obj);
+	});
+});
+</script>
+		
+
+
+</body>
+</html>

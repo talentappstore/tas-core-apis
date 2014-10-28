@@ -1,0 +1,17 @@
+{
+  "kind":"route",
+  "consumer":"tas-jobboard",
+  "producer":"hrlabs-crazyjobs",
+  "location":"https://acme.crazyjobs.com:2109/api/v3.2/openJobs",
+  "auth":{
+    "kind":"hmacAuth",
+    "hmacCredentials":{
+      "signingKey":"k8763216548hppou",
+      "expires":"2014-10-21T15:04:30Z"
+    }
+  },
+  "consumedMethods":[
+    "POST",
+    "DELETE"
+  ]
+}

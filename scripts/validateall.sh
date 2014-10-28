@@ -31,7 +31,7 @@ echo "<html><head>" > $DIR/index.html
 echo "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>" >> $DIR/index.html
 echo "<meta name='viewport' content='width=device-width, initial-scale=1'>" >> $DIR/index.html
 echo "</head><body>" >> $DIR/index.html
-echo "<div class='container'><h1>Talent App Store tenant APIs and schemas</h1>" >> $DIR/index.html
+echo "<div class='container'><h1>Talent App Store core APIs and schemas</h1>" >> $DIR/index.html
 
 echo "<h2>APIs</h2><table class='table table-bordered table-condensed'><thead><tr><th></th><th>HTML</th><th>RAML</th></tr></thead><tbody>" >> $DIR/index.html
 for f in $DIR/raml/*.raml

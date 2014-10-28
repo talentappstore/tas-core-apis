@@ -1,0 +1,279 @@
+#%RAML 0.8
+---
+title: TAS core incoming (app -> TAS)
+baseUri: http://talentappstore.com/{version}
+version: v1
+
+/{tenant}:
+  description: |
+    A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls
+    that your app makes to TAS are within the context of a single tenant.   
+  get:
+    description: |
+      Get information about the tenant, including the current status and incarnation. Normally apps would get the incarnation in
+      the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check whats been
+      going on while its been offline.
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include ../schemas/tenant.json
+            example: !include ../examples/tenant.json
+  /samlMetadata:
+    description: |
+      SAML metadata is a package of XML information about identity providers, certificates, etc., that your app's SSO
+      implementation needs to do its thing (assuming your app is a web server, rather than an API server).
+    /{principalDeveloper}:
+      /{principalType}:
+        get:
+          description: |
+            Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS
+            will validate that the app is entitled to use the principal type for authentication.
+          responses:
+            200:
+              body:
+                application/xml:
+  /authentications:
+    description: |
+      <p>Authentications are recently captured SSO (Single Sign On) logins.</p>
+      <p>Each authentication represents a principal (i.e. a user) logging in at an SSO-protected web site presented by an app.</p>
+      <p>An authentication object contains details about the user's identity (name, email, SAML identifiers, etc.).</p>
+      <p>Your app may need an authentication object so as to understand who the current user is, and enforce business rules about
+      what they can see or do. There are two ways your app can obtain the authentication object for the current user:
+      <ol>
+      <li>If your app is an SSO-protected web site, then at login time, it will receive a SAML assertion, which can be exchanged for an
+      authentication object. <b>The mechanism by which the principalAuthnID is made available to the SSO app is not yet confirmed.
+      It may be a custom attribute injected into the SAML assertion by the TAS SAML proxy, or it may be queried from an as yet
+      undefined core API using a hash of the SAML assertion's entire contents.</b>
+      <li>If your app is an API server, then the incoming access token can be exchanged for an authentication object.</li>
+      </ol>
+      </p>
+      <p>This secure mechanism for passing the user's identity down through a chain of API calls allows each API producing app in the chain
+      to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p>
+      <p>Because the authentication object itself is never passed down within the API calls, malicious apps are prevented from acting
+      on behalf of a user who has not logged in.</p>     
+    /viaSso:
+      /{principalAuthnID}:
+        get:
+          description: |
+            Get information about the logged in principal in the case where your app is an SSO-protected web server. You can obtain the id from the incoming SAML assertion.
+            TAS verifies that the authentication was made at your app.
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/principalAuthn.json
+                  example: !include ../examples/principalAuthn.json
+    /viaToken:
+      /{accessToken}:
+        get:
+          description: |
+            Get information about the logged in principal in the case where your app is producing an OAuth tenant API consumed by some other app (possibly an
+            SSO-protected web site, or possibly another API server higher up in the chain).
+            For accessToken, use the access token that was passed to your app via the Authentication header in the incoming OAuth API call.
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/principalAuthn.json
+                  example: !include ../examples/principalAuthn.json
+  /routes:
+    description: |
+      <p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p>
+      <p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:
+      <ul>
+      <li>The actual endpoint (where the producer's server sits on the internet)</li>
+      <li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li>
+      </ul>
+      </p>
+      <p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
+      that the consumer is allowed to call.</p>
+      <p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT
+      APIs, there can be many consumers and many producers, and hence a route between each unique
+      consumer/producer pair.</p>
+    /{consumingApp}:
+      description: |
+        The app consuming the API
+      /{apiDeveloper}:
+        description: The developer who owns/defines the API
+        /{apiUriTemplate}:
+          description: The URI template (as per https://tools.ietf.org/html/rfc6570) of the API.
+          get:
+            description: | 
+              Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API.
+              The example below is for a non-OAuth, non-SoT API.
+            responses:
+              200:
+                body:
+                  application/json:
+                    schema: !include ../schemas/routes.json
+                    example: !include ../examples/routes.json
+          /{producer}:
+            get:
+              description: | 
+                Fetch the route, from the given consumer, to the producer (which must be your app)
+                of a specific API. Since both consuming and producing apps are specified, there can only be
+                one or zero routes in the response.
+              responses:
+                200:
+                  body:
+                    application/json:
+                      schema: !include ../schemas/route.json
+                      example: !include ../examples/route.json
+            /tokens:
+              description: |
+                <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token) that authorize a specific
+                consuming app to consume a specific OAuth tenant API at a specific producing app.</p>
+                <p>Because access tokens are
+                self-contained and signed, producers can validate incoming tokens without any reference to the auth server
+                (i.e. TAS).</p>
+                <p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or
+                (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
+                assertion's SessionNotOnOrAfter value (if present), whichever is shorter.</p>
+                <p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
+                For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
+                is too close to expiry to serve the needs of the consumer.</p>
+              /viaSso:
+                /{principalAuthnID}:
+                  description: |
+                    The id of the current authentication, as passed to your app's SSO-protected web site (see details of authentication).
+                  post:
+                    description: |
+                      Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                    responses:
+                      200:
+                        body:
+                          application/json:
+                            schema: !include ../schemas/tokenJwt.json
+                            example: !include ../examples/tokenJwt.json
+              /viaToken:
+                /{accessToken}:
+                  description: |
+                    <p>The OAuth access token (a JWT) passed in to the producing app, which has:
+                    <ul>
+                    <li>the producing app as the "aud" field</li>
+                    <li>the principal via its "sub" field</li>
+                    </ul>
+                    </p>
+                    <p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g.,
+                    if the ancestor token expires, that does not tokens created from it.</p>
+                  post:
+                    description:
+                      Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                    responses:
+                      200:
+                        body:
+                          application/json:
+                            schema: !include ../schemas/tokenJwt.json
+                            example: !include ../examples/tokenJwt.json
+  /deltaSets:
+    post:
+      description: |
+        <p>A delta set is a set of deltas to apply to the tenant's current installed apps, e.g. as the result of
+        a tenant clicking install on some app. Each item in the set is one of the
+        following operations relating to an app:
+        <ol>
+        <li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li>
+        <li>edit</li>
+        <li>unInstall</li>
+        </ol>
+        </p>
+        <p>To apply the set, TAS does the following:
+        <ol>
+        <li>requests each already installed app to shut down</li>
+        <li>waits until each app has signalled a successful shutdown</li>
+        <li>applies the set</li>
+        <li>sends startup requests to each installed app</li>
+        </ol>
+        </p>
+        <p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained
+        JWT (json web token) that embeds the delta set and can be safely handed off to an insecure client, i.e.
+        javascript in a web browser. The insecure client can then, via unauthenticated CORS calls, use the launcher
+        to start the operation and subsequently track its progress, e.g. via a progress dialog. This technique allows
+        the storefront app to keep this part of its user interface working even while the storefront app itself (like
+        all other installed apps) is cycled down and up as part of the operation.</p>
+        <p>Since successfully applying a delta set (even an empty one) increments the tenant's incarnation, it will
+        also invalidate any outstanding launchers. Also launchers expire within 10 minutes of being issued. Launchers
+        are meant therefore to be used immediately.</p>
+        <p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps.
+        Because this increments the tenant's incarnation, and therefore invalidates all existing OAuth tokens and HMAC
+        signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key.
+        Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to
+        10 minutes in the future.
+        </p>
+      body:
+        application/json:
+          schema: !include ../schemas/deltaSet.json
+          example: !include ../examples/deltaSet.json
+      responses:
+        200:
+          body:
+            application/json:
+              schema: !include ../schemas/deltaSet.json
+              example: !include ../examples/deltaSet.json
+  /deltaSetLaunchers:
+    post:
+      description: |
+        <p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side
+        call to POST /deltaSets).</p>
+        <p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
+        belongs to the storefront app which does not share the same domain as the tas core).</p>
+        <p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the
+        delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns,
+        the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to
+        GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront
+        app, to get up to 100 events relating to an apply operation, along with summary information.</p>
+      body:
+        application/json:
+          schema: !include ../schemas/deltaSet.json
+          example: !include ../examples/deltaSet.json
+      responses:
+        200:
+          body:
+            application/json:
+              schema: !include ../schemas/deltaSetStatus.json
+              example: !include ../examples/deltaSetStatus.json
+  /deltaSetLaunches:
+    /{launchKey}:
+      get:
+        description: |
+          <p>Get the latest events and the current summary details about a previous launch of a delta set apply.</p>
+          <p>If the apply is already "complete" then this call will return immediately, with any events that match the filter,
+          up to the maximum events per call.</p>
+          <p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is
+          available that matches the filter, or the apply becomes complete (which would always be acocmpanied by an event).
+          If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically
+          immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the
+          last event has been fetched.</p>
+        queryParameters:
+          afterEvent:
+            displayName: After Event
+            type: integer
+            description: |
+              The sequence of an existing event - this call should return events immediately *after* this event.
+              Omitting this parameter returns the first events.
+            example: 12
+            required: false
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/deltaSetStatus.json
+                example: !include ../examples/deltaSetStatus.json
+  /installs:
+    description: Installs are currently installed apps at the tenant.
+    /{app}:
+      description: An app
+      get:
+        description: |
+          Called by a storefront app to get details about an already installed app, e.g. to obtain the server basic auth info.
+        responses:
+          200:
+            body:
+              application/json:
+      /shutDownCompletions:
+        description: |
+          A shutDownCompletion represents an app's completion of its shutdown processing, which it should achieve within a few seconds of
+          receiving a call from TAS to POST /{tenant}/shutDowns. 
+        /{shutDownCompletionKey}:
+          description: The unguessable key passed by TAS in its call to POST /{tenant}/shutDowns

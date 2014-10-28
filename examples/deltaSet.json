@@ -1,0 +1,42 @@
+{
+	"kind":"deltaSet",
+	"targetIncarnation": 34,
+	"items":[
+		{
+			"kind":"installDelta",
+			"app":"tas-superats"
+		},
+  		{
+			"kind":"installDelta",
+			"app":"tas-atszero",
+			"servers":[
+				{
+					"name":"ats0",
+					"baseUri":"https://acme.atszero.com",
+					"basicAuthCredentials":{
+						"user":"fred",
+						"password":"secret1"
+					}
+				}
+			]
+		},
+		{
+			"kind":"editDelta",
+			"app":"supersoft-oldjobboard",
+			"servers":[
+				{
+					"name":"oldboard",
+					"baseUri":"https://oldboard.supersoft.com/acme",
+					"basicAuthCredentials":{
+						"user":"userX",
+						"password":"mypwd"
+					}
+				}
+			]
+		},
+		{
+			"kind":"unInstallDelta",
+			"app":"supersoft-boomchaka"
+		}
+	]
+}

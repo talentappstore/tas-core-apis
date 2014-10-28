@@ -1,0 +1,252 @@
+<!DOCTYPE HTML><html><head><title>TAS core outgoing (TAS -&gt; app) API documentation</title><meta http-equiv=X-UA-Compatible content="IE=edge"><meta http-equiv=Content-Type content="text/html; charset=utf-8"><meta name=generator content="https://github.com/kevinrenskers/raml2html 1.0.4"><link rel=stylesheet href=http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css><link rel=stylesheet href=http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css><script type=text/javascript src=http://code.jquery.com/jquery-1.11.0.min.js></script><script type=text/javascript src=http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js></script><script type=text/javascript src=http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js></script><script type=text/javascript>
+        $(document).ready(function() {
+            $('.page-header pre code, .top-resource-description pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
+
+            $('[data-toggle]').click(function() {
+                var selector = $(this).data('target') + ' pre code';
+                $(selector).each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+        });
+    </script><style>
+        .hljs {
+            background: transparent;
+        }
+        .parent {
+            color: #999;
+        }
+        .list-group-item > .badge {
+            float: none;
+            margin-right: 6px;
+        }
+        .panel-title > .methods {
+            float: right;
+        }
+        .badge {
+            border-radius: 0;
+            text-transform: uppercase;
+            width: 70px;
+            font-weight: normal;
+            color: #f3f3f6;
+            line-height: normal;
+        }
+        .badge_get {
+            background-color: #63a8e2;
+        }
+        .badge_post {
+            background-color: #6cbd7d;
+        }
+        .badge_put {
+            background-color: #22bac4;
+        }
+        .badge_delete {
+            background-color: #d26460;
+        }
+        .list-group, .panel-group {
+            margin-bottom: 0;
+        }
+        .panel-group .panel+.panel-white {
+            margin-top: 0;
+        }
+        .panel-group .panel-white {
+            border-bottom: 1px solid #F5F5F5;
+            border-radius: 0;
+        }
+        .panel-white:last-child {
+            border-bottom-color: white;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+        .panel-white .panel-heading {
+            background: white;
+        }
+        .tab-pane ul {
+            padding-left: 2em;
+        }
+        .tab-pane h2 {
+            font-size: 1.2em;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-pane h3 {
+            font-size: 1.1em;
+        }
+        .tab-content {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        #sidebar {
+            margin-top: 30px;
+        }
+        .top-resource-description {
+            border-bottom: 1px solid #ddd;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .resource-description {
+            border-bottom: 1px solid #fcfcfc;
+            background: #fcfcfc;
+            padding: 15px 15px 0 15px;
+            margin: -15px -15px 10px -15px;
+        }
+        .list-group .badge {
+            float: left;
+        }
+        .method_description {
+            margin-left: 85px;
+        }
+        .method_description p:last-child {
+            margin: 0;
+        }
+        .list-group-item {
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background-color: #f5f5f5;
+        }
+    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core outgoing (TAS -&gt; app) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=__tenant_ class=panel-title>/{tenant}</h3></div><div class=panel-body><div class=top-resource-description><p>A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls that your app makes to TAS are within the context of a single tenant.</p></div><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant_><span class=parent></span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__post><span class="badge badge_post">post</span></a> <a href=# data-toggle=modal data-target=#__tenant__delete><span class="badge badge_delete">delete</span></a></span></h4></div><div id=panel___tenant_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant is dormant. The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but should wait until the startUp event before loading caches, producing or consuming APIs, accepting logins, etc.</p></div><div class=clearfix></div></div><div data-toggle=modal data-target=#__tenant__delete class=list-group-item><span class="badge badge_delete">delete</span><div class=method_description><p>Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on the app). The app can assume the tenant is dormant. The app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent></span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant is dormant. The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but should wait until the startUp event before loading caches, producing or consuming APIs, accepting logins, etc.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__delete><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_delete">delete</span> <span class=parent></span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on the app). The app can assume the tenant is dormant. The app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__delete_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__delete_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__shutDowns><span class=parent>/{tenant}</span>/shutDowns</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__shutDowns_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__shutDowns class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__shutDowns_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to request your app to become dormant, i.e. stop producing or consuming APIs or accepting logins. The app may choose to continue producing APIs for a few seconds to contribute to an orderly tenant shutdown (as long as doing so does not require consuming other app&#39;s APIs, since those apps are likely also shutting down), but in any case should aim to shut down within a few seconds. Once the app is fully dormant it should signal this via a POST to the shutDownComplete webhook passed in the request. This feedback allows TAS to know when all apps are dormant. Upon receiving a shutDown request, apps should discard any local copies of incoming or outgoing routes, tenant HMAC signing keys (though not the app&#39;s own signing key for making core API calls,which is unaffected by a takeDown), OAuth tokens and basic auth credentials. All of these should be reloaded from TAS as required at bringUp time. Existing principal authentications are unaffected and can continue to be used.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__shutDowns_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/shutDowns</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to request your app to become dormant, i.e. stop producing or consuming APIs or accepting logins. The app may choose to continue producing APIs for a few seconds to contribute to an orderly tenant shutdown (as long as doing so does not require consuming other app&#39;s APIs, since those apps are likely also shutting down), but in any case should aim to shut down within a few seconds. Once the app is fully dormant it should signal this via a POST to the shutDownComplete webhook passed in the request. This feedback allows TAS to know when all apps are dormant. Upon receiving a shutDown request, apps should discard any local copies of incoming or outgoing routes, tenant HMAC signing keys (though not the app&#39;s own signing key for making core API calls,which is unaffected by a takeDown), OAuth tokens and basic auth credentials. All of these should be reloaded from TAS as required at bringUp time. Existing principal authentications are unaffected and can continue to be used.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__shutDowns_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__shutDowns_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "type":"object",
+  "additionalProperties":false,
+  "required":[
+    "kind",
+    "shutDownCompletionKey"
+  ],
+  "properties":{
+    "kind":{
+      "enum":[
+        "shutDownRequest"
+      ],
+      "description":"always set to: shutDownRequest"
+    },
+    "shutDownCompletionKey":{
+      "type":"integer",
+      "description":"an unguessable value that the app should use in POST /{tenant}/installs/{app}/shutdownCompletions/{shutdownCompletionKey}, with an empty body once it has completed this shutdown."
+    }
+    
+  }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "kind": "shutDownRequest",
+    "shutDownCompletionKey": 10235739474
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__startUps><span class=parent>/{tenant}</span>/startUps</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__startUps_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__startUps class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__startUps_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification. However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call while dormant may choose to call GET /{tenant}, and treat a status of &#39;startingUp&#39; as being the same as if a startUp notification had been seen, i.e. produce the API normally.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__startUps_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/startUps</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification. However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call while dormant may choose to call GET /{tenant}, and treat a status of &#39;startingUp&#39; as being the same as if a startUp notification had been seen, i.e. produce the API normally.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__startUps_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__startUps_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications__principalDev___principalType__pings><span class=parent>/{tenant}/authentications/{principalDev}/{principalType}</span>/pings</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications__principalDev___principalType__pings_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__authentications__principalDev___principalType__pings class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications__principalDev___principalType__pings_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to tell your app about someone logging in. Useful for apps that are first-line "auto-provisioning" generators, i.e. that capture <em>all</em> logins, and then refine those down so that other apps can listen to only logins for principal types they care about. For example, an app handling this core API might produce a tenant API like: POST<tas>/employees/{}/deltaPings. TAS (more precisely the TAS SAML proxy) will only call this API on apps that are declared to be authListeners. TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any auto-provisioning is complete by the time the user login "hits" the web site.</tas></p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications__principalDev___principalType__pings_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/authentications/{principalDev}/{principalType}</span>/pings</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to tell your app about someone logging in. Useful for apps that are first-line "auto-provisioning" generators, i.e. that capture <em>all</em> logins, and then refine those down so that other apps can listen to only logins for principal types they care about. For example, an app handling this core API might produce a tenant API like: POST<tas>/employees/{}/deltaPings. TAS (more precisely the TAS SAML proxy) will only call this API on apps that are declared to be authListeners. TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any auto-provisioning is complete by the time the user login "hits" the web site.</tas></p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications__principalDev___principalType__pings_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications__principalDev___principalType__pings_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDev</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"required":[
+		"identity",
+		"personDetail"
+	],
+	"properties":{
+		"id":"integer",
+		"identity":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"principalDeveloper",
+				"principalType",
+				"entityId",
+				"nameId"
+			],
+			"properties":{
+				"principalDeveloper":{
+					"type":"string",
+					"description":"the developer who defines this principal type"
+				},
+				"principalType":{
+					"type":"string",
+					"description":"the type of principal, e.g. the developer TAS defines &#x27;candidate&#x27; and &#x27;employee&#x27;"
+				},
+				"principleSubTypes":{
+					"type":"array",
+					"items":{
+						"type":"string",
+						"minimum":1
+					},
+					"description":"further refinements of the principal type, e.g. the developer TAS defines subtypes of &#x27;internal&#x27; and &#x27;external&#x27; for the principal type of &#x27;candidate&#x27;"
+				},
+				"entityId":{
+					"type":"string",
+					"description":"globally unique identifier of the identity provider (IdP) this principal authenticated via"
+				},
+				"nameId":{
+					"type":"string",
+					"description":"identifier (unique within IdP) of this principal"
+				}
+			}
+			
+		},
+		"personDetail":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"kind"
+			],
+			"properties":{
+				"kind":{
+					"enum":[
+						"personDetail"
+					]
+				},
+				"email":"string",
+				"title":"string",
+				"firstName":"string",
+				"lastName":"string",
+				"phone":"string",
+				"locale":"string",
+				"language":"string",
+				"timeZone":"string"
+			}
+		},
+		"employeeDetail":{
+			"type":"object",
+			"additionalProperties":"false",
+			"required":[
+				"kind"
+			],
+			"properties":{
+				"kind":{
+					"enum":[
+						"employeeDetail"
+					]
+					
+				},
+				"companyRef":"string",
+				"profileId":"integer",
+				"roleI":"integer"
+			}
+		}
+		
+	}
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"identity":{
+		"principalDeveloper":"tas",
+		"principalType":"employee",
+		"nameId":"102ghfirhr784",
+		"entityId":"acmeidp",
+		"isActive":true
+	},
+	"personDetail":{
+		"kind":"personDetail",
+		"email":"fred@hotmail.com",
+		"title":"Mr.",
+		"firstName":"Fred",
+		"lastName":"Bloggs",
+		"phone":"415-123-1234",
+		"locale":"en_NZ",
+		"language":"en_US",
+		"timeZone":"America/Los_Angeles"
+	},
+	"employeeDetail": {
+		"kind":"employeeDetail",
+		"companyName":"Acme",
+		"profileId":1001,
+		"roleId":1002
+	}
+	
+}</code></pre></div></div></div></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#__tenant_>/{tenant}</a></li></ul></div></div></div></div></body></html>
