@@ -7,8 +7,7 @@
 <script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/raphael-min.js'></script>
 <script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/underscore-min.js'></script>
 <script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/sequence-diagram-min.js'></script>
-
-<script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/generated_toc.js'></script>
+<script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/tocify.js'></script>
 
 <title>Talent App Store app developer guide</title>
 </head>
@@ -16,10 +15,8 @@
 
 <h1>Talent App Store app developer guide</h1>
 
-<div id="generated-toc"></div>
+<div id="toc"></div>
 
-<script>
-</script>
 
 <h1>External documents</h1>
 
@@ -352,9 +349,17 @@ function render(obj) {
 }	
 
 $(document).ready(function() {
+
+    //Executes your code when the DOM is ready.  Acts the same as $(document).ready().
+    //Calls the tocify method on your HTML div.
+//$("#toc").tocify();
+	
 	$('.seqdiag').each(function(i, obj) {
 	    render(obj);
 	});
+
+	tocify('toc');
+	
 });
 </script>
 		
