@@ -7,7 +7,7 @@
     		"uniqueItems": true,
     		"items":  {
                     "enum": [
-                        "HEAD", "GET", "OPTIONS", "DELETE", "PATCH", "POST", "PUT"
+                        "HEAD", "GET", "DELETE", "PATCH", "POST", "PUT"
                     ]
                 } 
     	},

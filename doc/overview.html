@@ -75,6 +75,7 @@ tenant, stopping and starting apps, locating API endpoints, etc.</p>
 <p>Core API calls are either inwards (where your app calls an endpoint on TAS) or
 outwards (where TAS calls an endpoint on the <b>control server</b> of your app).</p>
 
+<b>Core and tenant APIs in Talent App Store</b>
 <div class='seqdiag' id="apitypes" style="display:none;">
 participant TAS
 participant ATS app
@@ -121,6 +122,30 @@ Once the consumer and producer are set up, any number - even thousands - of tena
 and without the need for any TAS API calls. This makes TAS extremely scalable and resilient, and greatly reduces the chance of TAS
 becoming a bottleneck or point of failure.</p>
 
+<h3>Tenant API namespacing</h3>
+
+<p>TAS is an open, vendor-neutral platform where all apps are equal, and where any tenant API can be produced or consumed by any app.</p>
+
+<p>Any developer is free to add their own tenant APIs to TAS (subject to the TAS terms of service, which are designed to maintain the
+system's integrity, rather than to favour any one developer).
+There is no central authority that vets API names, checks for collisions, or otherwise enforces consistency on API naming.</p>
+
+<p>It follows that more than one developer may want to define, say, the /jobs API.</p>
+
+<p>Rather than using a "first in, first served" system, which would be vulnerable to name squatting, in TAS all tenant APIs are
+identified not just by their URI, but also by the name of the developer who defined the API. This means there may be multiple
+<b>/jobs</b> APIs defined, e.g.:
+<ul>
+<li><b>&lt;tas&gt;/jobs</b> (defined by Talent App Store Ltd)
+<li><b>&lt;smartsoft&gt;/jobs</b> (defined by SmartSoft Corp.)
+<li><b>&lt;acme-int&gt;/jobs</b> (defined by Acme Corp.)
+</ul>
+</p>
+
+<p>In some examples you may see the developer omitted for brevity. But it is always required, i.e. an app does not simply call <b>GET /jobs</b>, it specifically calls <b>GET &lt;tas&gt;/jobs</b>,
+or <b>GET &lt;smartsoft&gt;/jobs</b> or whatever.</p>
+
+
 <h3>TAS is decentralized</h3>
 
 <p>TAS is designed as an entirely decentralized platform. When your app consumes a tenant API, it cannot know by itself which app is producing that API.</p>
@@ -144,58 +169,31 @@ customer (tenant) has installed to produce that API.</p>
 <p>If your app is written in Java, you will probably use the TAS Java client libraries to hide this complexity (and to provide efficiencies
 such as caching endpoint locations and access tokens for as long as possible, clearning them down when the app is cycled, etc.).</p>
 
-<p>However for clarification the process of calling a tenant API is shown below at the raw API level.
-In this example, the job board app wants to call the GET /jobs API to get the list of currently open jobs.</p>
-
-<p>Note: as shown below, the first time through this stage is a little chatty in terms of API calls. However the results can be cached
-for a time period, or until the tenant disrupts their store (i.e., installs, edits or uninstalls apps), and therefore the overhead is
-only incurred once.</p>
-
-<div class='seqdiag' id="callingAnApi" style="display:none;">
-</div>
-MAKE SURE TO REFERENCE THE WAY THE API IS STORED WITH {tenant} in it, so we can demonstrate the URI replacement.
-
-Interaction - calling an API
-<--- GET /jobs --->
-in detail..
-<-- get access key -->
-
-
-participant blah
-participant ATS app
-participant Career site app
-participant Social sharing app
-TAS->ATS app: outwards core API, e.g. stop tenant, start tenant,\nadd tenant, delete tenant
-TAS->Career site app:
-TAS->Social sharing app:
-ATS app->TAS: inwards core API, e.g. locate API endpoint,\nobtain access token, signal shutdown complete
-Career site app->TAS:
-Social sharing app->TAS:
-Career site app->ATS app:tenant API call, e.g. GET /openJobs
-Social sharing app->ATS app:tenant API call, e.g. GET /openJobs/{id}
-
-<h3>Tenant API namespacing</h3>
-
-<p>TAS is an open, vendor-neutral platform where all apps are equal, and where any tenant API can be produced or consumed by any app.</p>
-
-<p>Any developer is free to add their own tenant APIs to TAS (subject to the TAS terms of service, which are designed to maintain the
-system's integrity, rather than to favour any one developer).
-There is no central authority that vets API names, checks for collisions, or otherwise enforces consistency on API naming.</p>
-
-<p>It follows that more than one developer may want to define, say, the /jobs API.</p>
-
-<p>Rather than using a "first in, first served" system, which would be vulnerable to name squatting, in TAS all tenant APIs are
-identified not just by their URI, but also by the name of the developer who defined the API. This means there may be multiple
-<b>/jobs</b> APIs defined, e.g.:
+<p>However for clarification the process of calling a tenant API is shown below at the raw API level. In this example:
 <ul>
-<li><b>&lt;tas&gt;/jobs</b> (defined by Talent App Store Ltd)
-<li><b>&lt;smartsoft&gt;/jobs</b> (defined by SmartSoft Corp.)
-<li><b>&lt;acme-int&gt;/jobs</b> (defined by Acme Corp.)
+<li>On behalf of the tenant acme;
+<li>the app "jobsite" wants to call GET &lt;tas&gt;/jobs to get the list of currently open jobs;
+<li>GET &lt;tas&gt;/jobs is currently produced by the app "ats";
+<li>The ats app uses HMAC authentication for the GET &lt;tas&gt;/jobs API (not basic)
 </ul>
 </p>
 
-<p>In some examples you may see the developer omitted for brevity. But it is always required, i.e. an app does not simply call <b>GET /jobs</b>, it specifically calls <b>GET &lt;tas&gt;/jobs</b>,
-or <b>GET &lt;smartsoft&gt;/jobs</b> or whatever.</p>
+<p>Note: in practice routes should be cached to minimise traffic. Once cached, none of the core API calls shown above would be needed.</p>
+
+
+<b>Sequence of events - one app calling an HMAC tenant API on another app</b>
+<div class='seqdiag' id="callingAnApi" style="display:none;">
+participant TAS
+participant jobsite app
+participant ats app
+jobsite app->TAS: GET /acme/routes/jobsite/tas/%2Fjobs
+note right of TAS: Response:\n"producer": "ats",\n"location": "https://acme.ats.com:2109/api",\n"auth": { "kind": "hmacAuth",\n"hmacCredentials": { "signingKey": "k8763216548hppou"\n                
+jobsite app->ats app: GET https://acme.ats.com:2109/api/jobs
+note left of ats app: ats app examines the incoming Authorization\nheader and sees that jobsite app is making the\ncall, needs to ask TAS for signing key 
+ats app->TAS: GET /acme/routes/jobsite/tas/%2Fjobs/ats
+note right of TAS: Response:\n...\n"auth": { "kind": "hmacAuth",\n"hmacCredentials": { "signingKey": "k8763216548hppou"\n                
+note left of ats app: ats verifies HMAC and allows the API call 
+</div>
 
 <h3>Tenant API versioning</h3>
 
@@ -310,11 +308,47 @@ as tightly as possible. So for example, TAS will generate an HMAC signing key th
 
 <h4>OAuth APIs</h4>
 
-<p>OAuth APIs are more powerful that non-OAuth, as they carry the logged in user's identity with them. The identity
-is also carried down through a chain of API calls, allowing each app to enforce its own business rules based on the
-user's identity (and hence their roles, location within org structure, etc.).</p>
+<p>OAuth APIs are more powerful that non-OAuth, as they can be used to obtain the logged in user's identity. The identity
+can be carried down through a chain of OAuth API calls, allowing each app to enforce its own business rules and provide
+the right data based on the user's identity (and their roles, location within org structure, etc.).</p>
+
+<p>TAS OAuth access tokens are self-contained Java Web Tokens (http://jwt.io/), created by TAS and signed with the tenant's
+secret key. TAS never makes the tenant secret key available to anyone. Because tokens are self-contained,
+API producers can validate incoming access tokens themselves using the tenant's public key - there is no need for the
+API producer (the resource server in OAuth parlance) to use the services of the authorization server (TAS) for this.</p>
+
+<p>In other words, TAS needs to be involved to create access tokens, but not to verify them. This helps with scalability.</p> 
 
 <p>TAS's OAuth authentication is fully described in the RAML documentation.</p>
+
+<p>The flow involved in making tenant API calls is more complex, since user-specific access tokens need to be obtained.</p>
+
+<b>Sequence of events - one app calling the OAuth tenant API "/userPreferences/{email}" on another app. There is a business rule
+associated with /userPreferences/{email} that users can only see their own preferences, hence this needs to be an OAuth API
+in order to make user identity available.</b>
+<div class='seqdiag' id="callingAnOAuthApi" style="display:none;">
+participant TAS
+participant jobsite app
+participant preferences app
+note right of jobsite app: user is already SSO-ed in at jobsite\nsession holds PrincipalAuthnId = 52034
+jobsite app->TAS: GET /acme/authentications/viaSso/52304
+note right of TAS: Response:\n{ "personDetail":{ "email":"fred@hotmail.com"                
+note right of jobsite app: Now jobsite knows who the user is.\nThat is not required to make the OAuth\ncall, but shown for completeness.\nFetch the route for the API we want to call 
+jobsite app->TAS: GET /acme/routes/jobsite/tas/%2FuserPreferences%2F%7Bemail%7D
+note right of TAS: Response:\n"producer": "preferences",\n"location": "https://acme.preferences.com/",\n"auth": { "kind": "oauthAuth" }
+note right of jobsite app: API is OAuth, so we need an access token
+jobsite app->TAS: GET /acme/routes/jobsite/tas/%2FuserPreferences%2F%7Bemail%7D\n/preferences/tokens/viaSso/52304                
+note right of TAS: Response:\nan access token
+note right of jobsite app: Now jobsite can make the OAuth API call
+jobsite app->preferences app: GET https://acme.preferences.com/api/userPreferences/fred@hotmail.com\n(passing access token in Authorization header)
+note left of preferences app: preferences app needs tenant publicKey to validate the access token
+preferences app->TAS: GET /acme
+note left of preferences app: token is OK, preferences app now performs\nadditional tests, e.g. aud == 'preferences'
+note left of preferences app: allows the API call 
+</div>
+
+
+ 
 
 <h4>Non-OAuth APIs</h4>
 

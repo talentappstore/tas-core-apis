@@ -10,9 +10,9 @@ version: v1
     that your app makes to TAS are within the context of a single tenant.   
   get:
     description: |
-      Get information about the tenant, including the current status and incarnation. Normally apps would get the incarnation in
-      the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check whats been
-      going on while its been offline.
+      Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the
+      incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs
+      to check what's been going on while its been offline.
     responses:
       200:
         body:

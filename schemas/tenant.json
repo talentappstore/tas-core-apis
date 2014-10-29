@@ -15,11 +15,16 @@
 		},
 		"status":{ "enum": ["ready", "shuttingDown", "dormant", "startingUp", "broken"],
 			"description":"The tenant's current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is 'ready' or 'startingUp'."
+		},
+		"publicKey": {
+		  "type": "string",
+		  "description": "The tenant's public key. OAuth API producers use this to verify incoming OAuth access tokens, which are signed using the tenant's private key. The private key only accessible to TAS itself and is never made available to anyone."
 		}
 	},
 	"required":[
 		"kind",
 		"incarnation",
-		"status"
+		"status",
+		"publicKey"
 	]
 }

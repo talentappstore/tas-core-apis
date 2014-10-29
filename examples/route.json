@@ -2,7 +2,7 @@
   "kind":"route",
   "consumer":"tas-jobboard",
   "producer":"hrlabs-crazyjobs",
-  "location":"https://acme.crazyjobs.com:2109/api/v3.2/openJobs",
+  "location":"https://acme.crazyjobs.com:2109/api/v3.2",
   "auth":{
     "kind":"hmacAuth",
     "hmacCredentials":{
