@@ -343,7 +343,7 @@ note right of jobsite app: Now jobsite can make the OAuth API call
 jobsite app->preferences app: GET https://acme.preferences.com/api/userPreferences/fred@hotmail.com\n(passing access token in Authorization header)
 note left of preferences app: preferences app needs tenant publicKey to validate the access token
 preferences app->TAS: GET /acme
-note left of preferences app: token is OK, preferences app now performs\nadditional tests, e.g. aud == 'preferences'
+note left of preferences app: token is OK, preferences app now performs\nadditional tests, e.g. aud == 'preferences',\ninc == tenant.incarnation
 note left of preferences app: allows the API call 
 </div>
 
@@ -353,7 +353,7 @@ note left of preferences app: allows the API call
 <h4>Non-OAuth APIs</h4>
 
 <p>Non-OAuth APIs are further broken down into HMAC and basic authentication. HMAC is preferred, and is more secure.
-Basic auth is typically used where the app is fronting a legacy system already using basic authentication.</p>
+Basic auth should not be used by new apps, but only where the app is fronting a legacy system already using basic authentication.</p>
 
 <p>TAS's HMAC and basic authentication is fully described in the RAML documentation.</p>
 

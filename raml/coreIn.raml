@@ -183,6 +183,12 @@ version: v1
         <li>requests each already installed app to shut down</li>
         <li>waits until each app has signalled a successful shutdown</li>
         <li>applies the set</li>
+        <li>resets all volatile credentials for the tenant:
+        <ul>
+        <li>The tenant's own private/public key pair (as obtained via GET /{tenant})
+        <li>All HMAC signing keys (as held on routes)
+        </ul>
+        <li>Increments the tenant's incarnation (thus invalidating all existing OAuth tokens)  
         <li>sends startup requests to each installed app</li>
         </ol>
         </p>
