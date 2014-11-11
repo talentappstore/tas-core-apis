@@ -111,39 +111,63 @@
             background-color: #f5f5f5;
         }
     </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core incoming (app -&gt; TAS) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=__tenant_ class=panel-title>/{tenant}</h3></div><div class=panel-body><div class=top-resource-description><p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p><p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS does not support API calls between tenants.</p></div><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant_><span class=parent></span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent></span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"properties":{
-		"kind":{
-			"enum":[
-	   		"tenant"
-			],
-			"description":"always set to: tenant"
-		},
-		"incarnation":{
-			"type":"integer",
-			"description":"a number representing the &#x27;install state&#x27; of this tenant. Incremented on any changes to the installed apps."
-		},
-		"status":{ "enum": ["ready", "shuttingDown", "dormant", "startingUp", "broken"],
-			"description":"The tenant&#x27;s current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is &#x27;ready&#x27; or &#x27;startingUp&#x27;."
-		},
-		"publicKey": {
-		  "type": "string",
-		  "description": "The tenant&#x27;s public key. OAuth API producers use this to verify incoming OAuth access tokens, which are signed using the tenant&#x27;s private key. The private key only accessible to TAS itself and is never made available to anyone."
-		}
-	},
-	"required":[
-		"kind",
-		"incarnation",
-		"status",
-		"publicKey"
-	]
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "kind": {
+            "enum": [
+                "tenant"
+            ],
+            "description": "always set to: tenant"
+        },
+        "incarnation": {
+            "type": "integer",
+            "description": "a number representing the &#x27;install state&#x27; of this tenant. Incremented on any changes to the installed apps."
+        },
+        "status": {
+            "enum": [
+                "starting",
+                "running",
+                "halting",
+                "stopped",
+                "broken"
+            ],
+            "description": "The tenant&#x27;s current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is &#x27;running&#x27; or &#x27;starting&#x27;."
+        },
+        "publicKey": {
+            "type": "string",
+            "description": "The tenant&#x27;s public key. OAuth API producers use this to verify incoming OAuth access tokens, which are signed using the tenant&#x27;s private key. The private key only accessible to TAS itself and is never made available to anyone."
+        },
+        "organizationName": {
+            "type": "string",
+            "description": "The legal name of the organization"
+        },
+        "shortCode": {
+            "type": "string",
+            "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme"
+        },
+        "description": {
+            "type": "string",
+            "description": "a description for this store"
+        },
+        "country": {
+            "type": "string",
+            "description": "the country code for the organization using the store"
+        },
+        "industry": {
+            "enum": [
+                "Banking",
+                "Hospitality",
+                "IT"
+            ],
+            "description": "The industry the organization is mainly in"
+        }
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
 	"kind": "tenant",
 	"incarnation": 23,
-	"status": "shuttingDown",
+	"status": "halting",
 	"publicKey": "kjhyg9876gf7645d88t0h897h6oityf8975fg46fgkgi" 
 }
 </code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata><span class=parent>/{tenant}</span>/samlMetadata</a> <span class=methods></span></h4></div><div id=panel___tenant__samlMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>SAML metadata is a package of XML information about identity providers, certificates, etc., that your app&#39;s SSO implementation needs to do its thing (assuming your app is a web server, rather than an API server).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata__principalDeveloper___principalType_><span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__samlMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__samlMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__samlMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__samlMetadata__principalDeveloper___principalType__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/xml</strong></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlSubjects><span class=parent>/{tenant}</span>/samlSubjects</a> <span class=methods></span></h4></div><div id=panel___tenant__samlSubjects class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>A samlSubject is the primary key, controlled by the IdP, of the current logged in user. A samlSubject is useful when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p><p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app higher up the chain (if this app is an API server producing an OAuth API).</p><p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that was captured by TAS when this user logged in to an SSO-protected app, likely to include:<ul><li>NameID</li><li>NameQualifier</li><li>EntityID of the issuing IdP</li></ul></p><p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP (internal candidates), Facebook pseudo-IdP, etc.</p><p>samlSubjects are identical across all SP&#39;s (i.e., all TAS SSO-protected apps), so that apps can correlate the user&#39;s identity (i.e. they each have the same understanding of who a user is). This means that transient SAML identifiers for example cannot be used.</p><p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p><p>Because access tokens are generated and signed by TAS, the user&#39;s identity can be passed securely down through a chain of OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p><p>Each producing app in the chain gets their chance to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlSubjects_viaSamlAssertion><span class=parent>/{tenant}/samlSubjects</span>/viaSamlAssertion</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__samlSubjects_viaSamlAssertion_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__samlSubjects_viaSamlAssertion class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__samlSubjects_viaSamlAssertion_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__samlSubjects_viaSamlAssertion_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/samlSubjects</span>/viaSamlAssertion</h4></div><div class=modal-body><div class="alert alert-info"><p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__samlSubjects_viaSamlAssertion_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__samlSubjects_viaSamlAssertion_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__samlSubjects_viaSamlAssertion_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/xml</strong></p></div><div class=tab-pane id=__tenant__samlSubjects_viaSamlAssertion_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
@@ -518,629 +542,902 @@
 	"exp": "31 Dec 1999"
 }
 </code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSets><span class=parent>/{tenant}</span>/deltaSets</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>resets all volatile credentials for the tenant:<ul><li>The tenant&#39;s own private/public key pair (as obtained via GET /{tenant})</li><li>All HMAC signing keys (as held on routes)</li></ul></li><li>Increments the tenant&#39;s incarnation (thus invalidating all existing OAuth tokens)</li><li>detects whether the delta set includes uninstalling the app the user is currently on, and if so calls GET /m/storeFrontMainPage to guess the startup page.<br></li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) signed with the tenant&#39;s signing key that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser.</p><p>The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog.</p><p>This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) changes the tenant&#39;s signing key and increments incarnation, it will also invalidate any outstanding launchers. Launchers also expire within 10 minutes of being issued. Launchers are meant to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSets</h4></div><div class=modal-body><div class="alert alert-info"><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>resets all volatile credentials for the tenant:<ul><li>The tenant&#39;s own private/public key pair (as obtained via GET /{tenant})</li><li>All HMAC signing keys (as held on routes)</li></ul></li><li>Increments the tenant&#39;s incarnation (thus invalidating all existing OAuth tokens)</li><li>detects whether the delta set includes uninstalling the app the user is currently on, and if so calls GET /m/storeFrontMainPage to guess the startup page.<br></li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) signed with the tenant&#39;s signing key that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser.</p><p>The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog.</p><p>This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) changes the tenant&#39;s signing key and increments incarnation, it will also invalidate any outstanding launchers. Launchers also expire within 10 minutes of being issued. Launchers are meant to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSets_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSets_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSets_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "$schema":"http://json-schema.org/draft-04/schema#",
-  "definitions":{
-    "basicAuthCredentials":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "user",
-        "password"
-      ],
-      "properties":{
-        "user":{
-          "type":"string"
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "basicAuthCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "user",
+                "password"
+            ],
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
         },
-        "password":{
-          "type":"string"
+        "server": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "baseUri",
+                "basicAuthCredentials"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "baseUri": {
+                    "type": "string"
+                },
+                "basicAuthCredentials": {
+                    "$ref": "#/definitions/basicAuthCredentials"
+                }
+            }
+        },
+        "servers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/server"
+            }
+        },
+        "app": {
+            "type": "string"
+        },
+        "installDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "installDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "editDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "editDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "unInstallDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "unInstallDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
         }
-      }
     },
-    "server":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "name",
-        "baseUri",
-        "basicAuthCredentials"
-      ],
-      "properties":{
-        "name":{
-          "type":"string"
+    "type": "object",
+    "description": "A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+    "additionalProperties": false,
+    "required": [ "kind" ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "deltaSet"
+            ],
+            "description": "always set to: deltaSet"
         },
-        "baseUri":{
-          "type":"string"
+        "existingTenantTarget" :
+          { "$ref": "./tenant.json" },
+        "newTenantTarget":
+          { "$ref": "./tenant.json" },
+        "restartPage": {
+            "type": "string",
+            "description": "The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
         },
-        "basicAuthCredentials":{
-          "$ref":"#/definitions/basicAuthCredentials"
+        "appDeltas": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/installDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/editDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/unInstallDelta"
+                    }
+                ]
+            }
+        },
+        "identitySourceDeltas": {
+            "$ref": "./identitySourceSet.json"
         }
-      }
-    },
-    "servers":{
-      "type":"array",
-      "items":{
-        "$ref":"#/definitions/server"
-      }
-    },
-    "app":{
-      "type":"string"
-    },
-    "createTenantDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind", "organizationName", "shortCode", "country", "industry"
-      ],
-      "properties":{
-        "kind":{ "enum":[ "tenantDetail" ] },
-        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
-        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
-        "description":{ "type": "string", "description": "a description for this store" },
-        "country":{ "type": "string", "description": "the country code for the organization using the store" },
-        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
-      }
-    },
-    "installDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "installDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "editDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "editDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "unInstallDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "unInstallDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        }
-      }
     }
-  },
-  "type":"object",
-  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
-  "additionalProperties":false,
-  "required":[
-    "kind",
-    "targetIncarnation",
-    "items"
-  ],
-  "properties":{
-    "kind":{
-      "enum":[
-        "deltaSet"
-      ],
-      "description":"always set to: deltaSet"
-    },
-    "targetIncarnation":{
-      "type":"integer",
-      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
-    },
-    "restartPage":{
-      "type":"string",
-      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
-    },
-    "items":{
-      "type":"array",
-      "items":{
-        "oneOf":[
-          {
-            "$ref":"#/definitions/createTenantDelta"
-          },
-          {
-            "$ref":"#/definitions/installDelta"
-          },
-          {
-            "$ref":"#/definitions/editDelta"
-          },
-          {
-            "$ref":"#/definitions/unInstallDelta"
-          }
-        ]
-      }
-    }
-  }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"kind":"deltaSet",
-	"targetIncarnation": 34,
-	"items":[
-		{
-			"kind":"installDelta",
-			"app":"tas-superats"
-		},
-  		{
-			"kind":"installDelta",
-			"app":"tas-atszero",
-			"servers":[
-				{
-					"name":"ats0",
-					"baseUri":"https://acme.atszero.com",
-					"basicAuthCredentials":{
-						"user":"fred",
-						"password":"secret1"
-					}
-				}
-			]
-		},
-		{
-			"kind":"editDelta",
-			"app":"supersoft-oldjobboard",
-			"servers":[
-				{
-					"name":"oldboard",
-					"baseUri":"https://oldboard.supersoft.com/acme",
-					"basicAuthCredentials":{
-						"user":"userX",
-						"password":"mypwd"
-					}
-				}
-			]
-		},
-		{
-			"kind":"unInstallDelta",
-			"app":"supersoft-boomchaka"
-		}
-	]
+    "kind": "deltaSet",
+    "existingTenantTarget": {
+      "incarnation": 34
+    },
+    "appDeltas": [
+        {
+            "kind": "installDelta",
+            "app": "tas-superats"
+        },
+        {
+            "kind": "installDelta",
+            "app": "tas-atszero",
+            "servers": [
+                {
+                    "name": "ats0",
+                    "baseUri": "https://acme.atszero.com",
+                    "basicAuthCredentials": {
+                        "user": "fred",
+                        "password": "secret1"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "editDelta",
+            "app": "supersoft-oldjobboard",
+            "servers": [
+                {
+                    "name": "oldboard",
+                    "baseUri": "https://oldboard.supersoft.com/acme",
+                    "basicAuthCredentials": {
+                        "user": "userX",
+                        "password": "mypwd"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "unInstallDelta",
+            "app": "supersoft-boomchaka"
+        }
+    ],
+    "identitySourceDeltas": {
+        "kind": "identitySourceSet",
+        "principalDeveloper": "tas",
+        "principalType": "user",
+        "identitySources": [
+            {
+                "kind": "legacyAppIdentitySource",
+                "id": 10034544,
+                "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
+                "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034545,
+                "description": "Everyone in the corporate IdP. We force mark all such people as internal",
+                "metadata": "https://acme.corpsso.com/blah",
+                "attributeOverrides": [
+                    {
+                        "filter": "*",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034546,
+                "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
+                "metadata": "https://atsupport.com/idp",
+                "attributeOverrides": [
+                    {
+                        "filter": "*",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034547,
+                "description": "RealMe (since acme is public sector)",
+                "metadata": "https://realme.nz/blah",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "emailIdentitySource",
+                "id": 10034548,
+                "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "socialIdentitySource",
+                "id": 10034549,
+                "network": "LinkedIn",
+                "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    },
+                    {
+                        "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-tags",
+                                "values": [
+                                    "alumni"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }</code></pre></div><div class=tab-pane id=__tenant__deltaSets_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "$schema":"http://json-schema.org/draft-04/schema#",
-  "definitions":{
-    "basicAuthCredentials":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "user",
-        "password"
-      ],
-      "properties":{
-        "user":{
-          "type":"string"
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "basicAuthCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "user",
+                "password"
+            ],
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
         },
-        "password":{
-          "type":"string"
+        "server": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "baseUri",
+                "basicAuthCredentials"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "baseUri": {
+                    "type": "string"
+                },
+                "basicAuthCredentials": {
+                    "$ref": "#/definitions/basicAuthCredentials"
+                }
+            }
+        },
+        "servers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/server"
+            }
+        },
+        "app": {
+            "type": "string"
+        },
+        "installDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "installDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "editDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "editDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "unInstallDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "unInstallDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
         }
-      }
     },
-    "server":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "name",
-        "baseUri",
-        "basicAuthCredentials"
-      ],
-      "properties":{
-        "name":{
-          "type":"string"
+    "type": "object",
+    "description": "A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+    "additionalProperties": false,
+    "required": [ "kind" ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "deltaSet"
+            ],
+            "description": "always set to: deltaSet"
         },
-        "baseUri":{
-          "type":"string"
+        "existingTenantTarget" :
+          { "$ref": "./tenant.json" },
+        "newTenantTarget":
+          { "$ref": "./tenant.json" },
+        "restartPage": {
+            "type": "string",
+            "description": "The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
         },
-        "basicAuthCredentials":{
-          "$ref":"#/definitions/basicAuthCredentials"
+        "appDeltas": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/installDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/editDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/unInstallDelta"
+                    }
+                ]
+            }
+        },
+        "identitySourceDeltas": {
+            "$ref": "./identitySourceSet.json"
         }
-      }
-    },
-    "servers":{
-      "type":"array",
-      "items":{
-        "$ref":"#/definitions/server"
-      }
-    },
-    "app":{
-      "type":"string"
-    },
-    "createTenantDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind", "organizationName", "shortCode", "country", "industry"
-      ],
-      "properties":{
-        "kind":{ "enum":[ "tenantDetail" ] },
-        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
-        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
-        "description":{ "type": "string", "description": "a description for this store" },
-        "country":{ "type": "string", "description": "the country code for the organization using the store" },
-        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
-      }
-    },
-    "installDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "installDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "editDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "editDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "unInstallDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "unInstallDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        }
-      }
     }
-  },
-  "type":"object",
-  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
-  "additionalProperties":false,
-  "required":[
-    "kind",
-    "targetIncarnation",
-    "items"
-  ],
-  "properties":{
-    "kind":{
-      "enum":[
-        "deltaSet"
-      ],
-      "description":"always set to: deltaSet"
-    },
-    "targetIncarnation":{
-      "type":"integer",
-      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
-    },
-    "restartPage":{
-      "type":"string",
-      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
-    },
-    "items":{
-      "type":"array",
-      "items":{
-        "oneOf":[
-          {
-            "$ref":"#/definitions/createTenantDelta"
-          },
-          {
-            "$ref":"#/definitions/installDelta"
-          },
-          {
-            "$ref":"#/definitions/editDelta"
-          },
-          {
-            "$ref":"#/definitions/unInstallDelta"
-          }
-        ]
-      }
-    }
-  }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"kind":"deltaSet",
-	"targetIncarnation": 34,
-	"items":[
-		{
-			"kind":"installDelta",
-			"app":"tas-superats"
-		},
-  		{
-			"kind":"installDelta",
-			"app":"tas-atszero",
-			"servers":[
-				{
-					"name":"ats0",
-					"baseUri":"https://acme.atszero.com",
-					"basicAuthCredentials":{
-						"user":"fred",
-						"password":"secret1"
-					}
-				}
-			]
-		},
-		{
-			"kind":"editDelta",
-			"app":"supersoft-oldjobboard",
-			"servers":[
-				{
-					"name":"oldboard",
-					"baseUri":"https://oldboard.supersoft.com/acme",
-					"basicAuthCredentials":{
-						"user":"userX",
-						"password":"mypwd"
-					}
-				}
-			]
-		},
-		{
-			"kind":"unInstallDelta",
-			"app":"supersoft-boomchaka"
-		}
-	]
+    "kind": "deltaSet",
+    "existingTenantTarget": {
+      "incarnation": 34
+    },
+    "appDeltas": [
+        {
+            "kind": "installDelta",
+            "app": "tas-superats"
+        },
+        {
+            "kind": "installDelta",
+            "app": "tas-atszero",
+            "servers": [
+                {
+                    "name": "ats0",
+                    "baseUri": "https://acme.atszero.com",
+                    "basicAuthCredentials": {
+                        "user": "fred",
+                        "password": "secret1"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "editDelta",
+            "app": "supersoft-oldjobboard",
+            "servers": [
+                {
+                    "name": "oldboard",
+                    "baseUri": "https://oldboard.supersoft.com/acme",
+                    "basicAuthCredentials": {
+                        "user": "userX",
+                        "password": "mypwd"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "unInstallDelta",
+            "app": "supersoft-boomchaka"
+        }
+    ],
+    "identitySourceDeltas": {
+        "kind": "identitySourceSet",
+        "principalDeveloper": "tas",
+        "principalType": "user",
+        "identitySources": [
+            {
+                "kind": "legacyAppIdentitySource",
+                "id": 10034544,
+                "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
+                "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034545,
+                "description": "Everyone in the corporate IdP. We force mark all such people as internal",
+                "metadata": "https://acme.corpsso.com/blah",
+                "attributeOverrides": [
+                    {
+                        "filter": "*",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034546,
+                "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
+                "metadata": "https://atsupport.com/idp",
+                "attributeOverrides": [
+                    {
+                        "filter": "*",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034547,
+                "description": "RealMe (since acme is public sector)",
+                "metadata": "https://realme.nz/blah",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "emailIdentitySource",
+                "id": 10034548,
+                "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "socialIdentitySource",
+                "id": 10034549,
+                "network": "LinkedIn",
+                "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    },
+                    {
+                        "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-tags",
+                                "values": [
+                                    "alumni"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSetLaunchers><span class=parent>/{tenant}</span>/deltaSetLaunchers</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSetLaunchers class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets). The launcher JWT is signed using the tenant&#39;s signing key.</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSetLaunchers_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSetLaunchers</h4></div><div class=modal-body><div class="alert alert-info"><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets). The launcher JWT is signed using the tenant&#39;s signing key.</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSetLaunchers_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSetLaunchers_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSetLaunchers_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "$schema":"http://json-schema.org/draft-04/schema#",
-  "definitions":{
-    "basicAuthCredentials":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "user",
-        "password"
-      ],
-      "properties":{
-        "user":{
-          "type":"string"
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "basicAuthCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "user",
+                "password"
+            ],
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
         },
-        "password":{
-          "type":"string"
+        "server": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "baseUri",
+                "basicAuthCredentials"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "baseUri": {
+                    "type": "string"
+                },
+                "basicAuthCredentials": {
+                    "$ref": "#/definitions/basicAuthCredentials"
+                }
+            }
+        },
+        "servers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/server"
+            }
+        },
+        "app": {
+            "type": "string"
+        },
+        "installDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "installDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "editDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "editDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "unInstallDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "unInstallDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
         }
-      }
     },
-    "server":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "name",
-        "baseUri",
-        "basicAuthCredentials"
-      ],
-      "properties":{
-        "name":{
-          "type":"string"
+    "type": "object",
+    "description": "A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+    "additionalProperties": false,
+    "required": [ "kind" ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "deltaSet"
+            ],
+            "description": "always set to: deltaSet"
         },
-        "baseUri":{
-          "type":"string"
+        "existingTenantTarget" :
+          { "$ref": "./tenant.json" },
+        "newTenantTarget":
+          { "$ref": "./tenant.json" },
+        "restartPage": {
+            "type": "string",
+            "description": "The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
         },
-        "basicAuthCredentials":{
-          "$ref":"#/definitions/basicAuthCredentials"
+        "appDeltas": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/installDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/editDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/unInstallDelta"
+                    }
+                ]
+            }
+        },
+        "identitySourceDeltas": {
+            "$ref": "./identitySourceSet.json"
         }
-      }
-    },
-    "servers":{
-      "type":"array",
-      "items":{
-        "$ref":"#/definitions/server"
-      }
-    },
-    "app":{
-      "type":"string"
-    },
-    "createTenantDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind", "organizationName", "shortCode", "country", "industry"
-      ],
-      "properties":{
-        "kind":{ "enum":[ "tenantDetail" ] },
-        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
-        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
-        "description":{ "type": "string", "description": "a description for this store" },
-        "country":{ "type": "string", "description": "the country code for the organization using the store" },
-        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
-      }
-    },
-    "installDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "installDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "editDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "editDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "unInstallDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "unInstallDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        }
-      }
     }
-  },
-  "type":"object",
-  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
-  "additionalProperties":false,
-  "required":[
-    "kind",
-    "targetIncarnation",
-    "items"
-  ],
-  "properties":{
-    "kind":{
-      "enum":[
-        "deltaSet"
-      ],
-      "description":"always set to: deltaSet"
-    },
-    "targetIncarnation":{
-      "type":"integer",
-      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
-    },
-    "restartPage":{
-      "type":"string",
-      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
-    },
-    "items":{
-      "type":"array",
-      "items":{
-        "oneOf":[
-          {
-            "$ref":"#/definitions/createTenantDelta"
-          },
-          {
-            "$ref":"#/definitions/installDelta"
-          },
-          {
-            "$ref":"#/definitions/editDelta"
-          },
-          {
-            "$ref":"#/definitions/unInstallDelta"
-          }
-        ]
-      }
-    }
-  }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"kind":"deltaSet",
-	"targetIncarnation": 34,
-	"items":[
-		{
-			"kind":"installDelta",
-			"app":"tas-superats"
-		},
-  		{
-			"kind":"installDelta",
-			"app":"tas-atszero",
-			"servers":[
-				{
-					"name":"ats0",
-					"baseUri":"https://acme.atszero.com",
-					"basicAuthCredentials":{
-						"user":"fred",
-						"password":"secret1"
-					}
-				}
-			]
-		},
-		{
-			"kind":"editDelta",
-			"app":"supersoft-oldjobboard",
-			"servers":[
-				{
-					"name":"oldboard",
-					"baseUri":"https://oldboard.supersoft.com/acme",
-					"basicAuthCredentials":{
-						"user":"userX",
-						"password":"mypwd"
-					}
-				}
-			]
-		},
-		{
-			"kind":"unInstallDelta",
-			"app":"supersoft-boomchaka"
-		}
-	]
+    "kind": "deltaSet",
+    "existingTenantTarget": {
+      "incarnation": 34
+    },
+    "appDeltas": [
+        {
+            "kind": "installDelta",
+            "app": "tas-superats"
+        },
+        {
+            "kind": "installDelta",
+            "app": "tas-atszero",
+            "servers": [
+                {
+                    "name": "ats0",
+                    "baseUri": "https://acme.atszero.com",
+                    "basicAuthCredentials": {
+                        "user": "fred",
+                        "password": "secret1"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "editDelta",
+            "app": "supersoft-oldjobboard",
+            "servers": [
+                {
+                    "name": "oldboard",
+                    "baseUri": "https://oldboard.supersoft.com/acme",
+                    "basicAuthCredentials": {
+                        "user": "userX",
+                        "password": "mypwd"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "unInstallDelta",
+            "app": "supersoft-boomchaka"
+        }
+    ],
+    "identitySourceDeltas": {
+        "kind": "identitySourceSet",
+        "principalDeveloper": "tas",
+        "principalType": "user",
+        "identitySources": [
+            {
+                "kind": "legacyAppIdentitySource",
+                "id": 10034544,
+                "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
+                "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034545,
+                "description": "Everyone in the corporate IdP. We force mark all such people as internal",
+                "metadata": "https://acme.corpsso.com/blah",
+                "attributeOverrides": [
+                    {
+                        "filter": "*",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034546,
+                "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
+                "metadata": "https://atsupport.com/idp",
+                "attributeOverrides": [
+                    {
+                        "filter": "*",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "samlIdentitySource",
+                "id": 10034547,
+                "description": "RealMe (since acme is public sector)",
+                "metadata": "https://realme.nz/blah",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "emailIdentitySource",
+                "id": 10034548,
+                "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "kind": "socialIdentitySource",
+                "id": 10034549,
+                "network": "LinkedIn",
+                "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
+                "attributeOverrides": [
+                    {
+                        "filter": "email like &#x27;*@acme.com&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-type",
+                                "value": "internal"
+                            }
+                        ]
+                    },
+                    {
+                        "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
+                        "ifMatched": [
+                            {
+                                "name": "tas-candidate-tags",
+                                "values": [
+                                    "alumni"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }</code></pre></div><div class=tab-pane id=__tenant__deltaSetLaunchers_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {

@@ -1,30 +1,55 @@
 {
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"properties":{
-		"kind":{
-			"enum":[
-	   		"tenant"
-			],
-			"description":"always set to: tenant"
-		},
-		"incarnation":{
-			"type":"integer",
-			"description":"a number representing the 'install state' of this tenant. Incremented on any changes to the installed apps."
-		},
-		"status":{ "enum": ["ready", "shuttingDown", "dormant", "startingUp", "broken"],
-			"description":"The tenant's current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is 'ready' or 'startingUp'."
-		},
-		"publicKey": {
-		  "type": "string",
-		  "description": "The tenant's public key. OAuth API producers use this to verify incoming OAuth access tokens, which are signed using the tenant's private key. The private key only accessible to TAS itself and is never made available to anyone."
-		}
-	},
-	"required":[
-		"kind",
-		"incarnation",
-		"status",
-		"publicKey"
-	]
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "kind": {
+            "enum": [
+                "tenant"
+            ],
+            "description": "always set to: tenant"
+        },
+        "incarnation": {
+            "type": "integer",
+            "description": "a number representing the 'install state' of this tenant. Incremented on any changes to the installed apps."
+        },
+        "status": {
+            "enum": [
+                "starting",
+                "running",
+                "halting",
+                "stopped",
+                "broken"
+            ],
+            "description": "The tenant's current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is 'running' or 'starting'."
+        },
+        "publicKey": {
+            "type": "string",
+            "description": "The tenant's public key. OAuth API producers use this to verify incoming OAuth access tokens, which are signed using the tenant's private key. The private key only accessible to TAS itself and is never made available to anyone."
+        },
+        "organizationName": {
+            "type": "string",
+            "description": "The legal name of the organization"
+        },
+        "shortCode": {
+            "type": "string",
+            "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme"
+        },
+        "description": {
+            "type": "string",
+            "description": "a description for this store"
+        },
+        "country": {
+            "type": "string",
+            "description": "the country code for the organization using the store"
+        },
+        "industry": {
+            "enum": [
+                "Banking",
+                "Hospitality",
+                "IT"
+            ],
+            "description": "The industry the organization is mainly in"
+        }
+    }
 }

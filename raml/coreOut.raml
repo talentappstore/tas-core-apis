@@ -18,14 +18,15 @@ version: v1
       Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on the app). The app can assume the tenant
       is dormant. The app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API
       calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data.   
-  /shutDowns:
+  /halts:
     post:
       description: |
-        Called by TAS to request your app to become dormant, i.e. stop producing or consuming APIs or accepting logins. The app may choose to continue
-        producing APIs for a few seconds to contribute to an orderly tenant shutdown (as long as doing so does not require
+        Called by TAS to request your app to stop, i.e. stop producing or consuming APIs or accepting logins for this tenant.
+        The app may choose to continue producing APIs for a few seconds to contribute to an
+        orderly tenant shutdown (as long as doing so does not require
         consuming other app's APIs, since those apps are likely also shutting down), but in any case should aim to shut
         down within a few seconds. Once the app is fully dormant it should signal this via a POST to the shutDownComplete webhook
-        passed in the request. This feedback allows TAS to know when all apps are dormant.
+        passed in the request. This feedback allows TAS to know when all apps for the tenant are dormant.
         Upon receiving a shutDown request, apps should discard any local copies of incoming or outgoing routes,
         tenant HMAC signing keys (though not the app's own signing key for making core API calls,which is unaffected by a takeDown),
         OAuth tokens and basic auth credentials. All of these should be reloaded from TAS as required at bringUp time.

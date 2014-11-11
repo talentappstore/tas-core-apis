@@ -1,168 +1,149 @@
 {
-  "$schema":"http://json-schema.org/draft-04/schema#",
-  "definitions":{
-    "basicAuthCredentials":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "user",
-        "password"
-      ],
-      "properties":{
-        "user":{
-          "type":"string"
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "basicAuthCredentials": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "user",
+                "password"
+            ],
+            "properties": {
+                "user": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
         },
-        "password":{
-          "type":"string"
+        "server": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "baseUri",
+                "basicAuthCredentials"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "baseUri": {
+                    "type": "string"
+                },
+                "basicAuthCredentials": {
+                    "$ref": "#/definitions/basicAuthCredentials"
+                }
+            }
+        },
+        "servers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/server"
+            }
+        },
+        "app": {
+            "type": "string"
+        },
+        "installDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "installDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "editDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "editDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                },
+                "servers": {
+                    "$ref": "#/definitions/servers"
+                }
+            }
+        },
+        "unInstallDelta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "unInstallDelta"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
         }
-      }
     },
-    "server":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "name",
-        "baseUri",
-        "basicAuthCredentials"
-      ],
-      "properties":{
-        "name":{
-          "type":"string"
+    "type": "object",
+    "description": "A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
+    "additionalProperties": false,
+    "required": [ "kind" ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "deltaSet"
+            ],
+            "description": "always set to: deltaSet"
         },
-        "baseUri":{
-          "type":"string"
+        "existingTenantTarget" :
+          { "$ref": "./tenant.json" },
+        "newTenantTarget":
+          { "$ref": "./tenant.json" },
+        "restartPage": {
+            "type": "string",
+            "description": "The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
         },
-        "basicAuthCredentials":{
-          "$ref":"#/definitions/basicAuthCredentials"
+        "appDeltas": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#/definitions/installDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/editDelta"
+                    },
+                    {
+                        "$ref": "#/definitions/unInstallDelta"
+                    }
+                ]
+            }
+        },
+        "identitySourceDeltas": {
+            "$ref": "./identitySourceSet.json"
         }
-      }
-    },
-    "servers":{
-      "type":"array",
-      "items":{
-        "$ref":"#/definitions/server"
-      }
-    },
-    "app":{
-      "type":"string"
-    },
-    "createTenantDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind", "organizationName", "shortCode", "country", "industry"
-      ],
-      "properties":{
-        "kind":{ "enum":[ "tenantDetail" ] },
-        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
-        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
-        "description":{ "type": "string", "description": "a description for this store" },
-        "country":{ "type": "string", "description": "the country code for the organization using the store" },
-        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
-      }
-    },
-    "installDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "installDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "editDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "editDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        },
-        "servers":{
-          "$ref":"#/definitions/servers"
-        }
-      }
-    },
-    "unInstallDelta":{
-      "type":"object",
-      "additionalProperties":false,
-      "required":[
-        "kind",
-        "app"
-      ],
-      "properties":{
-        "kind":{
-          "enum":[
-            "unInstallDelta"
-          ]
-        },
-        "app":{
-          "$ref":"#/definitions/app"
-        }
-      }
     }
-  },
-  "type":"object",
-  "description":"A set (usually with just one item in it) of deltas to be applied to the installed apps for a tenant, i.e. a sequence of installs, edits and uninstalls. Pass an empty set of deltas to simply reboot the tenant.",
-  "additionalProperties":false,
-  "required":[
-    "kind",
-    "targetIncarnation",
-    "items"
-  ],
-  "properties":{
-    "kind":{
-      "enum":[
-        "deltaSet"
-      ],
-      "description":"always set to: deltaSet"
-    },
-    "targetIncarnation":{
-      "type":"integer",
-      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
-    },
-    "restartPage":{
-      "type":"string",
-      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
-    },
-    "items":{
-      "type":"array",
-      "items":{
-        "oneOf":[
-          {
-            "$ref":"#/definitions/createTenantDelta"
-          },
-          {
-            "$ref":"#/definitions/installDelta"
-          },
-          {
-            "$ref":"#/definitions/editDelta"
-          },
-          {
-            "$ref":"#/definitions/unInstallDelta"
-          }
-        ]
-      }
-    }
-  }
 }
