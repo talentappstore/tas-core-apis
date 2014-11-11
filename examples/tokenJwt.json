@@ -1,5 +1,9 @@
 {
-	"sub": 100232,
+	"sub": {
+	  "nameID": "frank@ibm.com",
+	  "nameQualifier": "someibmidp",
+	  "entityID": "some mroe SAML info"
+	},
 	"cons": "tas-uberapply",
 	"dev": "tas",
 	"uri": "/positionOpenings/{positionId}",

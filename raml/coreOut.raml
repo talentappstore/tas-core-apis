@@ -42,22 +42,43 @@ version: v1
         However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps
         before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call
         while dormant may choose to call GET /{tenant}, and treat a status of 'startingUp' as being the same as if a startUp
-        notification had been seen, i.e. produce the API normally. 
+        notification had been seen, i.e. produce the API normally.
+        
+  /m/storeFrontMainPage:
+    get:
+      description: |
+        <p>Only called on apps tagged with storeFront.</p>
+        <p>Called by TAS to ask for the main page of your storeFront app. TAS calls this on your app whenever the tenant clicks to
+        uninstall a storeFront app, while using that same app.</p>
+        <p>When this happens, the browser needs to be redirected to one of the remaining (or new) storeFronts main pages. If there
+        are multiple storeFronts remaining, TAS will pick one at random.</p>
+        <p>The main page is normally the first page a user sees after logging in, typically displaying the apps hero list.</p>
+      responses:
+        200:
+          body:
+            application/json:
+              schema: !include ../schemas/storeFrontMainPage.json
+              example: !include ../examples/storeFrontMainPage.json
+          
   /authentications:
     /{principalDev}:
       /{principalType}:
         /pings:
           post:
             description: |
-              Called by TAS to tell your app about someone logging in. Useful for apps that are first-line "auto-provisioning" generators, i.e. that capture
-              *all* logins, and then refine those down so that other apps can listen to only logins for principal types they care about.
-              For example, an app handling this core API might produce a tenant API like:
-              POST <tas>/employees/{}/deltaPings.
-              TAS (more precisely the TAS SAML proxy) will only call this API on apps that are declared to be authListeners. TAS will
+              <p>Called by TAS to tell your authListener app about someone logging in.</p>
+              <p>AuthListeners are special, highly privileged apps that perform housekeeping when users (principals) log in.</p>
+              <p>A typical authListener would be an auto-provisioning app. On someone logging in, the app would
+              examine the attributes of the incoming SAML assertion and use the data to maintain a SCIM SoT server
+              by making calls to GET /users/{}, POST /users, etc.</p>
+              <p>Since your app cannot know all of the possible types of principal that might log in, it should
+              return with status 200 immediately for unrecognized types.</p>
+              <p>TAS will only call this API on apps that are declared to be authListeners. TAS will
               wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any
-              auto-provisioning is complete by the time the user login "hits" the web site.
+              auto-provisioning type operations are complete by the time the user login hits the web site.</p>
+              <p>RAML (the tool used to create this documentation) does not allow currently allow describing the different parts
+              of multipart/form-data, but for this endpoint your app will receive two parts - the raw SAML authentication assertion
+              itself, and the derived samlSubject object (json).
             body:
-              application/json:
-                schema: !include ../schemas/principalAuthn.json
-                example: !include ../examples/principalAuthn.json
+              multipart/form-data:
 

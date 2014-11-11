@@ -4,10 +4,7 @@
 	"additionalProperties":false,
 	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
 	"properties":{
-		"sub":{
-			"type":"integer",
-			"description":"subject, i.e. the id of the principal's authorization as available from TAS via SAML assertion"
-		},
+		"sub":{ "$ref": "../samlSubject.json"	},
 		"cons":{
 			"type":"string",
 			"description":"the app consuming the API"

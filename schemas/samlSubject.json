@@ -1,0 +1,22 @@
+{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "type":"object",
+  "description":"A set of SAML values that uniquely identify this person, consistently across TAS apps, and with any number of potential IdPs",
+  "required":[
+    "nameID",
+    "nameQualifier",
+    "entityID"
+  ],
+  "properties":{
+    "nameID":{
+      "type":"string"
+    },
+    "nameQualifier":{
+      "type":"string"
+    },
+    "entityID":{
+      "type":"string"
+    }
+    
+  }
+}

@@ -110,7 +110,7 @@
         .list-group-item:hover {
             background-color: #f5f5f5;
         }
-    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core incoming (app -&gt; TAS) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=__tenant_ class=panel-title>/{tenant}</h3></div><div class=panel-body><div class=top-resource-description><p>A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls that your app makes to TAS are within the context of a single tenant.</p></div><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant_><span class=parent></span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent></span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core incoming (app -&gt; TAS) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=__tenant_ class=panel-title>/{tenant}</h3></div><div class=panel-body><div class=top-resource-description><p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p><p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS does not support API calls between tenants.</p></div><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant_><span class=parent></span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent></span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
 	"$schema":"http://json-schema.org/draft-04/schema#",
 	"type":"object",
 	"additionalProperties":false,
@@ -145,236 +145,32 @@
 	"incarnation": 23,
 	"status": "shuttingDown",
 	"publicKey": "kjhyg9876gf7645d88t0h897h6oityf8975fg46fgkgi" 
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata><span class=parent>/{tenant}</span>/samlMetadata</a> <span class=methods></span></h4></div><div id=panel___tenant__samlMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>SAML metadata is a package of XML information about identity providers, certificates, etc., that your app&#39;s SSO implementation needs to do its thing (assuming your app is a web server, rather than an API server).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata__principalDeveloper___principalType_><span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__samlMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__samlMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__samlMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__samlMetadata__principalDeveloper___principalType__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/xml</strong></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications><span class=parent>/{tenant}</span>/authentications</a> <span class=methods></span></h4></div><div id=panel___tenant__authentications class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Authentications are recently captured SSO (Single Sign On) logins.</p><p>Each authentication represents a principal (i.e. a user) logging in at an SSO-protected web site presented by an app.</p><p>An authentication object contains details about the user&#39;s identity (name, email, SAML identifiers, etc.).</p><p>Your app may need an authentication object so as to understand who the current user is, and enforce business rules about what they can see or do. There are two ways your app can obtain the authentication object for the current user:<ol><li>If your app is an SSO-protected web site, then at login time, it will receive a SAML assertion, which can be exchanged for an authentication object. <b>The mechanism by which the principalAuthnID is made available to the SSO app is not yet confirmed. It may be a custom attribute injected into the SAML assertion by the TAS SAML proxy, or it may be queried from an as yet undefined core API using a hash of the SAML assertion&#39;s entire contents.</b></li><li>If your app is an API server, then the incoming access token can be exchanged for an authentication object.</li></ol></p><p>This secure mechanism for passing the user&#39;s identity down through a chain of API calls allows each API producing app in the chain to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p><p>Because the authentication object itself is never passed down within the API calls, malicious apps are prevented from acting on behalf of a user who has not logged in.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications_viaSso__principalAuthnID_><span class=parent>/{tenant}/authentications/viaSso</span>/{principalAuthnID}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications_viaSso__principalAuthnID__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__authentications_viaSso__principalAuthnID_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications_viaSso__principalAuthnID__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the logged in principal in the case where your app is an SSO-protected web server. You can obtain the id from the incoming SAML assertion. TAS verifies that the authentication was made at your app.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications_viaSso__principalAuthnID__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/authentications/viaSso</span>/{principalAuthnID}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the logged in principal in the case where your app is an SSO-protected web server. You can obtain the id from the incoming SAML assertion. TAS verifies that the authentication was made at your app.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications_viaSso__principalAuthnID__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__authentications_viaSso__principalAuthnID__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications_viaSso__principalAuthnID__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalAuthnID</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__authentications_viaSso__principalAuthnID__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"required":[
-		"identity",
-		"personDetail"
-	],
-	"properties":{
-		"id":"integer",
-		"identity":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"principalDeveloper",
-				"principalType",
-				"entityId",
-				"nameId"
-			],
-			"properties":{
-				"principalDeveloper":{
-					"type":"string",
-					"description":"the developer who defines this principal type"
-				},
-				"principalType":{
-					"type":"string",
-					"description":"the type of principal, e.g. the developer TAS defines &#x27;candidate&#x27; and &#x27;employee&#x27;"
-				},
-				"principleSubTypes":{
-					"type":"array",
-					"items":{
-						"type":"string",
-						"minimum":1
-					},
-					"description":"further refinements of the principal type, e.g. the developer TAS defines subtypes of &#x27;internal&#x27; and &#x27;external&#x27; for the principal type of &#x27;candidate&#x27;"
-				},
-				"entityId":{
-					"type":"string",
-					"description":"globally unique identifier of the identity provider (IdP) this principal authenticated via"
-				},
-				"nameId":{
-					"type":"string",
-					"description":"identifier (unique within IdP) of this principal"
-				}
-			}
-			
-		},
-		"personDetail":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"kind"
-			],
-			"properties":{
-				"kind":{
-					"enum":[
-						"personDetail"
-					]
-				},
-				"email":"string",
-				"title":"string",
-				"firstName":"string",
-				"lastName":"string",
-				"phone":"string",
-				"locale":"string",
-				"language":"string",
-				"timeZone":"string"
-			}
-		},
-		"employeeDetail":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"kind"
-			],
-			"properties":{
-				"kind":{
-					"enum":[
-						"employeeDetail"
-					]
-					
-				},
-				"companyRef":"string",
-				"profileId":"integer",
-				"roleI":"integer"
-			}
-		}
-		
-	}
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata><span class=parent>/{tenant}</span>/samlMetadata</a> <span class=methods></span></h4></div><div id=panel___tenant__samlMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>SAML metadata is a package of XML information about identity providers, certificates, etc., that your app&#39;s SSO implementation needs to do its thing (assuming your app is a web server, rather than an API server).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlMetadata__principalDeveloper___principalType_><span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__samlMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__samlMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__samlMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/samlMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the SAML metadata for the given principal type. This is only callable by web servers (not API servers). TAS will validate that the app is entitled to use the principal type for authentication.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__samlMetadata__principalDeveloper___principalType__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__samlMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__samlMetadata__principalDeveloper___principalType__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/xml</strong></p></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlSubjects><span class=parent>/{tenant}</span>/samlSubjects</a> <span class=methods></span></h4></div><div id=panel___tenant__samlSubjects class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>A samlSubject is the primary key, controlled by the IdP, of the current logged in user. A samlSubject is useful when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p><p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app higher up the chain (if this app is an API server producing an OAuth API).</p><p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that was captured by TAS when this user logged in to an SSO-protected app, likely to include:<ul><li>NameID</li><li>NameQualifier</li><li>EntityID of the issuing IdP</li></ul></p><p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP (internal candidates), Facebook pseudo-IdP, etc.</p><p>samlSubjects are identical across all SP&#39;s (i.e., all TAS SSO-protected apps), so that apps can correlate the user&#39;s identity (i.e. they each have the same understanding of who a user is). This means that transient SAML identifiers for example cannot be used.</p><p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p><p>Because access tokens are generated and signed by TAS, the user&#39;s identity can be passed securely down through a chain of OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p><p>Each producing app in the chain gets their chance to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__samlSubjects_viaSamlAssertion><span class=parent>/{tenant}/samlSubjects</span>/viaSamlAssertion</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__samlSubjects_viaSamlAssertion_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__samlSubjects_viaSamlAssertion class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__samlSubjects_viaSamlAssertion_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__samlSubjects_viaSamlAssertion_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/samlSubjects</span>/viaSamlAssertion</h4></div><div class=modal-body><div class="alert alert-info"><p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__samlSubjects_viaSamlAssertion_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__samlSubjects_viaSamlAssertion_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__samlSubjects_viaSamlAssertion_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/xml</strong></p></div><div class=tab-pane id=__tenant__samlSubjects_viaSamlAssertion_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "type":"object",
+  "description":"A set of SAML values that uniquely identify this person, consistently across TAS apps, and with any number of potential IdPs",
+  "required":[
+    "nameID",
+    "nameQualifier",
+    "entityID"
+  ],
+  "properties":{
+    "nameID":{
+      "type":"string"
+    },
+    "nameQualifier":{
+      "type":"string"
+    },
+    "entityID":{
+      "type":"string"
+    }
+    
+  }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"identity":{
-		"principalDeveloper":"tas",
-		"principalType":"employee",
-		"nameId":"102ghfirhr784",
-		"entityId":"acmeidp",
-		"isActive":true
-	},
-	"personDetail":{
-		"kind":"personDetail",
-		"email":"fred@hotmail.com",
-		"title":"Mr.",
-		"firstName":"Fred",
-		"lastName":"Bloggs",
-		"phone":"415-123-1234",
-		"locale":"en_NZ",
-		"language":"en_US",
-		"timeZone":"America/Los_Angeles"
-	},
-	"employeeDetail": {
-		"kind":"employeeDetail",
-		"companyName":"Acme",
-		"profileId":1001,
-		"roleId":1002
-	}
-	
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications_viaToken__accessToken_><span class=parent>/{tenant}/authentications/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications_viaToken__accessToken__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__authentications_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications_viaToken__accessToken__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the logged in principal in the case where your app is producing an OAuth tenant API consumed by some other app (possibly an SSO-protected web site, or possibly another API server higher up in the chain). For accessToken, use the access token that was passed to your app via the Authentication header in the incoming OAuth API call.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications_viaToken__accessToken__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/authentications/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the logged in principal in the case where your app is producing an OAuth tenant API consumed by some other app (possibly an SSO-protected web site, or possibly another API server higher up in the chain). For accessToken, use the access token that was passed to your app via the Authentication header in the incoming OAuth API call.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications_viaToken__accessToken__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__authentications_viaToken__accessToken__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications_viaToken__accessToken__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__authentications_viaToken__accessToken__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"required":[
-		"identity",
-		"personDetail"
-	],
-	"properties":{
-		"id":"integer",
-		"identity":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"principalDeveloper",
-				"principalType",
-				"entityId",
-				"nameId"
-			],
-			"properties":{
-				"principalDeveloper":{
-					"type":"string",
-					"description":"the developer who defines this principal type"
-				},
-				"principalType":{
-					"type":"string",
-					"description":"the type of principal, e.g. the developer TAS defines &#x27;candidate&#x27; and &#x27;employee&#x27;"
-				},
-				"principleSubTypes":{
-					"type":"array",
-					"items":{
-						"type":"string",
-						"minimum":1
-					},
-					"description":"further refinements of the principal type, e.g. the developer TAS defines subtypes of &#x27;internal&#x27; and &#x27;external&#x27; for the principal type of &#x27;candidate&#x27;"
-				},
-				"entityId":{
-					"type":"string",
-					"description":"globally unique identifier of the identity provider (IdP) this principal authenticated via"
-				},
-				"nameId":{
-					"type":"string",
-					"description":"identifier (unique within IdP) of this principal"
-				}
-			}
-			
-		},
-		"personDetail":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"kind"
-			],
-			"properties":{
-				"kind":{
-					"enum":[
-						"personDetail"
-					]
-				},
-				"email":"string",
-				"title":"string",
-				"firstName":"string",
-				"lastName":"string",
-				"phone":"string",
-				"locale":"string",
-				"language":"string",
-				"timeZone":"string"
-			}
-		},
-		"employeeDetail":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"kind"
-			],
-			"properties":{
-				"kind":{
-					"enum":[
-						"employeeDetail"
-					]
-					
-				},
-				"companyRef":"string",
-				"profileId":"integer",
-				"roleI":"integer"
-			}
-		}
-		
-	}
-}</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"identity":{
-		"principalDeveloper":"tas",
-		"principalType":"employee",
-		"nameId":"102ghfirhr784",
-		"entityId":"acmeidp",
-		"isActive":true
-	},
-	"personDetail":{
-		"kind":"personDetail",
-		"email":"fred@hotmail.com",
-		"title":"Mr.",
-		"firstName":"Fred",
-		"lastName":"Bloggs",
-		"phone":"415-123-1234",
-		"locale":"en_NZ",
-		"language":"en_US",
-		"timeZone":"America/Los_Angeles"
-	},
-	"employeeDetail": {
-		"kind":"employeeDetail",
-		"companyName":"Acme",
-		"profileId":1001,
-		"roleId":1002
-	}
-	
+	  "nameID": "frank@ibm.com",
+	  "nameQualifier": "someibmidp",
+	  "entityID": "some other SAML info"
 }</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes><span class=parent>/{tenant}</span>/routes</a> <span class=methods></span></h4></div><div id=panel___tenant__routes class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p><p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:<ul><li>The actual endpoint (where the producer&#39;s server sits on the internet)</li><li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li></ul></p><p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.) that the consumer is allowed to call.</p><p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT APIs, there can be many consumers and many producers, and hence a route between each unique consumer/producer pair.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp_><span class=parent>/{tenant}/routes</span>/{consumingApp}</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The app consuming the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper_><span class=parent>/{tenant}/routes/{consumingApp}</span>/{apiDeveloper}</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The developer who owns/defines the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}</span>/{apiUriTemplate}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The URI template (as per <a href=https://tools.ietf.org/html/rfc6570>https://tools.ietf.org/html/rfc6570</a>) of the API.</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API. The example below is for a non-OAuth, non-SoT API.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}</span>/{apiUriTemplate}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API. The example below is for a non-OAuth, non-SoT API.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
 	"$schema":"http://json-schema.org/draft-04/schema#",
 	"type":"object",
@@ -599,16 +395,13 @@
     "POST",
     "DELETE"
   ]
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}</span>/tokens</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token) that authorize a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p><p>Because access tokens are self-contained and signed, producers can validate incoming tokens without any reference to the auth server (i.e. TAS).</p><p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or (as per <a href=http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html>http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter.</p><p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate. For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token is too close to expiry to serve the needs of the consumer.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaSso</span>/{principalAuthnID}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The id of the current authentication, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaSso</span>/{principalAuthnID}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li><li><strong>principalAuthnID</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}</span>/tokens</a> <span class=methods></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see <a href=http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about>http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about</a> and <a href="http://jwt.io/">http://jwt.io/</a>): a) that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p><p>Because access tokens are self-contained and signed, producers can rely on their content without any network traffic to the authorization server (i.e. TAS).</p><p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or (as per <a href=http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html>http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter.</p><p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate. For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token is too close to expiry to serve the needs of the consumer.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID_><span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaSso</span>/{principalAuthnID}</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The id of the current authentication, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaSso</span>/{principalAuthnID}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li><li><strong>principalAuthnID</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaSso__principalAuthnID__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
 	"$schema":"http://json-schema.org/draft-04/schema#",
 	"type":"object",
 	"additionalProperties":false,
 	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
 	"properties":{
-		"sub":{
-			"type":"integer",
-			"description":"subject, i.e. the id of the principal&#x27;s authorization as available from TAS via SAML assertion"
-		},
+		"sub":{ "$ref": "../samlSubject.json"	},
 		"cons":{
 			"type":"string",
 			"description":"the app consuming the API"
@@ -650,7 +443,11 @@
 		"exp"
 	]
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"sub": 100232,
+	"sub": {
+	  "nameID": "frank@ibm.com",
+	  "nameQualifier": "someibmidp",
+	  "entityID": "some mroe SAML info"
+	},
 	"cons": "tas-uberapply",
 	"dev": "tas",
 	"uri": "/positionOpenings/{positionId}",
@@ -665,10 +462,7 @@
 	"additionalProperties":false,
 	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
 	"properties":{
-		"sub":{
-			"type":"integer",
-			"description":"subject, i.e. the id of the principal&#x27;s authorization as available from TAS via SAML assertion"
-		},
+		"sub":{ "$ref": "../samlSubject.json"	},
 		"cons":{
 			"type":"string",
 			"description":"the app consuming the API"
@@ -710,7 +504,11 @@
 		"exp"
 	]
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"sub": 100232,
+	"sub": {
+	  "nameID": "frank@ibm.com",
+	  "nameQualifier": "someibmidp",
+	  "entityID": "some mroe SAML info"
+	},
 	"cons": "tas-uberapply",
 	"dev": "tas",
 	"uri": "/positionOpenings/{positionId}",
@@ -719,7 +517,7 @@
 	"iat": "31 Dec 1999",
 	"exp": "31 Dec 1999"
 }
-</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSets><span class=parent>/{tenant}</span>/deltaSets</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser. The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog. This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) increments the tenant&#39;s incarnation, it will also invalidate any outstanding launchers. Also launchers expire within 10 minutes of being issued. Launchers are meant therefore to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSets</h4></div><div class=modal-body><div class="alert alert-info"><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser. The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog. This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) increments the tenant&#39;s incarnation, it will also invalidate any outstanding launchers. Also launchers expire within 10 minutes of being issued. Launchers are meant therefore to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSets_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSets_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSets_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSets><span class=parent>/{tenant}</span>/deltaSets</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>resets all volatile credentials for the tenant:<ul><li>The tenant&#39;s own private/public key pair (as obtained via GET /{tenant})</li><li>All HMAC signing keys (as held on routes)</li></ul></li><li>Increments the tenant&#39;s incarnation (thus invalidating all existing OAuth tokens)</li><li>detects whether the delta set includes uninstalling the app the user is currently on, and if so calls GET /m/storeFrontMainPage to guess the startup page.<br></li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) signed with the tenant&#39;s signing key that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser.</p><p>The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog.</p><p>This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) changes the tenant&#39;s signing key and increments incarnation, it will also invalidate any outstanding launchers. Launchers also expire within 10 minutes of being issued. Launchers are meant to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSets</h4></div><div class=modal-body><div class="alert alert-info"><p>A delta set is a set of deltas to apply to the tenant&#39;s current installed apps, e.g. as the result of a tenant clicking install on some app. Each item in the set is one of the following operations relating to an app:<ol><li>install (the app must be either listed in the TAS directory, or shared with the tenant).</li><li>edit</li><li>unInstall</li></ol></p><p>To apply the set, TAS does the following:<ol><li>requests each already installed app to shut down</li><li>waits until each app has signalled a successful shutdown</li><li>applies the set</li><li>resets all volatile credentials for the tenant:<ul><li>The tenant&#39;s own private/public key pair (as obtained via GET /{tenant})</li><li>All HMAC signing keys (as held on routes)</li></ul></li><li>Increments the tenant&#39;s incarnation (thus invalidating all existing OAuth tokens)</li><li>detects whether the delta set includes uninstalling the app the user is currently on, and if so calls GET /m/storeFrontMainPage to guess the startup page.<br></li><li>sends startup requests to each installed app</li></ol></p><p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained JWT (json web token) signed with the tenant&#39;s signing key that embeds the delta set and can be safely handed off to an insecure client, i.e. javascript in a web browser.</p><p>The insecure client can then, via unauthenticated CORS calls, use the launcher to start the operation and subsequently track its progress, e.g. via a progress dialog.</p><p>This technique allows the storefront app to keep this part of its user interface working even while the storefront app itself (like all other installed apps) is cycled down and up as part of the operation.</p><p>Since successfully applying a delta set (even an empty one) changes the tenant&#39;s signing key and increments incarnation, it will also invalidate any outstanding launchers. Launchers also expire within 10 minutes of being issued. Launchers are meant to be used immediately.</p><p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps. Because this increments the tenant&#39;s incarnation, and therefore invalidates all existing OAuth tokens and HMAC signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key. Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to 10 minutes in the future.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSets_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSets_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSets_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema":"http://json-schema.org/draft-04/schema#",
   "definitions":{
     "basicAuthCredentials":{
@@ -766,6 +564,21 @@
     },
     "app":{
       "type":"string"
+    },
+    "createTenantDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind", "organizationName", "shortCode", "country", "industry"
+      ],
+      "properties":{
+        "kind":{ "enum":[ "tenantDetail" ] },
+        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
+        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
+        "description":{ "type": "string", "description": "a description for this store" },
+        "country":{ "type": "string", "description": "the country code for the organization using the store" },
+        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
+      }
     },
     "installDelta":{
       "type":"object",
@@ -845,12 +658,19 @@
     },
     "targetIncarnation":{
       "type":"integer",
-      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "restartPage":{
+      "type":"string",
+      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
     },
     "items":{
       "type":"array",
       "items":{
         "oneOf":[
+          {
+            "$ref":"#/definitions/createTenantDelta"
+          },
           {
             "$ref":"#/definitions/installDelta"
           },
@@ -953,6 +773,21 @@
     "app":{
       "type":"string"
     },
+    "createTenantDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind", "organizationName", "shortCode", "country", "industry"
+      ],
+      "properties":{
+        "kind":{ "enum":[ "tenantDetail" ] },
+        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
+        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
+        "description":{ "type": "string", "description": "a description for this store" },
+        "country":{ "type": "string", "description": "the country code for the organization using the store" },
+        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
+      }
+    },
     "installDelta":{
       "type":"object",
       "additionalProperties":false,
@@ -1031,12 +866,19 @@
     },
     "targetIncarnation":{
       "type":"integer",
-      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "restartPage":{
+      "type":"string",
+      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
     },
     "items":{
       "type":"array",
       "items":{
         "oneOf":[
+          {
+            "$ref":"#/definitions/createTenantDelta"
+          },
           {
             "$ref":"#/definitions/installDelta"
           },
@@ -1091,7 +933,7 @@
 			"app":"supersoft-boomchaka"
 		}
 	]
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSetLaunchers><span class=parent>/{tenant}</span>/deltaSetLaunchers</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSetLaunchers class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets).</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSetLaunchers_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSetLaunchers</h4></div><div class=modal-body><div class="alert alert-info"><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets).</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSetLaunchers_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSetLaunchers_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSetLaunchers_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSetLaunchers><span class=parent>/{tenant}</span>/deltaSetLaunchers</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSetLaunchers class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets). The launcher JWT is signed using the tenant&#39;s signing key.</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSetLaunchers_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSetLaunchers</h4></div><div class=modal-body><div class="alert alert-info"><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets). The launcher JWT is signed using the tenant&#39;s signing key.</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSetLaunchers_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSetLaunchers_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSetLaunchers_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema":"http://json-schema.org/draft-04/schema#",
   "definitions":{
     "basicAuthCredentials":{
@@ -1138,6 +980,21 @@
     },
     "app":{
       "type":"string"
+    },
+    "createTenantDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind", "organizationName", "shortCode", "country", "industry"
+      ],
+      "properties":{
+        "kind":{ "enum":[ "tenantDetail" ] },
+        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
+        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
+        "description":{ "type": "string", "description": "a description for this store" },
+        "country":{ "type": "string", "description": "the country code for the organization using the store" },
+        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
+      }
     },
     "installDelta":{
       "type":"object",
@@ -1217,12 +1074,19 @@
     },
     "targetIncarnation":{
       "type":"integer",
-      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "restartPage":{
+      "type":"string",
+      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
     },
     "items":{
       "type":"array",
       "items":{
         "oneOf":[
+          {
+            "$ref":"#/definitions/createTenantDelta"
+          },
           {
             "$ref":"#/definitions/installDelta"
           },

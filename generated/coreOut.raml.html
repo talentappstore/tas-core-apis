@@ -134,119 +134,28 @@
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "kind": "shutDownRequest",
     "shutDownCompletionKey": 10235739474
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__startUps><span class=parent>/{tenant}</span>/startUps</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__startUps_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__startUps class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__startUps_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification. However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call while dormant may choose to call GET /{tenant}, and treat a status of &#39;startingUp&#39; as being the same as if a startUp notification had been seen, i.e. produce the API normally.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__startUps_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/startUps</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification. However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call while dormant may choose to call GET /{tenant}, and treat a status of &#39;startingUp&#39; as being the same as if a startUp notification had been seen, i.e. produce the API normally.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__startUps_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__startUps_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications__principalDev___principalType__pings><span class=parent>/{tenant}/authentications/{principalDev}/{principalType}</span>/pings</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications__principalDev___principalType__pings_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__authentications__principalDev___principalType__pings class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications__principalDev___principalType__pings_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to tell your app about someone logging in. Useful for apps that are first-line "auto-provisioning" generators, i.e. that capture <em>all</em> logins, and then refine those down so that other apps can listen to only logins for principal types they care about. For example, an app handling this core API might produce a tenant API like: POST<tas>/employees/{}/deltaPings. TAS (more precisely the TAS SAML proxy) will only call this API on apps that are declared to be authListeners. TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any auto-provisioning is complete by the time the user login "hits" the web site.</tas></p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications__principalDev___principalType__pings_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/authentications/{principalDev}/{principalType}</span>/pings</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to tell your app about someone logging in. Useful for apps that are first-line "auto-provisioning" generators, i.e. that capture <em>all</em> logins, and then refine those down so that other apps can listen to only logins for principal types they care about. For example, an app handling this core API might produce a tenant API like: POST<tas>/employees/{}/deltaPings. TAS (more precisely the TAS SAML proxy) will only call this API on apps that are declared to be authListeners. TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any auto-provisioning is complete by the time the user login "hits" the web site.</tas></p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications__principalDev___principalType__pings_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications__principalDev___principalType__pings_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDev</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"required":[
-		"identity",
-		"personDetail"
-	],
-	"properties":{
-		"id":"integer",
-		"identity":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"principalDeveloper",
-				"principalType",
-				"entityId",
-				"nameId"
-			],
-			"properties":{
-				"principalDeveloper":{
-					"type":"string",
-					"description":"the developer who defines this principal type"
-				},
-				"principalType":{
-					"type":"string",
-					"description":"the type of principal, e.g. the developer TAS defines &#x27;candidate&#x27; and &#x27;employee&#x27;"
-				},
-				"principleSubTypes":{
-					"type":"array",
-					"items":{
-						"type":"string",
-						"minimum":1
-					},
-					"description":"further refinements of the principal type, e.g. the developer TAS defines subtypes of &#x27;internal&#x27; and &#x27;external&#x27; for the principal type of &#x27;candidate&#x27;"
-				},
-				"entityId":{
-					"type":"string",
-					"description":"globally unique identifier of the identity provider (IdP) this principal authenticated via"
-				},
-				"nameId":{
-					"type":"string",
-					"description":"identifier (unique within IdP) of this principal"
-				}
-			}
-			
-		},
-		"personDetail":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"kind"
-			],
-			"properties":{
-				"kind":{
-					"enum":[
-						"personDetail"
-					]
-				},
-				"email":"string",
-				"title":"string",
-				"firstName":"string",
-				"lastName":"string",
-				"phone":"string",
-				"locale":"string",
-				"language":"string",
-				"timeZone":"string"
-			}
-		},
-		"employeeDetail":{
-			"type":"object",
-			"additionalProperties":"false",
-			"required":[
-				"kind"
-			],
-			"properties":{
-				"kind":{
-					"enum":[
-						"employeeDetail"
-					]
-					
-				},
-				"companyRef":"string",
-				"profileId":"integer",
-				"roleI":"integer"
-			}
-		}
-		
-	}
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__startUps><span class=parent>/{tenant}</span>/startUps</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__startUps_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__startUps class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__startUps_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification. However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call while dormant may choose to call GET /{tenant}, and treat a status of &#39;startingUp&#39; as being the same as if a startUp notification had been seen, i.e. produce the API normally.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__startUps_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/startUps</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification. However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call while dormant may choose to call GET /{tenant}, and treat a status of &#39;startingUp&#39; as being the same as if a startUp notification had been seen, i.e. produce the API normally.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__startUps_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__startUps_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__m_storeFrontMainPage><span class=parent>/{tenant}</span>/m/storeFrontMainPage</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__m_storeFrontMainPage_get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel___tenant__m_storeFrontMainPage class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__m_storeFrontMainPage_get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Only called on apps tagged with storeFront.</p><p>Called by TAS to ask for the main page of your storeFront app. TAS calls this on your app whenever the tenant clicks to uninstall a storeFront app, while using that same app.</p><p>When this happens, the browser needs to be redirected to one of the remaining (or new) storeFronts main pages. If there are multiple storeFronts remaining, TAS will pick one at random.</p><p>The main page is normally the first page a user sees after logging in, typically displaying the apps hero list.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__m_storeFrontMainPage_get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/{tenant}</span>/m/storeFrontMainPage</h4></div><div class=modal-body><div class="alert alert-info"><p>Only called on apps tagged with storeFront.</p><p>Called by TAS to ask for the main page of your storeFront app. TAS calls this on your app whenever the tenant clicks to uninstall a storeFront app, while using that same app.</p><p>When this happens, the browser needs to be redirected to one of the remaining (or new) storeFronts main pages. If there are multiple storeFronts remaining, TAS will pick one at random.</p><p>The main page is normally the first page a user sees after logging in, typically displaying the apps hero list.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__m_storeFrontMainPage_get_request data-toggle=tab>Request</a></li><li><a href=#__tenant__m_storeFrontMainPage_get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__m_storeFrontMainPage_get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=__tenant__m_storeFrontMainPage_get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "description": "If your app is a storeFrontapp, you use this API to declare where you would prefer newly logged in users to be sent to. Sometime TAS will need to direct users to this page, e.g. when someone inside some other storeFront app clicks and unInstalls that same storeFront. That storeFront then becomes dead, and the user needs to be directed to one of the remaining storeFront apps, e.g. this one.", 
+    "required": [
+        "kind",
+        "uri"
+    ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "storeFrontMainPage"
+            ],
+            "description": "always set to: storeFrontMainPage"
+        },
+        "uri": {
+            "type": "string",
+            "description": "your app&#x27;s main uri - i.e. the default place to send users on login"
+        }
+    }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"identity":{
-		"principalDeveloper":"tas",
-		"principalType":"employee",
-		"nameId":"102ghfirhr784",
-		"entityId":"acmeidp",
-		"isActive":true
-	},
-	"personDetail":{
-		"kind":"personDetail",
-		"email":"fred@hotmail.com",
-		"title":"Mr.",
-		"firstName":"Fred",
-		"lastName":"Bloggs",
-		"phone":"415-123-1234",
-		"locale":"en_NZ",
-		"language":"en_US",
-		"timeZone":"America/Los_Angeles"
-	},
-	"employeeDetail": {
-		"kind":"employeeDetail",
-		"companyName":"Acme",
-		"profileId":1001,
-		"roleId":1002
-	}
-	
-}</code></pre></div></div></div></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#__tenant_>/{tenant}</a></li></ul></div></div></div></div></body></html>
+   "kind": "storeFrontMainPage",
+   "uri": "https://superstorefront.com/acme/main.html"
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__authentications__principalDev___principalType__pings><span class=parent>/{tenant}/authentications/{principalDev}/{principalType}</span>/pings</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__authentications__principalDev___principalType__pings_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__authentications__principalDev___principalType__pings class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__authentications__principalDev___principalType__pings_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p></p><p>Called by TAS to tell your authListener app about someone logging in.</p><p></p><p></p><p>AuthListeners are special, highly privileged apps that perform housekeeping when users (principals) log in.</p><p></p><p></p><p>A typical authListener would be an auto-provisioning app. On someone logging in, the app would examine the attributes of the incoming SAML assertion and use the data to maintain a SCIM SoT server by making calls to GET /users/{}, POST /users, etc.</p><p></p><p></p><p>Since your app cannot know all of the possible types of principal that might log in, it should return with status 200 immediately for unrecognized types.</p><p></p><p></p><p>TAS will only call this API on apps that are declared to be authListeners. TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any auto-provisioning type operations are complete by the time the user login hits the web site.</p><p></p><p></p><p>RAML (the tool used to create this documentation) does not allow currently allow describing the different parts of multipart/form-data, but for this endpoint your app will receive two parts - the raw SAML authentication assertion itself, and the derived samlSubject object (json).</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__authentications__principalDev___principalType__pings_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}/authentications/{principalDev}/{principalType}</span>/pings</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p>Called by TAS to tell your authListener app about someone logging in.</p><p></p><p></p><p>AuthListeners are special, highly privileged apps that perform housekeeping when users (principals) log in.</p><p></p><p></p><p>A typical authListener would be an auto-provisioning app. On someone logging in, the app would examine the attributes of the incoming SAML assertion and use the data to maintain a SCIM SoT server by making calls to GET /users/{}, POST /users, etc.</p><p></p><p></p><p>Since your app cannot know all of the possible types of principal that might log in, it should return with status 200 immediately for unrecognized types.</p><p></p><p></p><p>TAS will only call this API on apps that are declared to be authListeners. TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any auto-provisioning type operations are complete by the time the user login hits the web site.</p><p></p><p></p><p>RAML (the tool used to create this documentation) does not allow currently allow describing the different parts of multipart/form-data, but for this endpoint your app will receive two parts - the raw SAML authentication assertion itself, and the derived samlSubject object (json).</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__authentications__principalDev___principalType__pings_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__authentications__principalDev___principalType__pings_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDev</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: multipart/form-data</strong></p></div></div></div></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#__tenant_>/{tenant}</a></li></ul></div></div></div></div></body></html>

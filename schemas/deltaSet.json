@@ -46,6 +46,21 @@
     "app":{
       "type":"string"
     },
+    "createTenantDelta":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":[
+        "kind", "organizationName", "shortCode", "country", "industry"
+      ],
+      "properties":{
+        "kind":{ "enum":[ "tenantDetail" ] },
+        "organizationName":{ "type": "string", "description": "The legal name of the organization" },
+        "shortCode":{ "type": "string", "description": "a short, alpha only, lower case identifier for the tenant, e.g. acme" },
+        "description":{ "type": "string", "description": "a description for this store" },
+        "country":{ "type": "string", "description": "the country code for the organization using the store" },
+        "industry":{ "enum":[ "IT", "Hospitality", "Banking" ], "description": "The inndustry the organization is mainly in" }
+      }
+    },
     "installDelta":{
       "type":"object",
       "additionalProperties":false,
@@ -124,12 +139,19 @@
     },
     "targetIncarnation":{
       "type":"integer",
-      "description":"The incarnation that these deltas are for. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+      "description":"The incarnation that the tenant was at when these deltas were created. Applying the set will fail if the tenant is not currently at this incarnation (i.e. someone else has applied a different set in the meantime)."
+    },
+    "restartPage":{
+      "type":"string",
+      "description":"The URI that the user should be returned to once the delta set has been applied. Usually the storeFront app should set this to whichever page the lauch was made from, e.g. the app details page where the user clicked install. This URI will be passed through to the deltaSetStatus object, allowing javascript to access it once the apply is complete. However if the delta set swapped out the current storeFront app, then TAS will discard this URI (since most likely the page no longer exists) and instead populate the deltaSetStatus object by calling the outwards core API GET /storeFrontMainPage."
     },
     "items":{
       "type":"array",
       "items":{
         "oneOf":[
+          {
+            "$ref":"#/definitions/createTenantDelta"
+          },
           {
             "$ref":"#/definitions/installDelta"
           },

@@ -6,8 +6,9 @@ version: v1
 
 /{tenant}:
   description: |
-    A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls
-    that your app makes to TAS are within the context of a single tenant.   
+    <p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p>
+    <p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS
+    does not support API calls between tenants.</p>
   get:
     description: |
       Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the
@@ -33,50 +34,46 @@ version: v1
             200:
               body:
                 application/xml:
-  /authentications:
+  /samlSubjects:
     description: |
-      <p>Authentications are recently captured SSO (Single Sign On) logins.</p>
-      <p>Each authentication represents a principal (i.e. a user) logging in at an SSO-protected web site presented by an app.</p>
-      <p>An authentication object contains details about the user's identity (name, email, SAML identifiers, etc.).</p>
-      <p>Your app may need an authentication object so as to understand who the current user is, and enforce business rules about
-      what they can see or do. There are two ways your app can obtain the authentication object for the current user:
-      <ol>
-      <li>If your app is an SSO-protected web site, then at login time, it will receive a SAML assertion, which can be exchanged for an
-      authentication object. <b>The mechanism by which the principalAuthnID is made available to the SSO app is not yet confirmed.
-      It may be a custom attribute injected into the SAML assertion by the TAS SAML proxy, or it may be queried from an as yet
-      undefined core API using a hash of the SAML assertion's entire contents.</b>
-      <li>If your app is an API server, then the incoming access token can be exchanged for an authentication object.</li>
-      </ol>
+      <p>A samlSubject is the primary key, controlled by the IdP, of the current logged in user. A samlSubject is useful
+      when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs
+      like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p>
+      <p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app
+      higher up the chain (if this app is an API server producing an OAuth API).</p>
+      <p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that
+      was captured by TAS when this user logged in to an SSO-protected app, likely to include: 
+      <ul>
+      <li>NameID</li>
+      <li>NameQualifier</li>
+      <li>EntityID of the issuing IdP</li>
+      </ul>
+      <p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions
+      or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across
+      multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP
+      (internal candidates), Facebook pseudo-IdP, etc.</p>
+      <p>samlSubjects are identical across all SP's (i.e., all TAS SSO-protected apps), so that apps can
+      correlate the user's identity (i.e. they each have the same understanding of who a user is). This means that transient SAML
+      identifiers for example cannot be used.
       </p>
-      <p>This secure mechanism for passing the user's identity down through a chain of API calls allows each API producing app in the chain
-      to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p>
-      <p>Because the authentication object itself is never passed down within the API calls, malicious apps are prevented from acting
-      on behalf of a user who has not logged in.</p>     
-    /viaSso:
-      /{principalAuthnID}:
-        get:
-          description: |
-            Get information about the logged in principal in the case where your app is an SSO-protected web server. You can obtain the id from the incoming SAML assertion.
-            TAS verifies that the authentication was made at your app.
-          responses:
-            200:
-              body:
-                application/json:
-                  schema: !include ../schemas/principalAuthn.json
-                  example: !include ../examples/principalAuthn.json
-    /viaToken:
-      /{accessToken}:
-        get:
-          description: |
-            Get information about the logged in principal in the case where your app is producing an OAuth tenant API consumed by some other app (possibly an
-            SSO-protected web site, or possibly another API server higher up in the chain).
-            For accessToken, use the access token that was passed to your app via the Authentication header in the incoming OAuth API call.
-          responses:
-            200:
-              body:
-                application/json:
-                  schema: !include ../schemas/principalAuthn.json
-                  example: !include ../examples/principalAuthn.json
+      <p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p>
+      <p>Because access tokens are generated and signed by TAS, the user's identity can be passed securely down through a chain of
+      OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p>
+      <p>Each producing app in the chain gets their chance to enforce their own business rules and make further
+      tenant API calls on behalf of the logged in user.</p>     
+    /viaSamlAssertion:
+      post:
+        description: |
+          If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at
+          login time for the samlSubject by using this endpoint and passing the assertion as the request body.
+        body:
+          application/xml:
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/samlSubject.json
+                example: !include ../examples/samlSubject.json
   /routes:
     description: |
       <p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p>
@@ -122,11 +119,12 @@ version: v1
                       example: !include ../examples/route.json
             /tokens:
               description: |
-                <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token) that authorize a specific
-                consuming app to consume a specific OAuth tenant API at a specific producing app.</p>
-                <p>Because access tokens are
-                self-contained and signed, producers can validate incoming tokens without any reference to the auth server
-                (i.e. TAS).</p>
+                <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see
+                http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about
+                and http://jwt.io/):
+                a) that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p>
+                <p>Because access tokens are self-contained and signed, producers can rely on their content without any network
+                traffic to the authorization server (i.e. TAS).</p>
                 <p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or
                 (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
                 assertion's SessionNotOnOrAfter value (if present), whichever is shorter.</p>
@@ -188,19 +186,23 @@ version: v1
         <li>The tenant's own private/public key pair (as obtained via GET /{tenant})
         <li>All HMAC signing keys (as held on routes)
         </ul>
-        <li>Increments the tenant's incarnation (thus invalidating all existing OAuth tokens)  
+        <li>Increments the tenant's incarnation (thus invalidating all existing OAuth tokens)
+        <li>detects whether the delta set includes uninstalling the app the user is currently on, and if
+        so calls GET /m/storeFrontMainPage to guess the startup page.   
         <li>sends startup requests to each installed app</li>
         </ol>
         </p>
         <p>Calling this API does not apply the delta set, but instead prepares a launcher, which is a self-contained
-        JWT (json web token) that embeds the delta set and can be safely handed off to an insecure client, i.e.
-        javascript in a web browser. The insecure client can then, via unauthenticated CORS calls, use the launcher
-        to start the operation and subsequently track its progress, e.g. via a progress dialog. This technique allows
-        the storefront app to keep this part of its user interface working even while the storefront app itself (like
+        JWT (json web token) signed with the tenant's signing key that embeds the delta set and can be safely handed
+        off to an insecure client, i.e. javascript in a web browser.</p>
+        <p>The insecure client can then, via unauthenticated CORS calls, use the launcher
+        to start the operation and subsequently track its progress, e.g. via a progress dialog.</p>
+        <p>This technique allows the storefront app to keep this part of its user interface working
+        even while the storefront app itself (like
         all other installed apps) is cycled down and up as part of the operation.</p>
-        <p>Since successfully applying a delta set (even an empty one) increments the tenant's incarnation, it will
-        also invalidate any outstanding launchers. Also launchers expire within 10 minutes of being issued. Launchers
-        are meant therefore to be used immediately.</p>
+        <p>Since successfully applying a delta set (even an empty one) changes the tenant's signing key and
+        increments incarnation, it will also invalidate any outstanding launchers. Launchers also expire within
+        10 minutes of being issued. Launchers are meant to be used immediately.</p>
         <p>An empty deltas set can be passed as a way to reboot the tenant, i.e. take down and then bring up all apps.
         Because this increments the tenant's incarnation, and therefore invalidates all existing OAuth tokens and HMAC
         signing keys, this is an appropriate action to take in the event of a compromise of a token or signing key.
@@ -221,7 +223,7 @@ version: v1
     post:
       description: |
         <p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side
-        call to POST /deltaSets).</p>
+        call to POST /deltaSets). The launcher JWT is signed using the tenant's signing key.</p>
         <p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
         belongs to the storefront app which does not share the same domain as the tas core).</p>
         <p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the
