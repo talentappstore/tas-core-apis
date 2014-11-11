@@ -47,11 +47,26 @@ do
 done
 echo "</tbody></table>" >> $DIR/index.html
 
-echo "<h2>Schemas</h2><table class='table table-bordered table-condensed'><thead><tr><th>schema</th><th>example</th></tr></thead><tbody>" >> $DIR/index.html
+echo "<h2>Schemas</h2><table class='table table-bordered table-condensed'><thead><tr><th>schema</th><th>examples</th></tr></thead><tbody>" >> $DIR/index.html
 for f in $DIR/schemas/*.json
 do
   b=$(basename $f)
-  echo "<tr><td><a href='schemas/$b'>$b</a></td><td><a href='examples/$b'>$b</a></td></tr>" >> $DIR/index.html
+  
+  exampleString=""
+  # TODO: looping all files is well naff, wrestle shell file expansion into submission instead
+  for example in $DIR/examples/*.json
+  do
+     e=$(basename $example)
+     # trim extensions from each
+     e=${e%.json}
+     b=${b%.json}
+     if [[ $e =~ $b\-.* ]]
+       then
+          exampleString="$exampleString <a href='examples/$e.json'>$e.json</a><br />"
+     fi
+  done
+  
+  echo "<tr><td><a href='schemas/$b.json'>$b.json</a></td><td>$exampleString</td></tr>" >> $DIR/index.html
 done
 echo "</tbody></table>" >> $DIR/index.html
 

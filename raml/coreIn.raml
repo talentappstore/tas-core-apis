@@ -19,7 +19,7 @@ version: v1
         body:
           application/json:
             schema: !include ../schemas/tenant.json
-            example: !include ../examples/tenant.json
+            example: !include ../examples/tenant-simple.json
   /samlMetadata:
     description: |
       SAML metadata is a package of XML information about identity providers, certificates, etc., that your app's SSO
@@ -73,7 +73,7 @@ version: v1
             body:
               application/json:
                 schema: !include ../schemas/samlSubject.json
-                example: !include ../examples/samlSubject.json
+                example: !include ../examples/samlSubject-simple.json
   /routes:
     description: |
       <p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p>
@@ -104,7 +104,7 @@ version: v1
                 body:
                   application/json:
                     schema: !include ../schemas/routes.json
-                    example: !include ../examples/routes.json
+                    example: !include ../examples/routes-nonOAuth.json
           /{producer}:
             get:
               description: | 
@@ -116,7 +116,7 @@ version: v1
                   body:
                     application/json:
                       schema: !include ../schemas/route.json
-                      example: !include ../examples/route.json
+                      example: !include ../examples/route-hmac.json
             /tokens:
               description: |
                 <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see
@@ -143,7 +143,7 @@ version: v1
                         body:
                           application/json:
                             schema: !include ../schemas/tokenJwt.json
-                            example: !include ../examples/tokenJwt.json
+                            example: !include ../examples/tokenJwt-simple.json
               /viaToken:
                 /{accessToken}:
                   description: |
@@ -163,7 +163,7 @@ version: v1
                         body:
                           application/json:
                             schema: !include ../schemas/tokenJwt.json
-                            example: !include ../examples/tokenJwt.json
+                            example: !include ../examples/tokenJwt-simple.json
   /deltaSets:
     post:
       description: |
@@ -212,13 +212,13 @@ version: v1
       body:
         application/json:
           schema: !include ../schemas/deltaSet.json
-          example: !include ../examples/deltaSet.json
+          example: !include ../examples/deltaSet-candidateIdentitySources.json
       responses:
         200:
           body:
             application/json:
               schema: !include ../schemas/deltaSet.json
-              example: !include ../examples/deltaSet.json
+              example: !include ../examples/deltaSet-candidateIdentitySources.json
   /deltaSetLaunchers:
     post:
       description: |
@@ -234,13 +234,13 @@ version: v1
       body:
         application/json:
           schema: !include ../schemas/deltaSet.json
-          example: !include ../examples/deltaSet.json
+          example: !include ../examples/deltaSet-candidateIdentitySources.json
       responses:
         200:
           body:
             application/json:
               schema: !include ../schemas/deltaSetStatus.json
-              example: !include ../examples/deltaSetStatus.json
+              example: !include ../examples/deltaSetStatus-installApps.json
   /deltaSetLaunches:
     /{launchKey}:
       get:
@@ -267,7 +267,7 @@ version: v1
             body:
               application/json:
                 schema: !include ../schemas/deltaSetStatus.json
-                example: !include ../examples/deltaSetStatus.json
+                example: !include ../examples/deltaSetStatus-installApps.json
   /installs:
     description: Installs are currently installed apps at the tenant.
     /{app}:

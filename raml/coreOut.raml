@@ -34,7 +34,7 @@ version: v1
       body:
         application/json:
           schema: !include ../schemas/shutDownRequest.json
-          example: !include ../examples/shutDownRequest.json
+          example: !include ../examples/shutDownRequest-simple.json
   /startUps:
     post:         
       description: |
@@ -59,7 +59,7 @@ version: v1
           body:
             application/json:
               schema: !include ../schemas/storeFrontMainPage.json
-              example: !include ../examples/storeFrontMainPage.json
+              example: !include ../examples/storeFrontMainPage-simple.json
           
   /authentications:
     /{principalDev}:

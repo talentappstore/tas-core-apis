@@ -470,7 +470,7 @@
 	"sub": {
 	  "nameID": "frank@ibm.com",
 	  "nameQualifier": "someibmidp",
-	  "entityID": "some mroe SAML info"
+	  "entityID": "some more SAML info"
 	},
 	"cons": "tas-uberapply",
 	"dev": "tas",
@@ -531,7 +531,7 @@
 	"sub": {
 	  "nameID": "frank@ibm.com",
 	  "nameQualifier": "someibmidp",
-	  "entityID": "some mroe SAML info"
+	  "entityID": "some more SAML info"
 	},
 	"cons": "tas-uberapply",
 	"dev": "tas",
@@ -686,13 +686,14 @@
             }
         },
         "identitySourceDeltas": {
-            "$ref": "./identitySourceSet.json"
+          "type": "array",
+          "items": { "$ref": "./identitySourceSet.json" }
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "kind": "deltaSet",
     "existingTenantTarget": {
-      "incarnation": 34
+        "incarnation": 34
     },
     "appDeltas": [
         {
@@ -732,114 +733,116 @@
             "app": "supersoft-boomchaka"
         }
     ],
-    "identitySourceDeltas": {
-        "kind": "identitySourceSet",
-        "principalDeveloper": "tas",
-        "principalType": "user",
-        "identitySources": [
-            {
-                "kind": "legacyAppIdentitySource",
-                "id": 10034544,
-                "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
-                "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034545,
-                "description": "Everyone in the corporate IdP. We force mark all such people as internal",
-                "metadata": "https://acme.corpsso.com/blah",
-                "attributeOverrides": [
-                    {
-                        "filter": "*",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034546,
-                "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
-                "metadata": "https://atsupport.com/idp",
-                "attributeOverrides": [
-                    {
-                        "filter": "*",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034547,
-                "description": "RealMe (since acme is public sector)",
-                "metadata": "https://realme.nz/blah",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "emailIdentitySource",
-                "id": 10034548,
-                "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "socialIdentitySource",
-                "id": 10034549,
-                "network": "LinkedIn",
-                "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    },
-                    {
-                        "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-tags",
-                                "values": [
-                                    "alumni"
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+    "identitySourceDeltas": [
+        {
+            "kind": "identitySourceSet",
+            "principalDeveloper": "tas",
+            "principalType": "user",
+            "identitySources": [
+                {
+                    "kind": "legacyAppIdentitySource",
+                    "id": 10034544,
+                    "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
+                    "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034545,
+                    "description": "Everyone in the corporate IdP. We force mark all such people as internal",
+                    "metadata": "https://acme.corpsso.com/blah",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034546,
+                    "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
+                    "metadata": "https://atsupport.com/idp",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034547,
+                    "description": "RealMe (since acme is public sector)",
+                    "metadata": "https://realme.nz/blah",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "emailIdentitySource",
+                    "id": 10034548,
+                    "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "socialIdentitySource",
+                    "id": 10034549,
+                    "network": "LinkedIn",
+                    "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        },
+                        {
+                            "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-tags",
+                                    "values": [
+                                        "alumni"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }</code></pre></div><div class=tab-pane id=__tenant__deltaSets_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {
@@ -985,13 +988,14 @@
             }
         },
         "identitySourceDeltas": {
-            "$ref": "./identitySourceSet.json"
+          "type": "array",
+          "items": { "$ref": "./identitySourceSet.json" }
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "kind": "deltaSet",
     "existingTenantTarget": {
-      "incarnation": 34
+        "incarnation": 34
     },
     "appDeltas": [
         {
@@ -1031,114 +1035,116 @@
             "app": "supersoft-boomchaka"
         }
     ],
-    "identitySourceDeltas": {
-        "kind": "identitySourceSet",
-        "principalDeveloper": "tas",
-        "principalType": "user",
-        "identitySources": [
-            {
-                "kind": "legacyAppIdentitySource",
-                "id": 10034544,
-                "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
-                "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034545,
-                "description": "Everyone in the corporate IdP. We force mark all such people as internal",
-                "metadata": "https://acme.corpsso.com/blah",
-                "attributeOverrides": [
-                    {
-                        "filter": "*",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034546,
-                "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
-                "metadata": "https://atsupport.com/idp",
-                "attributeOverrides": [
-                    {
-                        "filter": "*",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034547,
-                "description": "RealMe (since acme is public sector)",
-                "metadata": "https://realme.nz/blah",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "emailIdentitySource",
-                "id": 10034548,
-                "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "socialIdentitySource",
-                "id": 10034549,
-                "network": "LinkedIn",
-                "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    },
-                    {
-                        "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-tags",
-                                "values": [
-                                    "alumni"
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+    "identitySourceDeltas": [
+        {
+            "kind": "identitySourceSet",
+            "principalDeveloper": "tas",
+            "principalType": "user",
+            "identitySources": [
+                {
+                    "kind": "legacyAppIdentitySource",
+                    "id": 10034544,
+                    "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
+                    "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034545,
+                    "description": "Everyone in the corporate IdP. We force mark all such people as internal",
+                    "metadata": "https://acme.corpsso.com/blah",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034546,
+                    "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
+                    "metadata": "https://atsupport.com/idp",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034547,
+                    "description": "RealMe (since acme is public sector)",
+                    "metadata": "https://realme.nz/blah",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "emailIdentitySource",
+                    "id": 10034548,
+                    "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "socialIdentitySource",
+                    "id": 10034549,
+                    "network": "LinkedIn",
+                    "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        },
+                        {
+                            "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-tags",
+                                    "values": [
+                                        "alumni"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel___tenant__deltaSetLaunchers><span class=parent>/{tenant}</span>/deltaSetLaunchers</a> <span class=methods><a href=# data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel___tenant__deltaSetLaunchers class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#__tenant__deltaSetLaunchers_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets). The launcher JWT is signed using the tenant&#39;s signing key.</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=__tenant__deltaSetLaunchers_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/{tenant}</span>/deltaSetLaunchers</h4></div><div class=modal-body><div class="alert alert-info"><p>Launch the delta set as contained in the launcher JWT passed as the request body (and prepared by an earlier server-side call to POST /deltaSets). The launcher JWT is signed using the tenant&#39;s signing key.</p><p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to the storefront app which does not share the same domain as the tas core).</p><p>The response body is a deltaSetStatus structure, containing zero or more events and summary status of the delta apply operation. Since the operation is long-running, and will likely not be complete when the endpoint returns, the deltaSetStatus also includes an unguessable unique "launch key" which can be passed as a parameter to GET /deltaSetLaunches (not launch-ers), a long polling call, intended for use by Javascript inside a storefront app, to get up to 100 events relating to an apply operation, along with summary information.</p></div><ul class="nav nav-tabs"><li class=active><a href=#__tenant__deltaSetLaunchers_post_request data-toggle=tab>Request</a></li><li><a href=#__tenant__deltaSetLaunchers_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=__tenant__deltaSetLaunchers_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {
@@ -1284,13 +1290,14 @@
             }
         },
         "identitySourceDeltas": {
-            "$ref": "./identitySourceSet.json"
+          "type": "array",
+          "items": { "$ref": "./identitySourceSet.json" }
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "kind": "deltaSet",
     "existingTenantTarget": {
-      "incarnation": 34
+        "incarnation": 34
     },
     "appDeltas": [
         {
@@ -1330,114 +1337,116 @@
             "app": "supersoft-boomchaka"
         }
     ],
-    "identitySourceDeltas": {
-        "kind": "identitySourceSet",
-        "principalDeveloper": "tas",
-        "principalType": "user",
-        "identitySources": [
-            {
-                "kind": "legacyAppIdentitySource",
-                "id": 10034544,
-                "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
-                "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034545,
-                "description": "Everyone in the corporate IdP. We force mark all such people as internal",
-                "metadata": "https://acme.corpsso.com/blah",
-                "attributeOverrides": [
-                    {
-                        "filter": "*",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034546,
-                "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
-                "metadata": "https://atsupport.com/idp",
-                "attributeOverrides": [
-                    {
-                        "filter": "*",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "samlIdentitySource",
-                "id": 10034547,
-                "description": "RealMe (since acme is public sector)",
-                "metadata": "https://realme.nz/blah",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "emailIdentitySource",
-                "id": 10034548,
-                "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "kind": "socialIdentitySource",
-                "id": 10034549,
-                "network": "LinkedIn",
-                "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
-                "attributeOverrides": [
-                    {
-                        "filter": "email like &#x27;*@acme.com&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-type",
-                                "value": "internal"
-                            }
-                        ]
-                    },
-                    {
-                        "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
-                        "ifMatched": [
-                            {
-                                "name": "tas-candidate-tags",
-                                "values": [
-                                    "alumni"
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+    "identitySourceDeltas": [
+        {
+            "kind": "identitySourceSet",
+            "principalDeveloper": "tas",
+            "principalType": "user",
+            "identitySources": [
+                {
+                    "kind": "legacyAppIdentitySource",
+                    "id": 10034544,
+                    "description": "Everyone who already has accounts in the legacy ATS (acting here as an IdP). The response of /me from the ATS contains things like \"tas-candidate-type\": [\"internal\"], passed through from the ATS&#x27;s own records",
+                    "apiBase": "https://acme.legacyats.com/tasapi/v1/candidateIdentityTest"
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034545,
+                    "description": "Everyone in the corporate IdP. We force mark all such people as internal",
+                    "metadata": "https://acme.corpsso.com/blah",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034546,
+                    "description": "Everyone in the ATS vendor&#x27;s support team. These people are all marked as internal, so they can test internal-facing content etc.",
+                    "metadata": "https://atsupport.com/idp",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "samlIdentitySource",
+                    "id": 10034547,
+                    "description": "RealMe (since acme is public sector)",
+                    "metadata": "https://realme.nz/blah",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "emailIdentitySource",
+                    "id": 10034548,
+                    "description": "Email people. Marked as internals if they have an email matching the corporate pattern",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "kind": "socialIdentitySource",
+                    "id": 10034549,
+                    "network": "LinkedIn",
+                    "description": "LinkedIn people. Marked as internals if they have an email matching the corporate pattern",
+                    "attributeOverrides": [
+                        {
+                            "filter": "email like &#x27;*@acme.com&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-type",
+                                    "value": "internal"
+                                }
+                            ]
+                        },
+                        {
+                            "filter": "groups contains &#x27;Official ACME alumni group&#x27;",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-candidate-tags",
+                                    "values": [
+                                        "alumni"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }</code></pre></div><div class=tab-pane id=__tenant__deltaSetLaunchers_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {
