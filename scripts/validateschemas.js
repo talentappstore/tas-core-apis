@@ -13,7 +13,7 @@ var dir = args[0];
 	var schemafiles = [];
 	var arrayOfSchemaFiles = fs.readdirSync(dir + '/schemas');
 	arrayOfSchemaFiles.forEach( function (schemaFile) {
-		console.log('adding schema: ' + schemaFile);
+		console.log('  adding schema: ' + schemaFile);
 		var loadSchemaText = fs.readFileSync(dir + '/schemas/' + schemaFile);
 		var loadSchema = JSON.parse(loadSchemaText);
 		tv4.addSchema(schemaFile, loadSchema);
@@ -27,7 +27,7 @@ var dir = args[0];
 	var schemafiles = [];
 	var arrayOfSchemaFiles = fs.readdirSync(dir + '/schemas');
 		arrayOfSchemaFiles.forEach( function (schemaFile) {
-		console.log('validating examples for: ' + schemaFile);
+		console.log('  schema: ' + schemaFile);
 		
 		var exampleFound = false;
 		var schemaFileName = schemaFile.substr(0, schemaFile.lastIndexOf('.'));		
@@ -38,7 +38,7 @@ var dir = args[0];
 			if (exampleFileBase.localeCompare(schemaFileName) == 0) {
 				exampleFound = true;
 				
-				console.log(exampleFile);
+				console.log('    example: ' + exampleFile);
 				var exampleText = fs.readFileSync(dir + '/examples/' + exampleFile);
 				var example = JSON.parse(exampleText);
 				var res = tv4.validateMultiple(example,
