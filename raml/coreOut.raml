@@ -25,16 +25,14 @@ version: v1
         The app may choose to continue producing APIs for a few seconds to contribute to an
         orderly tenant shutdown (as long as doing so does not require
         consuming other app's APIs, since those apps are likely also shutting down), but in any case should aim to shut
-        down within a few seconds. Once the app is fully dormant it should signal this via a POST to the shutDownComplete webhook
-        passed in the request. This feedback allows TAS to know when all apps for the tenant are dormant.
+        down within a few seconds. The app should not provide its response until it is halted.
         Upon receiving a shutDown request, apps should discard any local copies of incoming or outgoing routes,
-        tenant HMAC signing keys (though not the app's own signing key for making core API calls,which is unaffected by a takeDown),
-        OAuth tokens and basic auth credentials. All of these should be reloaded from TAS as required at bringUp time.
+        tenant HMAC signing keys (though not the app's own signing key for making core API calls, which is unaffected by a halt),
+        OAuth tokens and basic auth credentials. All of these should be reloaded from TAS as required at start time.
         Existing principal authentications are unaffected and can continue to be used.
-      body:
-        application/json:
-          schema: !include ../schemas/shutDownRequest.json
-          example: !include ../examples/shutDownRequest-simple.json
+      responses:
+        200:
+
   /startUps:
     post:         
       description: |

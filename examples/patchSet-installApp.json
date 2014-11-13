@@ -1,0 +1,4 @@
+[
+  { "op": "test", "path": "/incarnation", "value": 23 },
+  { "op": "add", "path": "/installs/-", "value": { "app": "zwarg-zongo" } }
+]

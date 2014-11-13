@@ -1,17 +1,21 @@
 {
-    "kind": "deltaSet",
-    "existingTenantTarget": {
-        "incarnation": 34
+    "details": {
+        "organizationName": "ACME Corporation",
+        "shortCode": "acme",
+        "description": "A test site while we see if this stuff works",
+        "country": "US",
+        "industry": "Manufacturing"
     },
-    "appDeltas": [
+    "status": {
+        "incarnation": 23,
+        "status": "halting",
+        "publicKey": "kjhyg9876gf7645d88t0h897h6oityf8975fg46fgkgi"
+    },
+    "installs": [
         {
-            "kind": "installDelta",
-            "app": "tas-superats"
-        },
-        {
-            "kind": "installDelta",
-            "app": "tas-atszero",
-            "servers": [
+            "app": "tas-storefront",
+            
+                      "servers": [
                 {
                     "name": "ats0",
                     "baseUri": "https://acme.atszero.com",
@@ -21,32 +25,35 @@
                     }
                 }
             ]
-        },
-        {
-            "kind": "editDelta",
-            "app": "supersoft-oldjobboard",
-            "servers": [
-                {
-                    "name": "oldboard",
-                    "baseUri": "https://oldboard.supersoft.com/acme",
-                    "basicAuthCredentials": {
-                        "user": "userX",
-                        "password": "mypwd"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "unInstallDelta",
-            "app": "supersoft-boomchaka"
+            
+            
+            
         }
     ],
-    "identitySourceDeltas": [
+    "identitySourceSets": [
         {
-            "kind": "identitySourceSet",
             "principalDeveloper": "tas",
             "principalType": "user",
             "identitySources": [
+                {
+                    "kind": "bootstrapIdentitySource",
+                    "description": "The store owner automatically gets access to manage the store",
+                    "attributeOverrides": [
+                        {
+                            "filter": "*",
+                            "ifMatched": [
+                                {
+                                    "name": "tas-user-roles",
+                                    "values": [
+                                        "hrStoreIdentityAdmin",
+                                        "hrStoreAppsAdmin",
+                                        "hrStoreViewer"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
                 {
                     "kind": "legacyAppIdentitySource",
                     "id": 10034544,

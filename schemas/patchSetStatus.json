@@ -8,7 +8,7 @@
             "description": "elapsed time of the operation in milliseconds",
             "type": "integer"
         },
-        "deltaApplyStart": {
+        "patchSetApplyStart": {
             "type": "object",
             "additionalProperties": false,
             "required": [
@@ -17,7 +17,7 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "deltaApplyStart"
+                        "patchSetApplyStart"
                     ]
                 }
             }
@@ -90,7 +90,7 @@
                 }
             }
         },
-        "applyIndividualDeltasStart": {
+        "appPatchesApplyStart": {
             "type": "object",
             "additionalProperties": false,
             "required": [
@@ -99,7 +99,7 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "applyIndividualDeltasStart"
+                        "appPatchesApplyStart"
                     ]
                 }
             }
@@ -158,7 +158,7 @@
                 }
             }
         },
-        "applyIndividualDeltasComplete": {
+        "appPatchesApplyComplete": {
             "type": "object",
             "additionalProperties": false,
             "required": [
@@ -168,7 +168,7 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "applyIndividualDeltasComplete"
+                        "appPatchesApplyComplete"
                     ]
                 },
                 "elapsedTime": {
@@ -226,7 +226,7 @@
                 }
             }
         },
-        "deltaApplyComplete": {
+        "patchSetApplyComplete": {
             "type": "object",
             "additionalProperties": false,
             "required": [
@@ -237,7 +237,7 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "deltaApplyComplete"
+                        "patchSetApplyComplete"
                     ]
                 },
                 "elapsedTime": {
@@ -257,7 +257,7 @@
                 "event": {
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/deltaApplyStart"
+                            "$ref": "#/definitions/patchSetApplyStart"
                         },
                         {
                             "$ref": "#/definitions/tenantDownStart"
@@ -272,7 +272,7 @@
                             "$ref": "#/definitions/tenantDownComplete"
                         },
                         {
-                            "$ref": "#/definitions/applyIndividualDeltasStart"
+                            "$ref": "#/definitions/appPatchesApplyStart"
                         },
                         {
                             "$ref": "#/definitions/appInstallComplete"
@@ -284,7 +284,7 @@
                             "$ref": "#/definitions/appUnInstallComplete"
                         },
                         {
-                            "$ref": "#/definitions/applyIndividualDeltasComplete"
+                            "$ref": "#/definitions/appPatchesApplyComplete"
                         },
                         {
                             "$ref": "#/definitions/tenantUpStart"
@@ -296,7 +296,7 @@
                             "$ref": "#/definitions/tenantUpComplete"
                         },
                         {
-                            "$ref": "#/definitions/deltaApplyComplete"
+                            "$ref": "#/definitions/patchSetApplyComplete"
                         }
                     ]
                 }
@@ -307,32 +307,26 @@
     "additionalProperties": false,
     "required": [
         "kind",
-        "launchKey",
-        "incarnationPrior",
-        "events"
+        "applyStatus"
     ],
     "properties": {
         "kind": {
             "enum": [
-                "deltaSetStatus"
+                "patchSetStatus"
             ]
-        },
-        "launchKey": {
-            "type": "integer"
         },
         "applyStatus": {
             "enum": [
-                "complete",
+                "notLaunched",
                 "inProcess",
-                "notLaunched"
+                "complete",
+                "broken"
             ]
         },
         "latestEvent": {
             "type": "integer"
         },
-        "incarnationPrior": {
-            "type": "integer"
-        },
+       "continuePage": { "type": "string", "description": "the URI that the browser should redirect the user to once this patch set is complete, possibly at a new storefront if the patch set swapped out the current one" },
         "events": {
             "type": "array",
             "items": {

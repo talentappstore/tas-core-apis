@@ -27,7 +27,7 @@ $DIR/scripts/validateschemas.js $DIR
 
 echo "generating HTML"
 
-echo "<html><head>" > $DIR/index.html
+echo "<html><head><title>TAS core</title>" > $DIR/index.html
 echo "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>" >> $DIR/index.html
 echo "<meta name='viewport' content='width=device-width, initial-scale=1'>" >> $DIR/index.html
 echo "</head><body>" >> $DIR/index.html

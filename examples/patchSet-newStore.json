@@ -1,0 +1,47 @@
+[
+{
+    "op": "add",
+    "path": "/",
+    "value": {
+        "details": {
+            "organizationName": "ACME Corporation",
+            "shortCode": "acme",
+            "description": "A test site while we see if this stuff works",
+            "country": "US",
+            "industry": "Manufacturing"
+        },
+        "installs": [
+            {
+                "app": "tas-storefront"
+            }
+        ],
+        "identitySourceSets": [
+            {
+                "principalDeveloper": "tas",
+                "principalType": "user",
+                "identitySources": [
+                    {
+                        "kind": "bootstrapIdentitySource",
+                        "description": "The store owner automatically gets access to manage the store",
+                        "attributeOverrides": [
+                            {
+                                "filter": "*",
+                                "ifMatched": [
+                                    {
+                                        "name": "tas-user-roles",
+                                        "values": [
+                                            "hrStoreIdentityAdmin",
+                                            "hrStoreAppsAdmin",
+                                            "hrStoreViewer"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+]

@@ -9,6 +9,19 @@
 <script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/sequence-diagram-min.js'></script>
 <script type="text/javascript" src='http://tas-static-libs.talentappstore.com/js/tocify.js'></script>
 
+<style>
+* {font-family: monospace;}
+
+DIV.codeBlock {
+display: inline-block;
+font-family: monospace;
+white-space: pre;
+background-color: #e8e8e8;
+padding: .5em;
+margin-bottom: 1em;
+}
+</style>
+
 <title>Talent App Store app developer guide</title>
 </head>
 <body>
@@ -61,6 +74,8 @@ talent management platform.
 <h2>Multitenant architecture</h2>
 
 [diagram]
+
+<h1>Writing apps</h1>
 
 <h2>Core and tenant API types</h2>
 
@@ -347,7 +362,6 @@ note left of preferences app: token is OK, preferences app now performs\nadditio
 note left of preferences app: allows the API call 
 </div>
 
-
  
 
 <h4>Non-OAuth APIs</h4>
@@ -365,7 +379,315 @@ Basic auth should not be used by new apps, but only where the app is fronting a 
 
 <h2>Principal types and roles</h2>
 
-[incomplete]
+<p>Principal types are a class of person (or system) who can log into an TAS SSO-protected app.</p>
+
+<p>Just as with APIs, to prevent name squatting, principal types have a name but are also scoped by the developer who has defined them.</p>
+
+<p>For example, the developer "tas" has defined these two principal types:
+<ul>
+<li>&lt;tas&gt; candidate</li>
+<li>&lt;tas&gt; user</li>
+</ul>
+</p>
+
+<p>When you are writing an SSO-protected app, you need to define which principal type the app is protected by. For example, you would likely
+want to protect an app which allowed users to search through candidates in a talent pool by the principal type <b>&lt;tas&gt; user</b>,
+since there are already many HR-facing apps in the store that are protected by &lt;tas&gt; user.
+</p> 
+
+<p>Not all apps need user logins - for example a simple job board that just renders the tenant's open jobs,
+and uses HTML5 local storage or cookies for its job cart, might not need logins.</p>
+
+<h3>Defining your own principal types</h3>
+
+<p>As a developer, you can define your own principal types, e.g.:
+<ul>
+<li>&lt;supersoft&gt; candidate</li>
+</ul>
+</p>
+
+<p>However, because apps are tightly linked to principal types, your new principal type will not be usable by any existing app in TAS.
+You would need to write new apps (or persuade others to) that used your principal type.</p>
+
+<p>To get the most adoption for your app, you should reuse existing principal types where possible. For example, if your app uses a common
+principal type like &lt;tas&gt; candidate, then many tenants will be able to install your app and have it work straight away, since they
+will have already defined the identity sources for &lt;tas&gt; candidate.</p>
+
+<p>It follows too that your app will likely be able to call an API like GET &lt;tas&gt;/candidates to get a list of candidates. This makes your app
+more immediately valuable to customers.</p>
+
+<h3>Identity sources</h3>
+
+<p>As a developer, if your app is SSO-protected, then you will be dealing with incoming SAML assertions about principals (users) as you ask them to log in.<p>
+
+<p>Behind the scenes, TAS may be allowing people from multiple different <b>identity sources</b> to log in as. For example, the tenant acme may have configured things
+such that anyone can authenticate as a &lt;tas&gt;/candidate if they have:
+<ul>
+<li>an account in the corporate IdP. Everyone like this gets marked as internal.
+<li>an account in the legacy ATS support team. These people all get marked as internal, allowing them to debug internal-facing content issues.
+<li>a candidate record in the legacy ATS. These people log in at a dialogue presented by TAS, but the ATS does the password checking. On successful login, the ATS passes through information in json, such as whether candidate is internal. That information gets injected as attributes in the eventual SAML assertion
+<li>a RealMe account. Since acme is an NZ public sector organization, RealMe is allowed. Marked as internal if they have an *@acme.com email.
+<li>an email address. Marked as internal if they have an *@acme.com email.
+<li>a LinkedIn account. Marked as internal if they have an *@acme.com email. Marked as alumni if they are in a the LinkedIn group 'Official ACME alumni group'
+</ul>
+</p>
+
+<p>Your app remains unaware of these mappings behind the scenes - as far as it is concerned, all users are just candidates, with an associated
+SAML assertion.</p>  
+
+
+<h3>Principal types and OAuth</h3>
+
+<p>Principal types are used not just for SSO-protected web apps, but also for API servers.<p>
+
+
+<h1>Storefront apps</h1>
+
+<p>Storefront apps are specially privileged apps that perform actions on TAS itself, like installing apps, adding identity sources, etc.<p>
+
+<p>Storefront apps need to be tagged as "storeFront" by TAS support. Please contact TAS if you want to build a storefront app.</p>
+
+<p>In theory multiple storefront apps can coexist within the same tenant.<p>
+
+
+<h2>Patching a store</h2>
+
+<p>All changes to a store's configuration - i.e. installs, edits or uninstalls of the apps and identity sources making up the store - 
+are made via patch documents (documents that conform to the HTTP PATCH semantics described in https://tools.ietf.org/html/rfc6902).</p>
+
+<p>As per the RFC, all changes in the patch set are made with a single atomic transaction.</p>
+
+<h3>Additional patch semantics</h3>
+
+<p>TAS supports an additional id-based path style inspired by SCIM (https://tools.ietf.org/html/draft-ietf-scim-api-12), except that EMCA script is used, e.g.:</p>
+
+<p>This path points to the installed app "tas-legacyats".</p>
+
+<div class='codeBlock'>
+"path": "installs[app=='tas-legacyats']"
+</div>
+
+<h3>Patch examples</h3>
+
+<p>This example updates the baseUri on the "main" server of the installed app "tas-legacyats".</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+{ "op": "replace", "path": "installs[app=='tas-legacyats'].servers[name=='main'].baseUri", "value": "https://newlocation.com/api"
+]
+</div>
+
+
+<p>This example installs the app "zongo" from the developer "zwarg", after first checking that the store is still at incarnation 23.</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+  { "op": "test", "path": "status.incarnation", "value": 23 },
+  { "op": "add", "path": "status.installs.-", "value": {"app": "zwarg-zongo"} }
+]
+</div>
+
+<p>This example installs an app with a server override (i.e., a non-multi tenanted app such as a legacy ATS).</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+  { "op": "test", "path": "/incarnation", "value": 23 },
+  { "op": "add", "path": "/installs/-", "value": {"app": "tas-legacyats", "servers": [{"name": "ats0", "basicAuthCredentials": {"user": "fred", "password": "secret1"}}]} }
+]
+</div>
+
+<p>This example changes the password for the previously installed app:</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+  { "op": "test", "path": "/incarnation", "value": 23 },
+  { "op": "add", "path": "/installs/6/servers/0/basicAuthCredentials/password", "value": "secret2" }
+]
+</div>
+
+<p>This example sets up a new tenant:
+<ol>
+<li>creates the store for a new tenant "acme"
+<li>installs the storefront app
+<li>installs a single identity source for the bootstrap IdP
+<li>hardcodes all people in the bootstrap IdP as "hrStoreAppAdmin" and "hrStoreIdentityAdmin", so that they can manage the store.
+</ol>
+</p>
+
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+{
+    "op": "add",
+    "path": "/",
+    "value": {
+        "details": {
+            "organizationName": "ACME Corporation",
+            "shortCode": "acme",
+            "description": "A test site while we see if this stuff works",
+            "country": "US",
+            "industry": "Manufacturing"
+        },
+        "installs": [
+            {
+                "app": "tas-storefront"
+            }
+        ],
+        "identitySourceSets": [
+            {
+                "principalDeveloper": "tas",
+                "principalType": "user",
+                "identitySources": [
+                    {
+                        "kind": "bootstrapIdentitySource",
+                        "description": "The store owner automatically gets access to manage the store",
+                        "attributeOverrides": [
+                            {
+                                "filter": "*",
+                                "ifMatched": [
+                                    {
+                                        "name": "tas-user-roles",
+                                        "values": [
+                                            "hrStoreIdentityAdmin",
+                                            "hrStoreAppsAdmin",
+                                            "hrStoreViewer"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+]
+</div>
+
+<h2>Applying a patch</h2>
+
+<p>To apply a patch document to a tenant, your storefront app makes a series of API calls, as shown in the example below:<p>
+
+<ol>
+<li>The user (an HR admin person) is at the app details page within your storefront web site.</li>
+<li>They click install on the app, submitting a web form</li>
+<li>Your app's server code composes a patch document based on the user's input.</li>
+<li>Your app's server code POSTS to /{tenant}/patchSets, with:
+<ol>
+<li>the patch document
+<li>the continue page, i.e. where the storefront would like the user to end up on completion
+</ol>
+..and checks for errors.</li>
+<li>The response from TAS contains a signed JWT, which embeds the original patch document and the continue page.</li>
+<li>Your server code inserts the JWT into the onClick handler of a new "confirm" button on the app details page.</li>
+<li>The user is now back at the app details page. They click confirm.</li>
+<li>The browser opens a progress dialog.</li>
+<li>The browser submits the JWT, including the original patch document, via an ajax call to PATCH /{tenant}.</li>
+<li>The call returns immediately with a launch key and the first few items of the patch log.</li>  
+<li>The browser writes the patch log to the progress dialog.</li>
+<li>The browser immediately makes another ajax call to GET /{tenant}/patchLaunches/{launchKey}
+<li>This is a long polling method, which returns as soon as any new patch log items are available.</li>
+<li>The browser loops, making repeated ajax calls to GET /{tenant}/patchLaunches/{launchKey} and adding new log messages to the progress dialog, until the operation is complete.</li>
+<li>The final response from GET /{tenant}/patchLaunches/{launchKey} includes the URI of the continue page.
+<li>The browser displays a "patch complete" message to the user, and a "Continue" button.
+<li>On pressing Continue, the user is redirected to the continue page.
+<li>We're done.  
+</ol> 
+
+<p>The complexity of the interactions, and the use of JWTs, is necessary:
+<ul>
+<li>to allow the progress dialog to continue throughout, even when
+<ul>
+<li>the storefront app itself is stopped and started like all other apps as the patch set is applied</li>
+<li>the storefront app is swapped out for another one as part of the changes</li>
+</ul>
+<li>to reflect the insecure nature of making ajax calls from the browser
+</ul>
+
+<h2>How TAS applies patch sets</h2>
+
+<p>To apply a patch set, TAS does the following:
+<ol>
+<li>requests each already installed app to shut down</li>
+<li>applies the set</li>
+<li>resets all volatile credentials for the tenant:
+<ul>
+<li>The tenant's own private/public key pair (as obtained via GET /{tenant})
+<li>All HMAC signing keys (as held on routes)
+</ul>
+<li>Increments the tenant's incarnation (thus invalidating all existing OAuth tokens)
+<li>detects whether the delta set includes uninstalling the app that created tha launcher, and if
+so calls GET /m/storeFrontMainPage to get a new continue page. Note this prevents an about-to-be-uninstalled storefront
+from specifying any continue page, not just a page on itself.
+<li>sends startup requests to each installed app</li>
+</ol>
+</p>
+
+<p>In parallel to the above, TAS causes any outstanding long polling calls to GET /{tenant}/patchSetLaunches to return
+each time there is a new available event. A maximum of 100 events are returned per call.</p>
+
+
+<h2>Bootstrap patch set</h2>
+
+<p>As well as patching existing tenants, storefront apps can also create new tenants.</p>
+ 
+<p>POST /tenantBootstraps/{tenant}</p>
+
+<p>Once this launch is complete, the storefront app can take over the UI. TAS will call GET /storeFrontMain.</p>
+
+
+<h1>AuthListener apps</h1>
+
+<p>AuthListener apps are specially privileged apps that listen to all authentications for a tenant, for tasks like auto-provisioning.</p>
+
+<p>AuthListener apps need to be tagged as "authListener" by TAS support. Please contact TAS if you want to build an AuthListener app.</p>
+
+<p>AuthListeners are required because tasks like auto-provisioning require detailed domain knowledge about roles, user types, SAML attribute mappings, etc.</p>
+
+<p>TAS itself does not have any knowledge about these sort of domain-specific issues. It only deals in raw authentications. For example, TAS will know that
+a person who is a <b>&lt;tas&gt; candidate</b> has logged in, but it does not understand any concepts specific to that principal type, e.g. whether the candidate is internal, alumni, has some work detail
+attached as a SAML attribute, etc. Hence TAS allows authListener apps to gain control at login time, and take domain-specific actions.</p>
+
+<p>In theory multiple authListener apps can coexist within the same tenant.<p>
+
+<h2>Auto-provisioning example </h2>
+
+<p>A typical authListener would be an auto-provisioning app. On someone logging in, TAS calls POST /{tenant}/{principalDeveloper}/{principalType}
+on your authListener app, passing through:
+<ul>
+<li>the raw SAML authentication assertion
+<li>the derived samlSubject object (json)
+</ul>
+</p>
+
+<p>Your app might then (for example):
+<ol>
+<li>examine the attributes of the incoming SAML assertion
+<li>find the firstName attribute, and all other attributes known to make up a candidate
+<li>make a SCIM REST call to POST /candidates against the app acting as the source of truth for candidates, e.g. a legacy ATS
+</ol>
+</p>
+
+
+<h2>How TAS interacts with authListeners</h2>
+
+<p>When someone logs in, TAS calls the outwards core API POST /{tenant}/{principalDeveloper}/{principalType} on all installed apps tagged with authListener.</p>
+
+<p>TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any
+auto-provisioning type operations are complete by the time the user login hits the web site.</p>
+
+
+
+
+
+
+
 
 
 <script>
@@ -396,6 +718,7 @@ $(document).ready(function() {
 	
 });
 </script>
+		
 		
 
 
