@@ -1,6 +1,6 @@
-tas-tenant-apis
-===============
+tas-core-apis
+=============
 
-All tenant (app &lt;-> app) APIs defined by TAS
+All core (TAS -&gt; app and app -&gt; TAS) APIs.
 
-http://talentappstore.github.io/tas-tenant-apis/
+Documentation: http://talentappstore.github.io/tas-core-apis/
