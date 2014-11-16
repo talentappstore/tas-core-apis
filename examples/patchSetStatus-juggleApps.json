@@ -1,14 +1,14 @@
 {
   "kind": "patchSetStatus",
   "applyStatus": "complete",
-  "latestEvent": 23,
+  "latestEvent": 28,
   "events": [
     {"seq": 0, "event": {"kind": "patchSetApplyStart"}},
     {"seq": 1, "event": { "kind": "tenantDownStart"}},
-    {"seq": 2, "event": { "kind": "appDownRequest", "app": "tas-zoom"}},
-    {"seq": 3, "event": { "kind": "appDownRequest", "app": "hrlabs-fratly"}},
+    {"seq": 2, "event": { "kind": "appDownStart", "app": "tas-zoom"}},
+    {"seq": 3, "event": { "kind": "appDownStart", "app": "hrlabs-fratly"}},
     {"seq": 4, "event": { "kind": "appDownComplete", "app": "tas-zoom"}},
-    {"seq": 5, "event": { "kind": "appDownRequest", "app": "tas-uberapply"}},
+    {"seq": 5, "event": { "kind": "appDownStart", "app": "tas-uberapply"}},
     {"seq": 6, "event": { "kind": "appDownComplete", "app": "tas-uberapply"}},
     {"seq": 7, "event": { "kind": "appDownComplete", "app": "hrlabs-fratly"}},
     {"seq": 8, "event": { "kind": "appDownComplete", "app": "tas-dummyjobs"}},
@@ -20,12 +20,17 @@
     {"seq": 14, "event": { "kind": "appUnInstallComplete", "app": "tas-dummyjobs"}},
     {"seq": 15, "event": { "kind": "appPatchesApplyComplete", "elapsedTime": 3122}},
     {"seq": 16, "event": { "kind": "tenantUpStart"}},
-    {"seq": 17, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
-    {"seq": 18, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
-    {"seq": 19, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
-    {"seq": 20, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
-    {"seq": 21, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
-    {"seq": 22, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
-    {"seq": 23, "event": { "kind": "patchSetApplyComplete", "elapsedTime": 9603, "newIncarnation": 146}}
+    {"seq": 17, "event": { "kind": "appUpStart", "app": "tas-zoom"}},
+    {"seq": 18, "event": { "kind": "appUpStart", "app": "hrlabs-fratly"}},
+    {"seq": 19, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
+    {"seq": 10, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
+    {"seq": 21, "event": { "kind": "appUpStart", "app": "tas-uberapply"}},
+    {"seq": 22, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
+    {"seq": 23, "event": { "kind": "appUpStart", "app": "supersoft-refly"}},
+    {"seq": 24, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
+    {"seq": 25, "event": { "kind": "appUpStart", "app": "tas-tracker"}},
+    {"seq": 26, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
+    {"seq": 27, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
+    {"seq": 28, "event": { "kind": "patchSetApplyComplete", "elapsedTime": 9603, "newIncarnation": 146}}
   ]
 }

@@ -46,7 +46,7 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "appDownRequest"
+                        "appDownStart"
                     ]
                 },
                 "app": {
@@ -190,6 +190,24 @@
                 }
             }
         },
+        "appUpStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "app"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "appUpStart"
+                    ]
+                },
+                "app": {
+                    "$ref": "#/definitions/app"
+                }
+            }
+        },
         "appUpComplete": {
             "type": "object",
             "additionalProperties": false,
@@ -288,6 +306,9 @@
                         },
                         {
                             "$ref": "#/definitions/tenantUpStart"
+                        },
+                        {
+                            "$ref": "#/definitions/appUpStart"
                         },
                         {
                             "$ref": "#/definitions/appUpComplete"

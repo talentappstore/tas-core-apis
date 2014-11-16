@@ -4,227 +4,228 @@ title: TAS core incoming (app -> TAS)
 baseUri: http://talentappstore.com/{version}
 version: v1
 
-/{tenant}:
-  description: |
-    <p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p>
-    <p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS
-    does not support API calls between tenants.</p>
-  get:
+/tenants:  
+  /{tenant}:
     description: |
-      Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the
-      incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs
-      to check what's been going on while its been offline.
-    responses:
-      200:
-        body:
-          application/json:
-            schema: !include ../schemas/tenant.json
-            example: !include ../examples/tenant-mega.json
-  /samlSubjects:
-    description: |
-      <p>A samlSubject is the primary key, assembled from information in the SAML assertion from the IdP, of the current logged in user.
-      The samlSubject is useful
-      when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs
-      like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p>
-      <p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app
-      higher up the chain (if this app is an API server producing an OAuth API).</p>
-      <p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that
-      was captured by TAS when this user logged in to an SSO-protected app, likely to include: 
-      <ul>
-      <li>NameID</li>
-      <li>NameQualifier</li>
-      <li>EntityID of the issuing IdP</li>
-      </ul>
-      <p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions
-      or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across
-      multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP
-      (internal candidates), Facebook pseudo-IdP, etc.</p>
-      <p>samlSubjects are identical across all SP's (i.e., all TAS SSO-protected apps), so that apps can
-      correlate the user's identity (i.e. they each have the same understanding of who a user is). This means that transient SAML
-      identifiers for example cannot be used.
-      </p>
-      <p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p>
-      <p>Because access tokens are generated and signed by TAS, the user's identity can be passed securely down through a chain of
-      OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p>
-      <p>Each producing app in the chain gets their chance to enforce their own business rules and make further
-      tenant API calls on behalf of the logged in user.</p>     
-    /viaSamlAssertion:
-      post:
-        description: |
-          If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at
-          login time for the samlSubject by using this endpoint and passing the assertion as the request body.
-        body:
-          application/xml:
-        responses:
-          200:
-            body:
-              application/json:
-                schema: !include ../schemas/samlSubject.json
-                example: !include ../examples/samlSubject-simple.json
-  /routes:
-    description: |
-      <p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p>
-      <p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:
-      <ul>
-      <li>The actual endpoint (where the producer's server sits on the internet)</li>
-      <li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li>
-      </ul>
-      </p>
-      <p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
-      that the consumer is allowed to call.</p>
-      <p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT
-      APIs, there can be many consumers and many producers, and hence a route between each unique
-      consumer/producer pair.</p>
-    /{consumingApp}:
+      <p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p>
+      <p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS
+      does not support API calls between tenants.</p>
+    get:
       description: |
-        The app consuming the API
-      /{apiDeveloper}:
-        description: The developer who owns/defines the API
-        /{apiUriTemplate}:
-          description: The URI template (as per https://tools.ietf.org/html/rfc6570) of the API.
-          get:
-            description: | 
-              Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API.
-              The example below is for a non-OAuth, non-SoT API.
-            responses:
-              200:
-                body:
-                  application/json:
-                    schema: !include ../schemas/routes.json
-                    example: !include ../examples/routes-nonOAuth.json
-          /{producer}:
-            get:
-              description: | 
-                Fetch the route, from the given consumer, to the producer (which must be your app)
-                of a specific API. Since both consuming and producing apps are specified, there can only be
-                one or zero routes in the response.
-              responses:
-                200:
-                  body:
-                    application/json:
-                      schema: !include ../schemas/route.json
-                      example: !include ../examples/route-hmac.json
-            /tokens:
-              description: |
-                <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see
-                http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about
-                and http://jwt.io/):
-                a) that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p>
-                <p>Because access tokens are self-contained and signed, producers can rely on their content without any network
-                traffic to the authorization server (i.e. TAS).</p>
-                <p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or
-                (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
-                assertion's SessionNotOnOrAfter value (if present), whichever is shorter.</p>
-                <p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
-                For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
-                is too close to expiry to serve the needs of the consumer.</p>
-              /viaSso:
-                /{principalAuthnID}:
-                  description: |
-                    The id of the current authentication, as passed to your app's SSO-protected web site (see details of authentication).
-                  post:
-                    description: |
-                      Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
-                    responses:
-                      200:
-                        body:
-                          application/json:
-                            schema: !include ../schemas/tokenJwt.json
-                            example: !include ../examples/tokenJwt-simple.json
-              /viaToken:
-                /{accessToken}:
-                  description: |
-                    <p>The OAuth access token (a JWT) passed in to the producing app, which has:
-                    <ul>
-                    <li>the producing app as the "aud" field</li>
-                    <li>the principal via its "sub" field</li>
-                    </ul>
-                    </p>
-                    <p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g.,
-                    if the ancestor token expires, that does not tokens created from it.</p>
-                  post:
-                    description:
-                      Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
-                    responses:
-                      200:
-                        body:
-                          application/json:
-                            schema: !include ../schemas/tokenJwt.json
-                            example: !include ../examples/tokenJwt-simple.json
-  /patchSets:
-    post:
-      description: |
-        <p>This endpoint is available only to apps tagged as "storeFront".</p>
-        <p>Your app calls this endpoint to validate a patch document and prepare it for launching, typically from a browser.</p>
-        <p>If your patch document validates successfully, a launcher JWT is returned that embeds the patch document, and your continue page.</p>
-        <p>The JWT is signed with the tenant's signing key, and can be safely handed off to an insecure client, i.e. javascript in a web browser, which
-        will use it in an ajax call to PATCH /{tenant}.</p>
-        <p>Launchers also expire 10 minutes after being issued. Launchers are meant to be used immediately.</p>
-        <p>Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to
-        10 minutes in the future.</p>
-      body:
-        application/json:
-          schema: !include ../schemas/patchSetPreparer.json
-          example: !include ../examples/patchSetPreparer-installApp.json
+        Get information about the tenant, including the current status, incarnation and public key. Normally apps would get the
+        incarnation in the request body of the startUp event, so this is mainly useful if your app is restarted, and needs
+        to check what's been going on while its been offline.
       responses:
         200:
           body:
             application/json:
-              schema: !include ../schemas/patchSet.json
-              example: !include ../examples/patchSet-installApp.json
-  /patchSetLaunches:
-    post:
+              schema: !include ../schemas/tenant.json
+              example: !include ../examples/tenant-mega.json
+    /samlSubjects:
       description: |
-        <p>This endpoint is only useful to apps tagged as "storeFront".</p>
-        <p>Launch the patch operation as contained in the launcher JWT obtained from a previous call to POST /patchSets.</p>
-        <p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
-        belongs to a storefront app which does not share the same domain as the tas core).</p>
-        <p>The response body is an unguessable unique "launch key" which can be used with GET /patchSetLaunches/{launchKey}.</p>
-      body:
-        application/json:
-          schema: !include ../schemas/patchSetLauncher.json
-          example: !include ../examples/patchSetLauncher-installApp.json
-      responses:
-        200:
-          body:
-            application/json:
-              schema: !include ../schemas/patchSetLaunchKey.json
-              example: !include ../examples/patchSetLaunchKey-simple.json
-    /{launchKey}:
-      get:
-        description: |
-          <p>Get the latest events and the current summary details about a previous launch of a patch set.</p>
-          <p>If the apply is already "complete" then this call will return immediately, with any events that match the filter,
-          up to the maximum events per call (100).</p>
-          <p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is
-          available that matches the filter, or the apply becomes complete (which would always be accompanied by an event).
-          If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically
-          immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the
-          last event has been fetched.</p>
-        queryParameters:
-          afterEvent:
-            displayName: After Event
-            type: integer
-            description: |
-              The sequence of an existing event - this call should return events immediately *after* this event.
-              Omitting this parameter returns the first events.
-            example: 12
-            required: false
-        responses:
-          200:
-            body:
-              application/json:
-                schema: !include ../schemas/patchSetStatus.json
-                example: !include ../examples/patchSetStatus-juggleApps.json
-  /installs:
-    description: Installs are currently installed apps at the tenant.
-    /{app}:
-      description: An app
-      /status:
-        get:
+        <p>A samlSubject is the primary key, assembled from information in the SAML assertion from the IdP, of the current logged in user.
+        The samlSubject is useful
+        when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs
+        like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p>
+        <p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app
+        higher up the chain (if this app is an API server producing an OAuth API).</p>
+        <p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that
+        was captured by TAS when this user logged in to an SSO-protected app, likely to include: 
+        <ul>
+        <li>NameID</li>
+        <li>NameQualifier</li>
+        <li>EntityID of the issuing IdP</li>
+        </ul>
+        <p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions
+        or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across
+        multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP
+        (internal candidates), Facebook pseudo-IdP, etc.</p>
+        <p>samlSubjects are identical across all SP's (i.e., all TAS SSO-protected apps), so that apps can
+        correlate the user's identity (i.e. they each have the same understanding of who a user is). This means that transient SAML
+        identifiers for example cannot be used.
+        </p>
+        <p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p>
+        <p>Because access tokens are generated and signed by TAS, the user's identity can be passed securely down through a chain of
+        OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p>
+        <p>Each producing app in the chain gets their chance to enforce their own business rules and make further
+        tenant API calls on behalf of the logged in user.</p>     
+      /viaSamlAssertion:
+        post:
           description: |
-            Called by a storefront app to get details about an already installed app, e.g. to obtain the server basic auth info.
+            If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at
+            login time for the samlSubject by using this endpoint and passing the assertion as the request body.
+          body:
+            application/xml:
           responses:
             200:
               body:
                 application/json:
+                  schema: !include ../schemas/samlSubject.json
+                  example: !include ../examples/samlSubject-simple.json
+    /routes:
+      description: |
+        <p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p>
+        <p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:
+        <ul>
+        <li>The actual endpoint (where the producer's server sits on the internet)</li>
+        <li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li>
+        </ul>
+        </p>
+        <p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
+        that the consumer is allowed to call.</p>
+        <p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT
+        APIs, there can be many consumers and many producers, and hence a route between each unique
+        consumer/producer pair.</p>
+      /{consumingApp}:
+        description: |
+          The app consuming the API
+        /{apiDeveloper}:
+          description: The developer who owns/defines the API
+          /{apiUriTemplate}:
+            description: The URI template (as per https://tools.ietf.org/html/rfc6570) of the API.
+            get:
+              description: | 
+                Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API.
+                The example below is for a non-OAuth, non-SoT API.
+              responses:
+                200:
+                  body:
+                    application/json:
+                      schema: !include ../schemas/routes.json
+                      example: !include ../examples/routes-nonOAuth.json
+            /{producer}:
+              get:
+                description: | 
+                  Fetch the route, from the given consumer, to the producer (which must be your app)
+                  of a specific API. Since both consuming and producing apps are specified, there can only be
+                  one or zero routes in the response.
+                responses:
+                  200:
+                    body:
+                      application/json:
+                        schema: !include ../schemas/route.json
+                        example: !include ../examples/route-hmac.json
+              /tokens:
+                description: |
+                  <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see
+                  http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about
+                  and http://jwt.io/):
+                  a) that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p>
+                  <p>Because access tokens are self-contained and signed, producers can rely on their content without any network
+                  traffic to the authorization server (i.e. TAS).</p>
+                  <p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or
+                  (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
+                  assertion's SessionNotOnOrAfter value (if present), whichever is shorter.</p>
+                  <p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
+                  For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
+                  is too close to expiry to serve the needs of the consumer.</p>
+                /viaSso:
+                  /{principalAuthnID}:
+                    description: |
+                      The id of the current authentication, as passed to your app's SSO-protected web site (see details of authentication).
+                    post:
+                      description: |
+                        Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                      responses:
+                        200:
+                          body:
+                            application/json:
+                              schema: !include ../schemas/tokenJwt.json
+                              example: !include ../examples/tokenJwt-simple.json
+                /viaToken:
+                  /{accessToken}:
+                    description: |
+                      <p>The OAuth access token (a JWT) passed in to the producing app, which has:
+                      <ul>
+                      <li>the producing app as the "aud" field</li>
+                      <li>the principal via its "sub" field</li>
+                      </ul>
+                      </p>
+                      <p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g.,
+                      if the ancestor token expires, that does not tokens created from it.</p>
+                    post:
+                      description:
+                        Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                      responses:
+                        200:
+                          body:
+                            application/json:
+                              schema: !include ../schemas/tokenJwt.json
+                              example: !include ../examples/tokenJwt-simple.json
+    /patchSets:
+      post:
+        description: |
+          <p>This endpoint is available only to apps tagged as "storeFront".</p>
+          <p>Your app calls this endpoint to validate a patch document and prepare it for launching, typically from a browser.</p>
+          <p>If your patch document validates successfully, a launcher JWT is returned that embeds the patch document, and your continue page.</p>
+          <p>The JWT is signed with the tenant's signing key, and can be safely handed off to an insecure client, i.e. javascript in a web browser, which
+          will use it in an ajax call to PATCH /{tenant}.</p>
+          <p>Launchers also expire 10 minutes after being issued. Launchers are meant to be used immediately.</p>
+          <p>Note: the schema and example do not show the JWT-specific fields, including the "exp" field which is set to
+          10 minutes in the future.</p>
+        body:
+          application/json:
+            schema: !include ../schemas/patchSetPreparer.json
+            example: !include ../examples/patchSetPreparer-installApp.json
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/patchSet.json
+                example: !include ../examples/patchSet-installApp.json
+    /patchSetLaunches:
+      post:
+        description: |
+          <p>This endpoint is only useful to apps tagged as "storeFront".</p>
+          <p>Launch the patch operation as contained in the launcher JWT obtained from a previous call to POST /patchSets.</p>
+          <p>This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
+          belongs to a storefront app which does not share the same domain as the tas core).</p>
+          <p>The response body is an unguessable unique "launch key" which can be used with GET /patchSetLaunches/{launchKey}.</p>
+        body:
+          application/json:
+            schema: !include ../schemas/patchSetLauncher.json
+            example: !include ../examples/patchSetLauncher-installApp.json
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/patchSetLaunchKey.json
+                example: !include ../examples/patchSetLaunchKey-simple.json
+      /{launchKey}:
+        get:
+          description: |
+            <p>Get the latest events and the current summary details about a previous launch of a patch set.</p>
+            <p>If the apply is already "complete" then this call will return immediately, with any events that match the filter,
+            up to the maximum events per call (100).</p>
+            <p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is
+            available that matches the filter, or the apply becomes complete (which would always be accompanied by an event).
+            If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically
+            immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the
+            last event has been fetched.</p>
+          queryParameters:
+            afterEvent:
+              displayName: After Event
+              type: integer
+              description: |
+                The sequence of an existing event - this call should return events immediately *after* this event.
+                Omitting this parameter returns the first events.
+              example: 12
+              required: false
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/patchSetStatus.json
+                  example: !include ../examples/patchSetStatus-juggleApps.json
+    /installs:
+      description: Installs are currently installed apps at the tenant.
+      /{app}:
+        description: An app
+        /status:
+          get:
+            description: |
+              Called by a storefront app to get details about an already installed app, e.g. to obtain the server basic auth info.
+            responses:
+              200:
+                body:
+                  application/json:
