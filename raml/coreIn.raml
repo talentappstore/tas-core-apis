@@ -224,8 +224,12 @@ version: v1
         /status:
           get:
             description: |
-              Called by a storefront app to get details about an already installed app, e.g. to obtain the server basic auth info.
+              Called by apps to get the install key, so as to validate incoming OAuth tokens. Apps can only call this on themselves.
             responses:
               200:
                 body:
                   application/json:
+                    schema: !include ../schemas/tenantInstallsAppStatus.json
+                    example: !include ../examples/tenantInstallsAppStatus-simple.json
+
+                  

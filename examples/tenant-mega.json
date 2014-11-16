@@ -8,14 +8,12 @@
     },
     "status": {
         "incarnation": 23,
-        "status": "halting",
-        "publicKey": "kjhyg9876gf7645d88t0h897h6oityf8975fg46fgkgi"
+        "state": "halting"
     },
     "installs": [
         {
             "app": "tas-storefront",
-            
-                      "servers": [
+            "servers": [
                 {
                     "name": "ats0",
                     "baseUri": "https://acme.atszero.com",
@@ -24,10 +22,11 @@
                         "password": "secret1"
                     }
                 }
-            ]
-            
-            
-            
+            ],
+            "status": {
+              "state": "running",
+              "publicKey": "876oihiu5yfd864g0ouiyfgi75"
+            }
         }
     ],
     "identitySourceSets": [

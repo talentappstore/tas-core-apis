@@ -340,15 +340,15 @@
                 }
             }
         },
-        "status": {
+        "tenantStatus": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "incarnation": {
                     "type": "integer",
-                    "description": "a number representing the 'install state' of this tenant. Incremented on any changes to the installed apps."
+                    "description": "a number representing the 'configuration version' of this tenant. Incremented on any changes to the installed apps."
                 },
-                "status": {
+                "state": {
                     "enum": [
                         "starting",
                         "running",
@@ -356,11 +356,7 @@
                         "stopped",
                         "broken"
                     ],
-                    "description": "The tenant's current status. Your app should not make core API calls other than GET /{tenant}, or POST to the shutDownComplete webhook unless the status is 'running' or 'starting'."
-                },
-                "publicKey": {
-                    "type": "string",
-                    "description": "The tenant's public key. OAuth API producers use this to verify incoming OAuth access tokens, which are signed using the tenant's private key. The private key only accessible to TAS itself and is never made available to anyone."
+                    "description": "The tenant's current status. Your app should not make core API calls other than GET /tenants/{tenant} unless the status is 'running' or 'starting'."
                 }
             }
         },
@@ -376,6 +372,9 @@
                 },
                 "servers": {
                     "$ref": "#/definitions/servers"
+                },
+                "status": {
+                    "$ref": "./tenantInstallsAppStatus.json"
                 }
             }
         },
@@ -390,7 +389,7 @@
     "additionalProperties": false,
     "properties": {
         "status": {
-            "$ref": "#/definitions/status"
+            "$ref": "#/definitions/tenantStatus"
         },
         "details": {
             "$ref": "#/definitions/details"
