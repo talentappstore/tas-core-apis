@@ -391,11 +391,11 @@ note left of app A: app A calls OAuth\nAPI on app C
 app A->TAS: GET /../tokens\nAuth: HMAC (app key)
 app A->app C: GET /widgetWorkers/fred\nAuth: OAuth token (JWT signed\nby app C install key)
 note left of storefront app (server): Tenant clicks to\ninstall new app
-storefront app (server)->TAS: POST /tenants/acme/patchSetLaunchers\nAuth: HMAC (app key)
-storefront app (browser)->TAS: POST /tenants/acme/patchSetLaunches\nAuth: HMAC (JWT signed by storefront install key)
+storefront app (server)->TAS: POST /tenants/acme/patchSets\nAuth: HMAC (app key)
+storefront app (browser)->TAS: GET /tenants/acme/patchSets/{launchKey}\nAuth: None
 note left of storefront app (server): Tenant clicks to\ncopy their store
-storefront app (server)->TAS: POST /patchSetLaunchers\nAuth: HMAC (app key)
-storefront app (browser)->TAS: POST /patchSetLaunches\nAuth: HMAC (JWT signed by storefront app key)
+storefront app (server)->TAS: POST /patchSets\nAuth: HMAC (app key)
+storefront app (browser)->TAS: GET /patchSets/{launchKey}\nAuth: None
 </div>
 </p>
 
