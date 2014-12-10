@@ -1,8 +1,7 @@
 {
 	"sub": {
-	  "nameID": "frank@ibm.com",
-	  "nameQualifier": "someibmidp",
-	  "entityID": "some more SAML info"
+	  "entityID": "ibmidpuswest-10",
+	  "nameID": "frank@ibm.com"
 	},
 	"cons": "tas-uberapply",
 	"dev": "tas",

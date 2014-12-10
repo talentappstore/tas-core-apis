@@ -33,7 +33,7 @@ version: v1
           Existing principal authentications are unaffected and can continue to be used.
         responses:
           200:
-    /startUps:
+    /starts:
       post:         
         description: |
           Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such
@@ -58,26 +58,31 @@ version: v1
               application/json:
                 schema: !include ../schemas/storeFrontMainPage.json
                 example: !include ../examples/storeFrontMainPage-simple.json
-            
-    /authentications:
-      /{principalDev}:
+    /logins:
+      /{principalDeveloper}:
         /{principalType}:
-          /pings:
-            post:
-              description: |
-                <p>Called by TAS to tell your authListener app about someone logging in.</p>
-                <p>AuthListeners are special, highly privileged apps that perform housekeeping when users (principals) log in.</p>
-                <p>A typical authListener would be an auto-provisioning app. On someone logging in, the app would
-                examine the attributes of the incoming SAML assertion and use the data to maintain a SCIM SoT server
-                by making calls to GET /users/{}, POST /users, etc.</p>
-                <p>Since your app cannot know all of the possible types of principal that might log in, it should
-                return with status 200 immediately for unrecognized types.</p>
-                <p>TAS will only call this API on apps that are declared to be authListeners. TAS will
-                wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any
-                auto-provisioning type operations are complete by the time the user login hits the web site.</p>
-                <p>RAML (the tool used to create this documentation) does not allow currently allow describing the different parts
-                of multipart/form-data, but for this endpoint your app will receive two parts - the raw SAML authentication assertion
-                itself, and the derived samlSubject object (json).
-              body:
-                multipart/form-data:
+          /{entityID}:
+            /{nameID}:
+              post:
+                description: |
+                  <p>Called by TAS to tell your loginListener app about someone logging in.</p>
+                  <p>LoginListeners are special, highly privileged apps that can merge information about the logged in user
+                  into their session document, such as roles and entitlements.</p>
+                  <p>Since your loginListener app cannot know all of the possible types of principal that might log in, it should
+                  return with status 200 immediately unless the type is one that the app understands.</p>
+                  <p>A typical loginListener would be a legacy ATS system. On someone logging in, the app might:
+                  <ul>
+                  <li>examine the existing session data for an "auto-provisioning == true" attribute (possibly injected for all users logging in through
+                  a specific IdP, such as a support team's IdP) to determine whether to auto-provision or not
+                  <li>if auto-provisioning, next use other attributes (name, etc.) to make tenant API calls against the SCIM SoT server
+                  by making calls to GET /users/{}, POST /users, etc.</p>
+                  </ul>
+                  <p>TAS will only call this API on apps that are declared to be authListeners. TAS will
+                  wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any
+                  auto-provisioning type operations are complete by the time the user login hits the web site.</p>
+                  <p>RAML (the tool used to create this documentation) does not allow currently allow describing the different parts
+                  of multipart/form-data, but for this endpoint your app will receive two parts - the raw SAML authentication assertion
+                  itself, and the derived samlSubject object (json).
+                body:
+                  multipart/form-data:
   

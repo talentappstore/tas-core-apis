@@ -21,8 +21,24 @@ version: v1
             application/json:
               schema: !include ../schemas/tenant.json
               example: !include ../examples/tenant-mega.json
+    /samlSPMetadata:
+      description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata, referred to as the SP metadata.
+      /{principalDeveloper}:
+        /{principalType}:
+          get:
+            description: Get the metadata for this app (the SP).
+    /samlIdPMetadata:
+      description: |
+        Apps that are SSO-protected (i.e., SPs in SAML lingo) require the SAML metadata for the IdP proxy that front ends all of the
+        identity providers that the tenant has set up for the given principal type. 
+      /{principalDeveloper}:
+        /{principalType}:
+          get:
+            description: Get the metadata for the IdP proxy.
     /samlSubjects:
       description: |
+        <p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly
+        from the incoming assertion. This document will be removed once it has a new home.</b></p>
         <p>A samlSubject is the primary key, assembled from information in the SAML assertion from the IdP, of the current logged in user.
         The samlSubject is useful
         when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs
@@ -52,6 +68,8 @@ version: v1
       /viaSamlAssertion:
         post:
           description: |
+            <p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly
+            from the incoming assertion. This document will be removed once it has a new home.</b></p>
             If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at
             login time for the samlSubject by using this endpoint and passing the assertion as the request body.
           body:
@@ -119,19 +137,22 @@ version: v1
                   <p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
                   For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
                   is too close to expiry to serve the needs of the consumer.</p>
-                /viaSso:
-                  /{principalAuthnID}:
+                /viaLogin:
+                  /{entityID}:
                     description: |
-                      The id of the current authentication, as passed to your app's SSO-protected web site (see details of authentication).
-                    post:
+                      The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+                    /{nameID}:
                       description: |
-                        Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
-                      responses:
-                        200:
-                          body:
-                            application/json:
-                              schema: !include ../schemas/tokenJwt.json
-                              example: !include ../examples/tokenJwt-simple.json
+                        The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+                      post:
+                        description: |
+                          Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                        responses:
+                          200:
+                            body:
+                              application/json:
+                                schema: !include ../schemas/tokenJwt.json
+                                example: !include ../examples/tokenJwt-simple.json
                 /viaToken:
                   /{accessToken}:
                     description: |

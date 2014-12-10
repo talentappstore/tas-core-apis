@@ -20,6 +20,8 @@
 
 <h1>Talent App Store app developer guide</h1>
 
+<p>Please send comments to abraae@talentappstore.com.</p> 
+
 <div id="toc"></div>
 
 
@@ -549,6 +551,212 @@ will have already defined the identity sources for &lt;tas&gt; candidate.</p>
  more immediately valuable to customers.</p>
 
 
+
+<h1>The session document</h1>
+
+<p>TAS stores a json session document for every recently authenticated principal (user).</p>
+
+<p>The TAS session document holds slowly changing information about the user such as:
+<ul>
+<li>their roles and entitlements (such as whether the user is a recruiter, and if so, for which department(s))
+<li>their personal details (like first name and email)
+<li>a set of common identifying information typically available from IdPs and social networks such as first name, last name, image, email, etc.
+<li>anything specific to the user that apps wish to make available to themselves or to other apps, e.g. perhaps even OAuth tokens obtained from the authenticating social network
+</ul>
+</p>
+
+<p>"Slowly changing" means that the TAS session is only updated at authentication time (as opposed to the more frequently changing data on the user's session in a specific app, e.g. a list of currently selected jobs).</p>
+
+<p>Apps typically use the TAS session document to do things like user-based authentication checks, e.g. is this person allowed to see this web page? And if so, what menu items should they see?</p>
+
+<p>As far as TAS is concerned, the session document is simply an opaque json document. TAS does not understand the structure of the document, it simply:
+<ul>
+<li>coordinates the document's assembly at user login time
+<li>makes the document available to apps that are working on behalf of the user, i.e.:
+<ul>
+<li>SSO protected web sites
+<li>OAuth API producers
+</ul>
+</ul>
+<p>
+
+<p>Apps can store anything they like, in any format that can be contained in json, inside the TAS session document. However the data should be small, i.e. in the order of kilobytes or less.</p>
+
+<h2>How the session document is created</h2>
+
+<p>TAS coordinates the creation of a user's session document whenever they log in to an SSO-protected app.</p>
+
+<p>TAS composes the document from the data by merging data from:
+
+<ol>
+<li>specially named SAML attributes from the user's IdP (for example, a corporate Active
+Directory system that holds against the user's record that they are a learner in the LMS,
+or Facebook which knows that the user's first name is Fred)
+
+<li>json merge documents passed back from "role-defining apps", which TAS calls
+via POST /tenants/{tenant}/logins/{principalDev}/{principalType}/{entityID}/{nameID}
+ (for example, a legacy ATS that holds against the user's record that they are allowed
+ to search the candidate database).
+</ol>
+</p>
+
+<p>In more detail, this merging happens as follows:
+
+<ol>
+<li>The user authenticates, and a SAML assertion flows back through the TAS SAML proxy, on its way
+to the SSO-protected app (i.e., the Service Provider, or SP)
+
+<li>
+<p>Before passing the assertion to the SP, TAS examines its attributes and converts any that it
+recognises to json. For example if a user logs with a SAML assertion containing:</p>
+
+<div class='codeBlock'>
+...
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.roles.recruitment.recruiter.org"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;sales_west&lt;/saml:AttributeValue&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;sales_east&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.roles.recruitment.recruiter.hasAdmin"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:boolean"&gt;true&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+</div>
+
+<p>TAS converts this to this session document:</p>
+
+<div class='codeBlock'>
+{
+    "recruitment": {
+        "recruiter": {
+            "org": [
+                "sales_west",
+                "sales_east"
+            ],
+            "hasAdmin": true
+        }
+    }
+}
+</div>
+
+<p>The conversion is done using these rules [INCOMPLETE]:
+<ul>
+<li>leaf attributes of type other than boolean are treated as arrays
+<li>attributes with multiple values and multiple attributes with the same name are treated the same (as arrays), and cannot be of type boolean
+<li>passing false for attributes is not supported as ths conflicts with the merge patch semantics
+</ul>
+</p>
+
+<li>
+<p>Next, TAS gives every individual app tagged as loginListeners the chance to provide their own session data, by calling:</p>
+
+<div class='codeBlock'>
+POST /tenants/{tenant}/logins/{principalDev}/{principalType}/{entityID}/{nameID}
+</div>
+
+<p>In the request, TAS passes the starting session data (as extracted from the SAML assertion, see previous example).</p>
+
+<p>In its response, the login listener can optionally pass include a json document to be merged into the session document.</p>
+
+<p>For example, a learning management system (LMS) might pass back:</p>
+
+<div class='codeBlock'>
+{
+    "learning": {
+        "learner": true
+    }
+}
+</div>
+
+<p>After merging, the session data is now:</p>
+
+<div class='codeBlock'>
+{
+    "learning": {
+        "learner": true
+    },
+    "recruitment": {
+        "recruiter": {
+            "org": [
+                "sales_west",
+                "sales_east"
+            ],
+            "hasAdmin": true
+        }
+    }
+}
+</div>
+</p>
+</li>
+</ol>
+
+<h2>Merge details</h2>
+
+<p>TAS merges session document data from login listeners with the IdP's session data using the patch merge semantics
+defined in <a href='https://tools.ietf.org/html/rfc7386)'>rfc7386</a>.</p>
+
+<p>TAS always merges the IdP's data into the login listeners data, rather than the other way around.
+This ensures that the IdP's version of the user's roles/entitlements always takes precedence over any data held in apps.</p>
+
+<p>If there are multiple login listeners, then each one sees only the IdP's session data in the request. I.e.: all login listeners are isolated from each
+other for the purposes of building up their own session data.</p>
+
+<p>If multiple login listeners pass back session data, TAS merges them in one at a time, in alphabetical order of app name. This means that
+apps with later names could potentially undo or alter the session data from earlier apps.</p>
+
+<p>TAS's use of the merge patch semantics of rfc7386 introduces some limitations. For example, the merge cannot operate on individual members
+within an array, meaning that (for example) a manager could not be given authority over some departments via
+SAML attributes and others via rows in an app's database. Instead,
+the department list passed in SAML would completely replace any departments passed back by the login listener.</p>
+
+
+<h2>Changes to the session document while user logged in</h2>
+
+<p>In a case where the document contains details of the user's roles, those roles might change while the user is logged in (e.g. when an administrator
+changes the user's permissions thourgh some admin screen, or directly on the IdP).</p>
+
+<p>However since user's session document is fixed at the time when they log in to an SSO-protected app, those role changes would not be seen until the user reauthenticates.</p>
+
+<p>Depending on the expiry details in the SAML authentication assertion, this might be every few minutes, or hours.</p>
+
+
+<h2>Accessing the session document from within an app</h2>
+
+<p>To obtain the session document, apps use the entityID and nameID representing the logged in user to call:</p>
+
+<div class='codeBlock'>
+GET /tenants/{tenant}/logins/{principalDeveloper}/{principalType}/{entityID}/{nameID}
+</div>
+
+<p>An app with an SSO-protected web page can parse the entityID and nameID from the incoming SAML assertion (using the TAS-supplied library).<p>
+
+<p>An app which is an API producer can extract the entityID and nameID from the incoming OAuth token.</p>
+
+<h2>Session document and auto-provisioning</h2>
+
+<p>Auto-provisioning refers to creating users "on the fly", i.e. at the time when they first log in.</p>
+
+<p>To decide whether, and how, to auto-provisioning a new logging in user, an app may look at information
+in the user's session document, like their email, or their permissions.</p>
+
+<p>That session document was built in the first place by TAS intercepting the user's login, and using that opportunity
+to call each loginListener in turn, merging their responses into the master session document.</p>
+
+<p>Although apps normally auto-provision users at the point where they first login to the app, it is also theoretically possible for
+loginListening apps to do auto-provisioning, i.e. when the user logs in at some <b>other</b> app. However because loginListeners only see the
+base session document, i.e. the one built from IdP-supplied data alone, and not the session data from all of the other loginListeners,
+auto-provisioning in this way may not be desirable.</p>
+
+<h2>Apps that are both auto-provisioning and loginListeners</h2>
+
+<p>In a situation where a loginListener app is asked to produce session data for a user that does not exist in the app, but would due
+to auto-provisioning were they to log in to the app, then the app should normally provide session data just as if the user had been
+auto-provisioned.</p>
+
+<p>This sort of situation would arise for example with a legacy ATS app designed to auto-provision new users and grant them access to a
+separate candidate search app. In this case, if the user logs in to the search app first, having never visisted the legacy ATS app, then
+the legacy ATS app (acting as a loginListener) should attach session data (possibly including the right to access the search app)
+as if the user had instead logged into the ATS first and therefore been auto-provisioned and gained the default permissions.</p>
+ 
+
 <h1>Storefront apps</h1>
 
 <p>Storefront apps are specially privileged apps that perform actions on TAS itself, like installing apps, adding identity sources, etc.<p>
@@ -756,52 +964,34 @@ each time there is a new available event. A maximum of 100 events are returned p
 <p>Once this launch is complete, the storefront app can take over the UI. TAS will call GET /storeFrontMain.</p>
 
 
-<h1>AuthListener apps</h1>
-
-<p>AuthListener apps are specially privileged apps that listen to all authentications for a tenant, for tasks like auto-provisioning.</p>
-
-<p>AuthListener apps need to be tagged as "authListener" by TAS support. Please contact TAS if you want to build an AuthListener app.</p>
-
-<p>AuthListeners are required because tasks like auto-provisioning require detailed domain knowledge about roles, user types, SAML attribute mappings, etc.</p>
-
-<p>TAS itself does not have any knowledge about these sort of domain-specific issues. It only deals in raw authentications. For example, TAS will know that
-a person who is a <b>&lt;tas&gt; candidate</b> has logged in, but it does not understand any concepts specific to that principal type, e.g. whether the candidate is internal, alumni, has some work detail
-attached as a SAML attribute, etc. Hence TAS allows authListener apps to gain control at login time, and take domain-specific actions.</p>
-
-<p>In theory multiple authListener apps can coexist within the same tenant.<p>
-
-<h2>Auto-provisioning example </h2>
-
-<p>A typical authListener would be an auto-provisioning app. On someone logging in, TAS calls POST /{tenant}/{principalDeveloper}/{principalType}
-on your authListener app, passing through:
-<ul>
-<li>the raw SAML authentication assertion
-<li>the derived samlSubject object (json)
-</ul>
-</p>
-
-<p>Your app might then (for example):
-<ol>
-<li>examine the attributes of the incoming SAML assertion
-<li>find the firstName attribute, and all other attributes known to make up a candidate
-<li>make a SCIM REST call to POST /candidates against the app acting as the source of truth for candidates, e.g. a legacy ATS
-</ol>
-</p>
-
-
-<h2>How TAS interacts with authListeners</h2>
-
-<p>When someone logs in, TAS calls the outwards core API POST /{tenant}/{principalDeveloper}/{principalType} on all installed apps tagged with authListener.</p>
-
-<p>TAS will wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any
-auto-provisioning type operations are complete by the time the user login hits the web site.</p>
-
-
-<h2>Identity scenarios</h2>
-
 
 <h1>Portfolio apps</h1>
 
+<p>TAS apps operate, and call each other via tenant APIs, solely within the context of a tenant.
+For example, it is not possible for (and TAS will not issue or validate tokens for) a consuming app
+running on behalf of one tenant to make a API call to a producing app running on behalf of another tenant.</p>
+
+<p>However some apps may also want to present a public face, not associated with any specific tenant.</p>
+
+<p>For example, a job board (say, for plumbers) may present a public web site (www.plumberjobs.com) where candidates can register and profile themselves. In this situation, a candidate should be able:
+<ol>
+<li>authenticate (e.g. via Google) and profile themselves at www.plumberjobs.com
+<li>at a later date, authenticate via the same Google account and apply for a plumbing job at a tenant, and access the information from their previously set up profile.
+</ol>
+
+<p>This can be achieved via a setup like the following:
+
+<ol>
+<li>www.plumberjobs.com is implemented as an (unlisted) app intended to be used only once, to power the www.plumberjobs.com website
+<li>The app is linked to the &lt;tas&gt; candidate principal type, and therefore can therefore protect its own pages via the TAS SSO system
+<li>The developer creates a tenant
+<li>The tenant installs the app
+<li>The tenant links the &lt;tas&gt; candidate principal type to common/global identity sources (e.g. Google, Facebook, LinkedIn)
+<li>The site is now live, and can start capturing plumbers, who protect their details using their preferred login mechanism (e.g. Facebook)
+<li>The developer now creates a second (listed) app, "plumbersbackend"
+<li>That app implements the well-known non-SoT API /m/candidates/{}
+<li>[complete..]      
+</ol>
 
 
 <script>
