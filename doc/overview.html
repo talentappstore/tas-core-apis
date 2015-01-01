@@ -554,6 +554,7 @@ will have already defined the identity sources for &lt;tas&gt; candidate.</p>
 
 <h1>The session document</h1>
 
+
 <p>TAS stores a json session document for every recently authenticated principal (user).</p>
 
 <p>The TAS session document holds slowly changing information about the user such as:
@@ -584,7 +585,83 @@ will have already defined the identity sources for &lt;tas&gt; candidate.</p>
 
 <h2>How the session document is created</h2>
 
-<p>TAS coordinates the creation of a user's session document whenever they log in to an SSO-protected app.</p>
+<p>TAS coordinates the creation of a user's session document whenever they log in to an SSO-protected app. The flow is shown below:</p>
+
+<p> 
+<div class='codeBlock'>
+
+Below is a sample for the *candidate* principal type. Note we use home email and address for this type.
+
++------------------+
+|external SAML IdP |
++------------------+
+   |
+   ...
+   | attributes:
+   | firstName = Barry
+   | lastName = Gibb
+   | email = bg@acme.com
+   |
++-----------------------+
+|TAS attribute mapping  |
++-----------------------+
+   |
+   | mapping rules:
+   | firstName -> tas.name.givenName 
+   | lastName -> tas.name.familyName
+   | email -> tas.emails.home.email  
+   |
+   | updated attributes:
+   | tas.name.givenName = Barry
+   | tas.name.familyName = Gibb
+   | tas.emails.home.email = bg@acme.com
+   |   
++-----------------------+
+|TAS auth filtering     |
++-----------------------+
+   |
+   | filtering rules:
+   |
+   |    "authFilters": [
+   |        {
+   |            "regexp": {
+   |                "tas.emails.home.email": "*.aol.com"
+   |            },
+   |            "authPass": false
+   |        },
+   |        {
+   |            "booleanTest": true,
+   |            "inject": [
+   |                {
+   |                    "tas.bogus.value": "hello world"
+   |                }
+   |            ]
+   |        },
+   |        {
+   |            "regexp": {
+   |                "tas.emails.home.email": "*.acme.com"
+   |            },
+   |            "inject": [
+   |                {
+   |                    "tas.candidate.internal": true
+   |                }
+   |            ]
+   |        }
+   |    ]
+   |
+   | updated attributes:
+   | tas.name.givenName = Barry
+   | tas.name.familyName = Gibb
+   | tas.emails.home.email = bg@acme.com
+   | tas.bogus.value = hello world
+   | tas.candidate.internal = true   
+   |
++------------------------------+
+|TAS session document creation |
++------------------------------+
+</div>
+</p>
+
 
 <p>TAS composes the document from the data by merging data from:
 
