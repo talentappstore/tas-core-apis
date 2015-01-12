@@ -3,19 +3,28 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+<!-- always required -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script type="text/javascript" src='http://tas-des-static.talentappstore.com/js/raphael-min.js'></script>
-<script type="text/javascript" src='http://tas-des-static.talentappstore.com/js/underscore-min.js'></script>
-<script type="text/javascript" src='http://tas-des-static.talentappstore.com/js/sequence-diagram-min.js'></script>
-<script type="text/javascript" src='http://tas-des-static.talentappstore.com/js/tocify.js'></script>
 
-<link rel='stylesheet' href='http://tas-des-static.talentappstore.com/css/des.css' type='text/css' media='all' />
+<!-- needed for sequence diagrams -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/raphael-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/underscore-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-wrapper.js'></script>
+
+<!-- needed for includes -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/clientInclude.js'></script>
+
+<!-- needed for table of contents -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/tocify.js'></script>
+
+<!-- always required -->
+<link rel='stylesheet' href='http://talentappstore.github.io/tas-des-static/css/des.css' type='text/css' media='all' />
 
 
 <title>Talent App Store app developer guide</title>
 </head>
 <body>
-
 
 
 <h1>Talent App Store app developer guide</h1>
@@ -85,7 +94,7 @@ tenant, stopping and starting apps, locating API endpoints, etc.</p>
 outwards (where TAS calls an endpoint on the <b>control server</b> of your app).</p>
 
 <b>Core and tenant APIs in Talent App Store</b>
-<div class='seqdiag' id="apitypes" style="display:none;">
+<div class='seqDiag' id="apitypes">
 participant TAS
 participant ATS app
 participant Career site app
@@ -179,7 +188,7 @@ such as caching endpoint locations and access tokens for as long as possible, cl
 
 
 <b>Sequence of events - one app calling an HMAC tenant API on another app</b>
-<div class='seqdiag' id="callingAnApi" style="display:none;">
+<div class='seqDiag' id="callingAnApi">
 participant TAS
 participant jobsite app
 participant ats app
@@ -366,7 +375,7 @@ That's because the launch is creating a store/tenant.
 </p>
 
 <p>
-<div class='seqdiag' id="securityHierachy" style="display:none;">
+<div class='seqDiag' id="securityHierachy">
 participant TAS
 participant app A
 participant app B
@@ -432,7 +441,7 @@ API producer (the resource server in OAuth parlance) to use the services of the 
 <b>Sequence of events - one app calling the OAuth tenant API "/userPreferences/{email}" on another app. There is a business rule
 associated with /userPreferences/{email} that users can only see their own preferences, hence this needs to be an OAuth API
 in order to make user identity available.</b>
-<div class='seqdiag' id="callingAnOAuthApi" style="display:none;">
+<div class='seqDiag' id="callingAnOAuthApi">
 participant TAS
 participant jobsite app
 participant preferences app
@@ -585,7 +594,7 @@ will have already defined the identity sources for &lt;tas&gt; candidate.</p>
 
 <h2>How the session document is created</h2>
 
-<p>TAS coordinates the creation of a user's session document whenever they log in to an SSO-protected app. The flow is shown below:</p>
+<p>TAS coordinates the creation of a user's session document whenever they log in to an SSO-protected app. The flow is shown below.</p>
 
 <p> 
 <div class='codeBlock'>
@@ -643,7 +652,10 @@ Below is a sample for the *candidate* principal type. Note we use home email and
    |            },
    |            "inject": [
    |                {
-   |                    "tas.candidate.internal": true
+   |                    "tas.candidate.type": "internal"
+   |                },
+   |                {
+   |                    "tas.candidate.type": "trusted"
    |                }
    |            ]
    |        }
@@ -654,7 +666,8 @@ Below is a sample for the *candidate* principal type. Note we use home email and
    | tas.name.familyName = Gibb
    | tas.emails.home.email = bg@acme.com
    | tas.bogus.value = hello world
-   | tas.candidate.internal = true   
+   | tas.candidate.type = internal
+   | tas.candidate.type = trusted
    |
 +------------------------------+
 |TAS session document creation |
@@ -1072,35 +1085,13 @@ running on behalf of one tenant to make a API call to a producing app running on
 
 
 <script>
-function render(obj) {
-	// we first need to encode away the &gt; and &lt; chars we get back
-	var e = document.createElement('div');
-	e.innerHTML = $(obj).html();
-	
-	// create a div to hold the diagram
-	$(obj).after("<div id='" + $(obj).attr('id') + "-diag'></div>");
-
-	// then create diagram
-	var diagram = Diagram.parse(e.childNodes[0].nodeValue);
-	diagram.drawSVG($(obj).attr('id') + '-diag', {theme: 'simple'});
-}	
-
 $(document).ready(function() {
 
-    //Executes your code when the DOM is ready.  Acts the same as $(document).ready().
-    //Calls the tocify method on your HTML div.
-//$("#toc").tocify();
-	
-	$('.seqdiag').each(function(i, obj) {
-	    render(obj);
-	});
-
-	tocify('toc');
-	
+	renderSequenceDiagrams();
+	renderClientIncludes();
+	renderTOC();
 });
 </script>
-		
-		
 
 
 </body>
