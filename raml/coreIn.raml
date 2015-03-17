@@ -21,6 +21,55 @@ version: v1
             application/json:
               schema: !include ../schemas/tenant.json
               example: !include ../examples/tenant-mega.json
+    /headlessAuthentications:
+      /{principalDeveloper}:
+        /{principalType}:
+          /viaVerifiedEmail:
+            /{email}:
+          post:
+            description: |
+              This endpoint is available only to apps tagged as "headless authenticators".
+
+              Useful for:
+              - adding "work on behalf of" behaviour (e.g. a recruiter logs in and works on behalf of a candidate)
+              - when creating a new user (or candidate), finding existing auth info and reusing it
+                            
+              Your app can call this API to to headlessly log in as the principal with the given email address, assuming:
+              - they already have a row with that email in the users table of some SoT app
+              - that row is tagged with {E} and {N}, where {E} is for a non-attribute supplying idp (e.g., Google, email, backdoor idp).
+              
+              Example:
+              - your app wants to create a job application for fred@acme.com, but is cognisant that Fred may already have a record, maybe authenticated via Google or whatever; so
+              - your app calls POST /tenants/acme/headlessAuthentications/tas/candidate/viaVerifiedEmail/fred@acme.com
+              - TAS starts preparing its response:
+              - On all apps marked as "principal holders" (i.e, apps that have SoT user tables), TAS calls GET /tenants/acme/m/principals/tas/candidate/byEmail/fred@acme.com
+              - the fancycruit app responds first - it does hold a record for fred@acme.com, and so replies with:
+              { "E": "acme-tas-candidate-google-idp", "N": "1246349464" }
+              - TAS synthesizes a SAML assertion with the given E and N and stops asking other apps (i.e. no testing is done for conflicting /E/N values for fred - something for apps to build at some stage)
+              - TAS processes the SAML assertion just as if fred had logged in, e.g. session decoration happens
+              - if no "principal holder" app responds, then no SAML assertion is returned and your app can assume no candidate exists
+              - Finally TAS replies to your app. Your app can now access /E/N, request OAuth tokens, and generally act as if fred had logged in
+
+              Because this API allows apps to log in on behalf of users, tenants must have complete trust in the integrity of your app, and also that your app
+               *always* verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.    
+    /sessions:
+      /viaLogin:
+        /{E}:
+          description: |
+            The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+          /{N}:
+            description: |
+              The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+            get:
+              description: |
+                Fetch principal's TAS session using details from the SAML assertion passed when they logged in.
+      /viaToken:
+        /{accessToken}:
+          description: The OAuth access token (a JWT) passed in to the producing app
+          get:
+            description: |
+              Fetch principal's TAS session using details from an OAuth token
+
     /samlSPMetadata:
       description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata, referred to as the SP metadata.
       /{principalDeveloper}:
@@ -48,9 +97,9 @@ version: v1
         <p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that
         was captured by TAS when this user logged in to an SSO-protected app, likely to include: 
         <ul>
-        <li>NameID</li>
-        <li>NameQualifier</li>
-        <li>EntityID of the issuing IdP</li>
+        <li>Name ID</li>
+        <li>Name Qualifier</li>
+        <li>Entity ID of the issuing IdP</li>
         </ul>
         <p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions
         or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across
@@ -138,10 +187,10 @@ version: v1
                   For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
                   is too close to expiry to serve the needs of the consumer.</p>
                 /viaLogin:
-                  /{entityID}:
+                  /{E}:
                     description: |
                       The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-                    /{nameID}:
+                    /{N}:
                       description: |
                         The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
                       post:
