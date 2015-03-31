@@ -1,29 +1,7 @@
 {
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"properties":{
-		"kind":{
-			"enum":[
-				"routes"
-			],
-			"description":"always set to: routes"
-		},
-		"items":{
-			"type":"array",
-			"items":{
-				"oneOf":[
-					{
-						"$ref":"route.json"
-					}
-				]
-			}
-			
-		}
-		
-	},
-	"required":[
-		"kind",
-		"items"
-	]
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "./route.json"
+    }
 }

@@ -1,0 +1,32 @@
+[
+    {
+        "consTenant": "acme",
+        "consAppDev": "tas",
+        "consApp": "jobboardhub",
+        "consAsSoT": false,
+        "consMethods": [
+            "GET"
+        ],
+        "apiDev": "tas",
+        "apiUriTemplate": "/categories",
+        "prodTenant": "seek",
+        "prodAppDev": "seek",
+        "prodApp": "basecats",
+        "location": "https://ref.seek.com:2109/api/v3.2"
+    },
+    {
+        "consTenant": "acme",
+        "consAppDev": "tas",
+        "consApp": "jobboardhub",
+        "consAsSoT": false,
+        "consMethods": [
+            "GET"
+        ],
+        "apiDev": "tas",
+        "apiUriTemplate": "/categories",
+        "prodTenant": "trademeinst",
+        "prodAppDev": "trademe",
+        "prodApp": "tmcore",
+        "location": "https://api.trademe.co.nz/v1"
+    }
+]

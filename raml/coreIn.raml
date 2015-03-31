@@ -7,9 +7,9 @@ version: v1
 /tenants:  
   /{tenant}:
     description: |
-      <p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p>
-      <p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS
-      does not support API calls between tenants.</p>
+      A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.
+      All core API calls that your app makes to TAS are within the context of a single tenant. TAS
+      does not support API calls between tenants.
     get:
       description: |
         Get information about the tenant, including the current state and incarnation. Normally apps would keep track of this information
@@ -54,15 +54,18 @@ version: v1
                *always* verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.    
     /sessions:
       /viaLogin:
-        /{E}:
+        /{app}:
           description: |
-            The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-          /{N}:
+            Your app, i.e. the SSO-protected web site where the principal authenticated.
+          /{E}:
             description: |
-              The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-            get:
+              The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+            /{N}:
               description: |
-                Fetch principal's TAS session using details from the SAML assertion passed when they logged in.
+                The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+              get:
+                description: |
+                  Fetch principal's TAS session using details from the SAML assertion passed when they logged in.
       /viaToken:
         /{accessToken}:
           description: The OAuth access token (a JWT) passed in to the producing app
@@ -129,99 +132,6 @@ version: v1
                 application/json:
                   schema: !include ../schemas/samlSubject.json
                   example: !include ../examples/samlSubject-simple.json
-    /routes:
-      description: |
-        <p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p>
-        <p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:
-        <ul>
-        <li>The actual endpoint (where the producer's server sits on the internet)</li>
-        <li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li>
-        </ul>
-        </p>
-        <p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
-        that the consumer is allowed to call.</p>
-        <p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT
-        APIs, there can be many consumers and many producers, and hence a route between each unique
-        consumer/producer pair.</p>
-      /{consumingApp}:
-        description: |
-          The app consuming the API
-        /{apiDeveloper}:
-          description: The developer who owns/defines the API
-          /{apiUriTemplate}:
-            description: The URI template (as per https://tools.ietf.org/html/rfc6570) of the API.
-            get:
-              description: | 
-                Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API.
-                The example below is for a non-OAuth, non-SoT API.
-              responses:
-                200:
-                  body:
-                    application/json:
-                      schema: !include ../schemas/routes.json
-                      example: !include ../examples/routes-nonOAuth.json
-            /{producer}:
-              get:
-                description: | 
-                  Fetch the route, from the given consumer, to the producer (which must be your app)
-                  of a specific API. Since both consuming and producing apps are specified, there can only be
-                  one or zero routes in the response.
-                responses:
-                  200:
-                    body:
-                      application/json:
-                        schema: !include ../schemas/route.json
-                        example: !include ../examples/route-hmac.json
-              /tokens:
-                description: |
-                  <p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see
-                  http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about
-                  and http://jwt.io/):
-                  a) that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p>
-                  <p>Because access tokens are self-contained and signed, producers can rely on their content without any network
-                  traffic to the authorization server (i.e. TAS).</p>
-                  <p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or
-                  (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
-                  assertion's SessionNotOnOrAfter value (if present), whichever is shorter.</p>
-                  <p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
-                  For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
-                  is too close to expiry to serve the needs of the consumer.</p>
-                /viaLogin:
-                  /{E}:
-                    description: |
-                      The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-                    /{N}:
-                      description: |
-                        The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-                      post:
-                        description: |
-                          Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
-                        responses:
-                          200:
-                            body:
-                              application/json:
-                                schema: !include ../schemas/tokenJwt.json
-                                example: !include ../examples/tokenJwt-simple.json
-                /viaToken:
-                  /{accessToken}:
-                    description: |
-                      <p>The OAuth access token (a JWT) passed in to the producing app, which has:
-                      <ul>
-                      <li>the producing app as the "aud" field</li>
-                      <li>the principal via its "sub" field</li>
-                      </ul>
-                      </p>
-                      <p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g.,
-                      if the ancestor token expires, that does not tokens created from it.</p>
-                    post:
-                      description:
-                        Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
-                      responses:
-                        200:
-                          body:
-                            application/json:
-                              schema: !include ../schemas/tokenJwt.json
-                              example: !include ../examples/tokenJwt-simple.json
     /patchSets:
       post:
         description: |
@@ -279,6 +189,113 @@ version: v1
                   application/json:
                     schema: !include ../schemas/tenantInstallsAppStatus.json
                     example: !include ../examples/tenantInstallsAppStatus-simple.json
+
+/routes:
+  description: |
+    Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.
+    Your app needs to first fetch a route in order to consume an API. The route will tell your app about
+    the actual endpoint (where the producer's server sits on the internet).
+    Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
+    that the consumer is allowed to call.
+  /{CT}:
+    description: |
+      Consuming tenant: the tenant with the app installed that is consuming the API
+    /{CAD}:
+      description: |
+        Consuming app developer: the developer who owns the app consuming the API
+      /{CA}:
+        description: |
+          Consuming app: the app consuming the API
+        /{AD}:
+          description: |
+            API developer: the developer who owns/defines the API being consumed
+          /{URI}:
+            description: |
+              API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
+            /{SOT}:
+              description: |
+                Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
+              get:
+                description: | 
+                  Fetch the route(s) from the consumer to each producer of a specific API
+                responses:
+                  200:
+                    body:
+                      application/json:
+                        schema: !include ../schemas/routes.json
+                        example: !include ../examples/routes-simple.json
+              /{PT}:
+                description: |
+                  Producing tenant: the tenant with the app installed that is producing the API
+                /{PAD}:
+                  description: |
+                    Producing app developer: the developer who owns the app producing the API
+                  /{PA}:
+                    description: |
+                      Producing app: the app producing the API
+                    get:
+                      description: | 
+                        Fetch the route, from the given consumer, to the producer (which must be your app)
+                        of a specific API. Since both consuming and producing apps are specified, there can only be
+                        one or zero routes in the response.
+                      responses:
+                        200:
+                          body:
+                            application/json:
+                              schema: !include ../schemas/route.json
+                              example: !include ../examples/route-simple.json
+                    /tokens:
+                      description: |
+                        OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see
+                        http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about
+                        and http://jwt.io/):
+                        - that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.
+                        Because access tokens are self-contained and signed, producers can rely on their content without any network
+                        traffic to the authorization server (i.e. TAS).
+                        Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or
+                        (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
+                        assertion's SessionNotOnOrAfter value (if present), whichever is shorter.
+                        If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
+                        For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token
+                        is too close to expiry to serve the needs of the consumer.
+                      post:
+                        description: Create an anonymous OAuth token (not concerned with any principal)
+                      /viaLogin:
+                        /{E}:
+                          description: |
+                            The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+                          /{N}:
+                            description: |
+                              The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
+                            post:
+                              description: |
+                                Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                              responses:
+                                200:
+                                  body:
+                                    application/json:
+                                      schema: !include ../schemas/tokenJwt.json
+                                      example: !include ../examples/tokenJwt-simple.json
+                      /viaToken:
+                        /{accessToken}:
+                          description: |
+                            <p>The OAuth access token (a JWT) passed in to the producing app, which has:
+                            <ul>
+                            <li>the producing app as the "aud" field</li>
+                            <li>the principal via its "sub" field</li>
+                            </ul>
+                            </p>
+                            <p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g.,
+                            if the ancestor token expires, that does not tokens created from it.</p>
+                          post:
+                            description:
+                              Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.
+                            responses:
+                              200:
+                                body:
+                                  application/json:
+                                    schema: !include ../schemas/tokenJwt.json
+                                    example: !include ../examples/tokenJwt-simple.json
 
 /patchSets:
   post:

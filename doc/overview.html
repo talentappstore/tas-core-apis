@@ -18,9 +18,10 @@
 <!-- needed for table of contents -->
 <script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/tocify.js'></script>
 
+<link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
 <!-- always required -->
 <link rel='stylesheet' href='http://talentappstore.github.io/tas-des-static/css/des.css' type='text/css' media='all' />
-
 
 <title>Talent App Store app developer guide</title>
 </head>
@@ -44,33 +45,94 @@
 <h1>Overview</h1>
 
 
-<p>Talent App Store is the HR Saas Platform for Microservices, where customers can click to
-install pre-integrated SaaS talent management applications that present a "single pane of glass"..</p>
+<p>Talent App Store is an HR Saas platform for microservices.</p>
 
-<h1>What is TAS?</h1>
+<p>Tenants (i.e., customers) can click to install small, pre-integrated
+HR web applications that present to the user within a "single pane of glass"..</p>
 
-<p>To you, as the developer of a talent management app, Talent App Store acts as:
+<h1>Benefits of TAS</h1>
 
-<ul>
-<li><b>A sales channel.</b> Hundreds of customers will shortly be using TAS, making thousands of API endpoints available. If you have a product that solves some talent management problem better than anyone else, you now have access to a ready market who can instantly trial your product with a single click.
-<li><b>A provisioning service.</b> TAS calls an API on your app to tell you in real time when new tenants install or uninstall your app. You respond to the provisioning API by inserting a row into your customer table, assigning a trained simian to start installing a server, or whatever.
-<li><b>An SSO (Single Sign On) service.</b> If your app presents a web user interface, then TAS handles logins to your app in a highly secure, customer-controlled way, and integrates tightly with customer-supplied identity providers via SAML 2.0. SAML support and SSO is increasing understood by customers to be a key part of an integrated talent management experience. TAS handles all of the heavy lifting of SSO and SAML for you, and removes you from the risky business of managing user authentication.
-<li><b>An API directory service.</b> TAS provides APIs for your app to dynamically locate API endpoints on other apps, based on the tenant's latest installation choices. For example, your app simply locates and then calls the GET /jobs endpoint, without needing to know which app is currently producing that endpoint. If the customer swaps out their ATS and replaces it with another, your app continues calling GET /jobs without interruption.
-<li><b>An API authentication service.</b> TAS provides access tokens and credentials for apps to call each others APIs securely, with user identity available to all endpoints.
-<li><b>An app lifecycle service.</b> TAS sends your app tenant-specific signals so that it can  shut down and start up cleanly as tenants make changes to their configuration (e.g. installing and uninstalling apps).
-<li><b>A demo packaging service.</b> With TAS, you can define shopping lists of microservices
+<p>To you, as the developer of a talent management app, Talent App Store brings you these benefits:
+
+<dl>
+
+<dt>A sales channel</dt>
+<dd>Hundreds of customers are able to use TAS, making thousands of API
+endpoints available. If you have a product that solves some talent management problem better
+than anyone else, you now have access to a ready market of people who can provision your product
+with a single click.
+</dd>
+
+<dt>Rock solid security</dt>
+<dd>One of the hardest aspects of selling HR software to enterprises is addressing the
+IT team's security demands. In TAS, your app runs within an industry standard
+security and identity framework, using technologies like SSO via SAML, OAuth and others.
+TAS handles all of the heavy lifting of security for you, frees you from the
+risky business of managing user authentication, and allows you to make binding guarantees
+to customers about the safety of their data within your app. 
+</dd>
+
+<dt>A demo packaging service</dt>
+<dd>With TAS, you can define shopping lists of microservices
 that support your app, such as databases of demo jobs, org structures, and wrap these around
 your app. Customers can install your app as a part of a complete, functioning technology stack,
 trial it, and then swap out the demo apps in the stack for real apps connected to their existing
 talent management platform.
-</ul>
-</p>
+</dd>
 
-<p>There are also some things that TAS is not:
+</dl>
+
+
+<h1>How it works</h1>
+
 <ul>
-<li>TAS is not an IaaS or a hosting platform. You host your apps yourself on your own infrastructure.
-<li>TAS is not a programming language or a framework. You can write your apps in your language of choice, using whatever user interface framework you favour and storing your data in your chosen database. TAS helps you to communicate with other apps, and with TAS itself, via http-based REST APIs. TAS does provide a set of Java client libraries to help with writing apps.
-<li>TAS is not an ESB (Enterprise Service Bus). API traffic does not flow through any TAS servers. Instead, your app uses TAS to locate an API endpoint and obtain an access token. The actual API call is made directly from your app (the consumer) to the other app (the producer) over the internet, and not through TAS. TAS is not a bottleneck or a point of failure.
+
+<li><b>TAS is a provisioning service.</b> TAS calls an API on your app to tell you in real time
+when new tenants install or uninstall your app. You respond to the provisioning API by
+inserting a row into your customer table, assigning a trained simian to start
+installing a server, or whatever.
+
+<li><b>An SSO (Single Sign On) service.</b> If your app presents a web user interface,
+then TAS handles logins to your app in a highly secure, customer-controlled way, and
+integrates tightly with customer-supplied identity providers via SAML 2.0. SAML support
+and SSO is increasing understood by customers to be a key part of an integrated talent
+management experience.
+
+<li><b>An API directory service.</b> TAS provides APIs for your app to dynamically
+locate API endpoints on other apps, based on the tenant's latest installation choices.
+For example, your app simply locates and then calls the GET /jobs endpoint, without
+needing to know which app is currently producing that endpoint. If the customer swaps
+out their ATS and replaces it with another, your app continues calling GET /jobs without interruption.
+
+<li><b>An API authentication service.</b> TAS provides access tokens and credentials for
+apps to call each others APIs securely, with user identity available to all endpoints.
+
+<li><b>An app lifecycle service.</b> TAS sends your app tenant-specific signals so
+that it can  shut down and start up cleanly as tenants make changes to their
+configuration (e.g. installing and uninstalling apps).
+
+
+</ul>
+
+
+<h1>What its not</h1>
+
+<p>There are some things that TAS is not:
+<ul>
+<li>TAS is not an IaaS or a hosting platform. You host your apps yourself
+on your own infrastructure.
+
+<li>TAS is not a programming language or a framework. You can write your apps
+in your language of choice, using whatever user interface framework you favour
+and storing your data in your chosen database. TAS helps you to communicate
+with other apps, and with TAS itself, via http-based REST APIs. TAS does
+provide a set of Java client libraries to help with writing apps.
+
+<li>TAS is not an ESB (Enterprise Service Bus). API traffic does not flow through
+any TAS servers. Instead, your app uses TAS to locate an API endpoint and obtain
+an access token. The actual API call is made directly from your app (the consumer)
+to the other app (the producer) over the internet, and not through TAS. TAS is
+not a bottleneck or a point of failure.
 </ul>
 
 <h1>How it works</h1>

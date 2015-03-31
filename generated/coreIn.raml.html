@@ -110,7 +110,7 @@
         .list-group-item:hover {
             background-color: #f5f5f5;
         }
-    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core incoming (app -&gt; TAS) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=_tenants class=panel-title>/tenants</h3></div><div class=panel-body><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant_><span class=parent>/tenants</span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store.</p><p>All core API calls that your app makes to TAS are within the context of a single tenant. TAS does not support API calls between tenants.</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the tenant, including the current state and incarnation. Normally apps would keep track of this information in response to outgoing core API calls like start, stop, etc., so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants</span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the tenant, including the current state and incarnation. Normally apps would keep track of this information in response to outgoing core API calls like start, stop, etc., so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__get_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_tenants__tenant__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    </style></head><body data-spy=scroll data-target=#sidebar><div class=container><div class=row><div class=col-md-9 role=main><div class=page-header><h1>TAS core incoming (app -&gt; TAS) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class=panel-heading><h3 id=_tenants class=panel-title>/tenants</h3></div><div class=panel-body><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant_><span class=parent>/tenants</span>/{tenant}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>A <b>tenant</b> is a customer within the multi-tenanted environment of Talent App Store. All core API calls that your app makes to TAS are within the context of a single tenant. TAS does not support API calls between tenants.</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get information about the tenant, including the current state and incarnation. Normally apps would keep track of this information in response to outgoing core API calls like start, stop, etc., so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants</span>/{tenant}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get information about the tenant, including the current state and incarnation. Normally apps would keep track of this information in response to outgoing core API calls like start, stop, etc., so this is mainly useful if your app is restarted, and needs to check what&#39;s been going on while its been offline.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__get_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_tenants__tenant__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {
         "singleValueAttributeOp": {
@@ -672,7 +672,7 @@
             ]
         }
     ]
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__headlessAuthentications__principalDeveloper___principalType_><span class=parent>/tenants/{tenant}/headlessAuthentications/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__headlessAuthentications__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>This endpoint is available only to apps tagged as "headless authenticators".</p><p>Useful for:</p><ul><li>adding "work on behalf of" behaviour (e.g. a recruiter logs in and works on behalf of a candidate)</li><li>when creating a new user (or candidate), finding existing auth info and reusing it</li></ul><p>Your app can call this API to to headlessly log in as the principal with the given email address, assuming:</p><ul><li>they already have a row with that email in the users table of some SoT app</li><li>that row is tagged with {E} and {N}, where {E} is for a non-attribute supplying idp (e.g., Google, email, backdoor idp).</li></ul><p>Example:</p><ul><li>your app wants to create a job application for fred@acme.com, but is cognisant that Fred may already have a record, maybe authenticated via Google or whatever; so</li><li>your app calls POST /tenants/acme/headlessAuthentications/tas/candidate/viaVerifiedEmail/fred@acme.com</li><li>TAS starts preparing its response:</li><li>On all apps marked as "principal holders" (i.e, apps that have SoT user tables), TAS calls GET /tenants/acme/m/principals/tas/candidate/byEmail/fred@acme.com</li><li>the fancycruit app responds first - it does hold a record for fred@acme.com, and so replies with: { "E": "acme-tas-candidate-google-idp", "N": "1246349464" }</li><li>TAS synthesizes a SAML assertion with the given E and N and stops asking other apps (i.e. no testing is done for conflicting /E/N values for fred - something for apps to build at some stage)</li><li>TAS processes the SAML assertion just as if fred had logged in, e.g. session decoration happens</li><li>if no "principal holder" app responds, then no SAML assertion is returned and your app can assume no candidate exists</li><li>Finally TAS replies to your app. Your app can now access /E/N, request OAuth tokens, and generally act as if fred had logged in</li></ul><p>Because this API allows apps to log in on behalf of users, tenants must have complete trust in the integrity of your app, and also that your app <em>always</em> verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}/headlessAuthentications/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>This endpoint is available only to apps tagged as "headless authenticators".</p><p>Useful for:</p><ul><li>adding "work on behalf of" behaviour (e.g. a recruiter logs in and works on behalf of a candidate)</li><li>when creating a new user (or candidate), finding existing auth info and reusing it</li></ul><p>Your app can call this API to to headlessly log in as the principal with the given email address, assuming:</p><ul><li>they already have a row with that email in the users table of some SoT app</li><li>that row is tagged with {E} and {N}, where {E} is for a non-attribute supplying idp (e.g., Google, email, backdoor idp).</li></ul><p>Example:</p><ul><li>your app wants to create a job application for fred@acme.com, but is cognisant that Fred may already have a record, maybe authenticated via Google or whatever; so</li><li>your app calls POST /tenants/acme/headlessAuthentications/tas/candidate/viaVerifiedEmail/fred@acme.com</li><li>TAS starts preparing its response:</li><li>On all apps marked as "principal holders" (i.e, apps that have SoT user tables), TAS calls GET /tenants/acme/m/principals/tas/candidate/byEmail/fred@acme.com</li><li>the fancycruit app responds first - it does hold a record for fred@acme.com, and so replies with: { "E": "acme-tas-candidate-google-idp", "N": "1246349464" }</li><li>TAS synthesizes a SAML assertion with the given E and N and stops asking other apps (i.e. no testing is done for conflicting /E/N values for fred - something for apps to build at some stage)</li><li>TAS processes the SAML assertion just as if fred had logged in, e.g. session decoration happens</li><li>if no "principal holder" app responds, then no SAML assertion is returned and your app can assume no candidate exists</li><li>Finally TAS replies to your app. Your app can now access /E/N, request OAuth tokens, and generally act as if fred had logged in</li></ul><p>Because this API allows apps to log in on behalf of users, tenants must have complete trust in the integrity of your app, and also that your app <em>always</em> verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaLogin__E_><span class=parent>/tenants/{tenant}/sessions/viaLogin</span>/{E}</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__sessions_viaLogin__E_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The entityID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaLogin__E___N_><span class=parent>/tenants/{tenant}/sessions/viaLogin/{E}</span>/{N}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__sessions_viaLogin__E___N__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__sessions_viaLogin__E___N_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The nameID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__sessions_viaLogin__E___N__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch principal&#39;s TAS session using details from the SAML assertion passed when they logged in.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__sessions_viaLogin__E___N__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/sessions/viaLogin/{E}</span>/{N}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch principal&#39;s TAS session using details from the SAML assertion passed when they logged in.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__sessions_viaLogin__E___N__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__sessions_viaLogin__E___N__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>E</strong>: <em>required (string)</em></li><li><strong>N</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaToken__accessToken_><span class=parent>/tenants/{tenant}/sessions/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__sessions_viaToken__accessToken__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__sessions_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The OAuth access token (a JWT) passed in to the producing app</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__sessions_viaToken__accessToken__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch principal&#39;s TAS session using details from an OAuth token</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__sessions_viaToken__accessToken__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/sessions/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch principal&#39;s TAS session using details from an OAuth token</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__sessions_viaToken__accessToken__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__sessions_viaToken__accessToken__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSPMetadata><span class=parent>/tenants/{tenant}</span>/samlSPMetadata</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__samlSPMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata, referred to as the SP metadata.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSPMetadata__principalDeveloper___principalType_><span class=parent>/tenants/{tenant}/samlSPMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__samlSPMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the metadata for this app (the SP).</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/samlSPMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the metadata for this app (the SP).</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlIdPMetadata><span class=parent>/tenants/{tenant}</span>/samlIdPMetadata</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__samlIdPMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Apps that are SSO-protected (i.e., SPs in SAML lingo) require the SAML metadata for the IdP proxy that front ends all of the identity providers that the tenant has set up for the given principal type.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlIdPMetadata__principalDeveloper___principalType_><span class=parent>/tenants/{tenant}/samlIdPMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__samlIdPMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the metadata for the IdP proxy.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/samlIdPMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the metadata for the IdP proxy.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSubjects><span class=parent>/tenants/{tenant}</span>/samlSubjects</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__samlSubjects class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly from the incoming assertion. This document will be removed once it has a new home.</b></p><p>A samlSubject is the primary key, assembled from information in the SAML assertion from the IdP, of the current logged in user. The samlSubject is useful when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p><p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app higher up the chain (if this app is an API server producing an OAuth API).</p><p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that was captured by TAS when this user logged in to an SSO-protected app, likely to include:<ul><li>Name ID</li><li>Name Qualifier</li><li>Entity ID of the issuing IdP</li></ul></p><p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP (internal candidates), Facebook pseudo-IdP, etc.</p><p>samlSubjects are identical across all SP&#39;s (i.e., all TAS SSO-protected apps), so that apps can correlate the user&#39;s identity (i.e. they each have the same understanding of who a user is). This means that transient SAML identifiers for example cannot be used.</p><p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p><p>Because access tokens are generated and signed by TAS, the user&#39;s identity can be passed securely down through a chain of OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p><p>Each producing app in the chain gets their chance to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSubjects_viaSamlAssertion><span class=parent>/tenants/{tenant}/samlSubjects</span>/viaSamlAssertion</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__samlSubjects_viaSamlAssertion_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__samlSubjects_viaSamlAssertion class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__samlSubjects_viaSamlAssertion_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p></p><p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly from the incoming assertion. This document will be removed once it has a new home.</b></p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.<p></p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__samlSubjects_viaSamlAssertion_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}/samlSubjects</span>/viaSamlAssertion</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly from the incoming assertion. This document will be removed once it has a new home.</b></p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.<p></p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__samlSubjects_viaSamlAssertion_post_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__samlSubjects_viaSamlAssertion_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__samlSubjects_viaSamlAssertion_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/xml</strong></p></div><div class=tab-pane id=_tenants__tenant__samlSubjects_viaSamlAssertion_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__headlessAuthentications__principalDeveloper___principalType_><span class=parent>/tenants/{tenant}/headlessAuthentications/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__headlessAuthentications__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>This endpoint is available only to apps tagged as "headless authenticators".</p><p>Useful for:</p><ul><li>adding "work on behalf of" behaviour (e.g. a recruiter logs in and works on behalf of a candidate)</li><li>when creating a new user (or candidate), finding existing auth info and reusing it</li></ul><p>Your app can call this API to to headlessly log in as the principal with the given email address, assuming:</p><ul><li>they already have a row with that email in the users table of some SoT app</li><li>that row is tagged with {E} and {N}, where {E} is for a non-attribute supplying idp (e.g., Google, email, backdoor idp).</li></ul><p>Example:</p><ul><li>your app wants to create a job application for fred@acme.com, but is cognisant that Fred may already have a record, maybe authenticated via Google or whatever; so</li><li>your app calls POST /tenants/acme/headlessAuthentications/tas/candidate/viaVerifiedEmail/fred@acme.com</li><li>TAS starts preparing its response:</li><li>On all apps marked as "principal holders" (i.e, apps that have SoT user tables), TAS calls GET /tenants/acme/m/principals/tas/candidate/byEmail/fred@acme.com</li><li>the fancycruit app responds first - it does hold a record for fred@acme.com, and so replies with: { "E": "acme-tas-candidate-google-idp", "N": "1246349464" }</li><li>TAS synthesizes a SAML assertion with the given E and N and stops asking other apps (i.e. no testing is done for conflicting /E/N values for fred - something for apps to build at some stage)</li><li>TAS processes the SAML assertion just as if fred had logged in, e.g. session decoration happens</li><li>if no "principal holder" app responds, then no SAML assertion is returned and your app can assume no candidate exists</li><li>Finally TAS replies to your app. Your app can now access /E/N, request OAuth tokens, and generally act as if fred had logged in</li></ul><p>Because this API allows apps to log in on behalf of users, tenants must have complete trust in the integrity of your app, and also that your app <em>always</em> verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}/headlessAuthentications/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>This endpoint is available only to apps tagged as "headless authenticators".</p><p>Useful for:</p><ul><li>adding "work on behalf of" behaviour (e.g. a recruiter logs in and works on behalf of a candidate)</li><li>when creating a new user (or candidate), finding existing auth info and reusing it</li></ul><p>Your app can call this API to to headlessly log in as the principal with the given email address, assuming:</p><ul><li>they already have a row with that email in the users table of some SoT app</li><li>that row is tagged with {E} and {N}, where {E} is for a non-attribute supplying idp (e.g., Google, email, backdoor idp).</li></ul><p>Example:</p><ul><li>your app wants to create a job application for fred@acme.com, but is cognisant that Fred may already have a record, maybe authenticated via Google or whatever; so</li><li>your app calls POST /tenants/acme/headlessAuthentications/tas/candidate/viaVerifiedEmail/fred@acme.com</li><li>TAS starts preparing its response:</li><li>On all apps marked as "principal holders" (i.e, apps that have SoT user tables), TAS calls GET /tenants/acme/m/principals/tas/candidate/byEmail/fred@acme.com</li><li>the fancycruit app responds first - it does hold a record for fred@acme.com, and so replies with: { "E": "acme-tas-candidate-google-idp", "N": "1246349464" }</li><li>TAS synthesizes a SAML assertion with the given E and N and stops asking other apps (i.e. no testing is done for conflicting /E/N values for fred - something for apps to build at some stage)</li><li>TAS processes the SAML assertion just as if fred had logged in, e.g. session decoration happens</li><li>if no "principal holder" app responds, then no SAML assertion is returned and your app can assume no candidate exists</li><li>Finally TAS replies to your app. Your app can now access /E/N, request OAuth tokens, and generally act as if fred had logged in</li></ul><p>Because this API allows apps to log in on behalf of users, tenants must have complete trust in the integrity of your app, and also that your app <em>always</em> verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__headlessAuthentications__principalDeveloper___principalType__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaLogin__app_><span class=parent>/tenants/{tenant}/sessions/viaLogin</span>/{app}</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__sessions_viaLogin__app_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Your app, i.e. the SSO-protected web site where the principal authenticated.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaLogin__app___E_><span class=parent>/tenants/{tenant}/sessions/viaLogin/{app}</span>/{E}</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__sessions_viaLogin__app___E_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The entityID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaLogin__app___E___N_><span class=parent>/tenants/{tenant}/sessions/viaLogin/{app}/{E}</span>/{N}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__sessions_viaLogin__app___E___N__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__sessions_viaLogin__app___E___N_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The nameID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__sessions_viaLogin__app___E___N__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch principal&#39;s TAS session using details from the SAML assertion passed when they logged in.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__sessions_viaLogin__app___E___N__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/sessions/viaLogin/{app}/{E}</span>/{N}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch principal&#39;s TAS session using details from the SAML assertion passed when they logged in.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__sessions_viaLogin__app___E___N__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__sessions_viaLogin__app___E___N__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>app</strong>: <em>required (string)</em></li><li><strong>E</strong>: <em>required (string)</em></li><li><strong>N</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__sessions_viaToken__accessToken_><span class=parent>/tenants/{tenant}/sessions/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__sessions_viaToken__accessToken__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__sessions_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The OAuth access token (a JWT) passed in to the producing app</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__sessions_viaToken__accessToken__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch principal&#39;s TAS session using details from an OAuth token</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__sessions_viaToken__accessToken__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/sessions/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch principal&#39;s TAS session using details from an OAuth token</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__sessions_viaToken__accessToken__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__sessions_viaToken__accessToken__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSPMetadata><span class=parent>/tenants/{tenant}</span>/samlSPMetadata</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__samlSPMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata, referred to as the SP metadata.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSPMetadata__principalDeveloper___principalType_><span class=parent>/tenants/{tenant}/samlSPMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__samlSPMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the metadata for this app (the SP).</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/samlSPMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the metadata for this app (the SP).</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__samlSPMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlIdPMetadata><span class=parent>/tenants/{tenant}</span>/samlIdPMetadata</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__samlIdPMetadata class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Apps that are SSO-protected (i.e., SPs in SAML lingo) require the SAML metadata for the IdP proxy that front ends all of the identity providers that the tenant has set up for the given principal type.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlIdPMetadata__principalDeveloper___principalType_><span class=parent>/tenants/{tenant}/samlIdPMetadata/{principalDeveloper}</span>/{principalType}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__samlIdPMetadata__principalDeveloper___principalType_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Get the metadata for the IdP proxy.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/samlIdPMetadata/{principalDeveloper}</span>/{principalType}</h4></div><div class=modal-body><div class="alert alert-info"><p>Get the metadata for the IdP proxy.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__samlIdPMetadata__principalDeveloper___principalType__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>principalDeveloper</strong>: <em>required (string)</em></li><li><strong>principalType</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSubjects><span class=parent>/tenants/{tenant}</span>/samlSubjects</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__samlSubjects class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly from the incoming assertion. This document will be removed once it has a new home.</b></p><p>A samlSubject is the primary key, assembled from information in the SAML assertion from the IdP, of the current logged in user. The samlSubject is useful when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p><p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app higher up the chain (if this app is an API server producing an OAuth API).</p><p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that was captured by TAS when this user logged in to an SSO-protected app, likely to include:<ul><li>Name ID</li><li>Name Qualifier</li><li>Entity ID of the issuing IdP</li></ul></p><p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP (internal candidates), Facebook pseudo-IdP, etc.</p><p>samlSubjects are identical across all SP&#39;s (i.e., all TAS SSO-protected apps), so that apps can correlate the user&#39;s identity (i.e. they each have the same understanding of who a user is). This means that transient SAML identifiers for example cannot be used.</p><p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p><p>Because access tokens are generated and signed by TAS, the user&#39;s identity can be passed securely down through a chain of OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p><p>Each producing app in the chain gets their chance to enforce their own business rules and make further tenant API calls on behalf of the logged in user.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__samlSubjects_viaSamlAssertion><span class=parent>/tenants/{tenant}/samlSubjects</span>/viaSamlAssertion</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__samlSubjects_viaSamlAssertion_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__samlSubjects_viaSamlAssertion class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__samlSubjects_viaSamlAssertion_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p></p><p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly from the incoming assertion. This document will be removed once it has a new home.</b></p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.<p></p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__samlSubjects_viaSamlAssertion_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}/samlSubjects</span>/viaSamlAssertion</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly from the incoming assertion. This document will be removed once it has a new home.</b></p>If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at login time for the samlSubject by using this endpoint and passing the assertion as the request body.<p></p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__samlSubjects_viaSamlAssertion_post_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__samlSubjects_viaSamlAssertion_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__samlSubjects_viaSamlAssertion_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/xml</strong></p></div><div class=tab-pane id=_tenants__tenant__samlSubjects_viaSamlAssertion_post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema":"http://json-schema.org/draft-04/schema#",
   "type":"object",
   "description":"A set of SAML values that uniquely identify this person, consistently across TAS apps, and with any number of potential IdPs",
@@ -693,351 +693,7 @@
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
 	  "nameID": "frank@ibm.com",
 	  "entityID": "some other SAML info"
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes><span class=parent>/tenants/{tenant}</span>/routes</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__routes class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.</p><p>Your app needs to first fetch a route in order to consume an API. The route will tell your app:<ul><li>The actual endpoint (where the producer&#39;s server sits on the internet)</li><li>For non-OAuth APIs, whether the producer is using HMAC or basic auth, and the actual credentials themselves.</li></ul></p><p>Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.) that the consumer is allowed to call.</p><p>For SoT APIs, there can be only one producing app, and hence only one route per consumer; for non-SoT APIs, there can be many consumers and many producers, and hence a route between each unique consumer/producer pair.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp_><span class=parent>/tenants/{tenant}/routes</span>/{consumingApp}</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The app consuming the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper_><span class=parent>/tenants/{tenant}/routes/{consumingApp}</span>/{apiDeveloper}</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The developer who owns/defines the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate_><span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}</span>/{apiUriTemplate}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The URI template (as per <a href=https://tools.ietf.org/html/rfc6570>https://tools.ietf.org/html/rfc6570</a>) of the API.</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API. The example below is for a non-OAuth, non-SoT API.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}</span>/{apiUriTemplate}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route(s), from the consumer (which must be your app), to each producer of a specific API. The example below is for a non-OAuth, non-SoT API.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"properties":{
-		"kind":{
-			"enum":[
-				"routes"
-			],
-			"description":"always set to: routes"
-		},
-		"items":{
-			"type":"array",
-			"items":{
-				"oneOf":[
-					{
-						"$ref":"route.json"
-					}
-				]
-			}
-			
-		}
-		
-	},
-	"required":[
-		"kind",
-		"items"
-	]
-}</code></pre><p><strong>Example</strong>:</p><pre><code>{
-    "kind": "routes",
-    "items": [
-        {
-            "kind": "route",
-            "consumer": "tas-jobboard",
-            "producer": "hrlabs-crazyjobs",
-            "location": "https://acme.crazyjobs.com:2109/api/v3.2",
-            "auth": {
-                "kind": "hmacAuth",
-                "hmacCredentials": {
-                    "signingKey": "k8763216548hppou",
-                    "expires": "2014-10-21T15:04:30Z"
-                }
-            },
-            "consumedMethods": [
-                "POST",
-                "DELETE"
-            ]
-        },
-        {
-            "kind": "route",
-            "consumer": "tas-jobboard",
-            "producer": "hrlabs-jobcopier",
-            "location": "https://jobcopier.com:2102/acme/api/v3/custApis",
-            "auth": {
-                "kind": "basicAuth",
-                "basicAuthCredentials": {
-                    "user": "barry@ibm.com",
-                    "password": "secret1",
-                    "expires": "2014-10-21T15:04:30Z"
-                }
-            },
-            "consumedMethods": [
-                "POST",
-                "DELETE"
-            ]
-        }
-    ]
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer_><span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}</span>/{producer}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route, from the given consumer, to the producer (which must be your app) of a specific API. Since both consuming and producing apps are specified, there can only be one or zero routes in the response.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}</span>/{producer}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route, from the given consumer, to the producer (which must be your app) of a specific API. Since both consuming and producing apps are specified, there can only be one or zero routes in the response.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "definitions": {
-    	"consumedMethods": {
-    		"description": "The subset of the methods available on this API that the consumer has declared that they use.",
-    		"type": "array",
-    		"uniqueItems": true,
-    		"items":  {
-                    "enum": [
-                        "HEAD", "GET", "DELETE", "PATCH", "POST", "PUT"
-                    ]
-                } 
-    	},
-        "hmacCredentials": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "signingKey",
-                "expires"
-            ],
-            "properties": {
-                "signingKey": {
-                    "type": "string"
-                },
-                "expires": {
-                    "type": "string",
-                    "format": "date-time"
-                }
-            }
-        },
-        "basicAuthCredentials": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "user",
-                "password",
-                "expires"
-            ],
-            "properties": {
-                "user": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "expires": {
-                    "type": "string",
-                    "format": "date-time"
-                }
-            }
-        },
-        "authChoices": {
-            "oneOf": [
-                {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": [
-                        "kind",
-                        "hmacCredentials"
-                    ],
-                    "properties": {
-                        "kind": {
-                            "enum": [
-                                "hmacAuth"
-                            ]
-                        },
-                        "hmacCredentials": {
-                            "$ref": "#/definitions/hmacCredentials"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": [
-                        "kind",
-                        "basicAuthCredentials"
-                    ],
-                    "properties": {
-                        "kind": {
-                            "enum": [
-                                "basicAuth"
-                            ]
-                        },
-                        "basicAuthCredentials": {
-                            "$ref": "#/definitions/basicAuthCredentials"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": [
-                        "kind"
-                    ],
-                    "properties": {
-                        "kind": {
-                            "enum": [
-                                "oauthAuth"
-                            ]
-                        }
-                    }
-                }
-            ]
-        }
-    },
-    "type": "object",
-    "additionalProperties": false,
-    "required": [
-        "kind",
-        "producer",
-        "location",
-        "auth",
-        "consumedMethods"
-    ],
-    "properties": {
-        "kind": {
-            "enum": [
-                "route"
-            ],
-            "description": "always set to: route"
-        },
-        "consumer": {
-            "type": "string",
-            "description": "the app consuming this API"
-        },
-        "producer": {
-            "type": "string",
-            "description": "the app producing this API"
-        },
-        "location": {
-            "type": "string",
-            "description": "a URI template as per RFC 6570 which has had the template parameter replaced with the actual value for this tenant, and that should be used to prefix the API URI to make the call"
-        },
-        "auth": {
-            "$ref": "#/definitions/authChoices"
-        },
-        "consumedMethods": {
-            "$ref": "#/definitions/consumedMethods"
-        }
-    }
-}</code></pre><p><strong>Example</strong>:</p><pre><code>{
-  "kind":"route",
-  "consumer":"tas-jobboard",
-  "producer":"hrlabs-crazyjobs",
-  "location":"https://acme.crazyjobs.com:2109/api/v3.2",
-  "auth":{
-    "kind":"hmacAuth",
-    "hmacCredentials":{
-      "signingKey":"k8763216548hppou",
-      "expires":"2014-10-21T15:04:30Z"
-    }
-  },
-  "consumedMethods":[
-    "POST",
-    "DELETE"
-  ]
-}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens><span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}</span>/tokens</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see <a href=http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about>http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about</a> and <a href="http://jwt.io/">http://jwt.io/</a>): a) that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app.</p><p>Because access tokens are self-contained and signed, producers can rely on their content without any network traffic to the authorization server (i.e. TAS).</p><p>Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or (as per <a href=http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html>http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter.</p><p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate. For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token is too close to expiry to serve the needs of the consumer.</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E_><span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaLogin</span>/{E}</a> <span class=methods></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The entityID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N_><span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaLogin/{E}</span>/{N}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The nameID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaLogin/{E}</span>/{N}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li><li><strong>E</strong>: <em>required (string)</em></li><li><strong>N</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaLogin__E___N__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
-	"properties":{
-		"sub":{ "$ref": "../samlSubject.json"	},
-		"cons":{
-			"type":"string",
-			"description":"the app consuming the API"
-		},
-		"dev":{
-			"type":"string",
-			"description":"developer who owns/defines the API"
-		},
-		"uri":{
-			"type":"string",
-			"description":"URI template of the API"
-		},
-		"aud":{
-			"type":"string",
-			"description":"audience - the app producing the API, i.e. the one consuming the token"
-		},
-		"inc":{
-			"type":"integer",
-			"description":"incarnation of the tenant (store) at the time the token was issued"
-		},
-		"iat":{
-			"type":"string",
-			"description":"time the token was issued, as per the spec."
-		},
-		"exp":{
-			"type":"string",
-			"description":"time the token expires, as per the spec."
-		}
-		
-	},
-	"required":[
-		"sub",
-		"cons",
-		"dev",
-		"uri",
-		"aud",
-		"inc",
-		"iat",
-		"exp"
-	]
-}</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"sub": {
-	  "entityID": "ibmidpuswest-10",
-	  "nameID": "frank@ibm.com"
-	},
-	"cons": "tas-uberapply",
-	"dev": "tas",
-	"uri": "/positionOpenings/{positionId}",
-	"aud": "tas-ats",
-	"inc": 24,
-	"iat": "31 Dec 1999",
-	"exp": "31 Dec 1999"
-}
-</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken_><span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The OAuth access token (a JWT) passed in to the producing app, which has:<ul><li>the producing app as the "aud" field</li><li>the principal via its "sub" field</li></ul></p><p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g., if the ancestor token expires, that does not tokens created from it.</p></div><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}/routes/{consumingApp}/{apiDeveloper}/{apiUriTemplate}/{producer}/tokens/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>consumingApp</strong>: <em>required (string)</em></li><li><strong>apiDeveloper</strong>: <em>required (string)</em></li><li><strong>apiUriTemplate</strong>: <em>required (string)</em></li><li><strong>producer</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_tenants__tenant__routes__consumingApp___apiDeveloper___apiUriTemplate___producer__tokens_viaToken__accessToken__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-	"$schema":"http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"additionalProperties":false,
-	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
-	"properties":{
-		"sub":{ "$ref": "../samlSubject.json"	},
-		"cons":{
-			"type":"string",
-			"description":"the app consuming the API"
-		},
-		"dev":{
-			"type":"string",
-			"description":"developer who owns/defines the API"
-		},
-		"uri":{
-			"type":"string",
-			"description":"URI template of the API"
-		},
-		"aud":{
-			"type":"string",
-			"description":"audience - the app producing the API, i.e. the one consuming the token"
-		},
-		"inc":{
-			"type":"integer",
-			"description":"incarnation of the tenant (store) at the time the token was issued"
-		},
-		"iat":{
-			"type":"string",
-			"description":"time the token was issued, as per the spec."
-		},
-		"exp":{
-			"type":"string",
-			"description":"time the token expires, as per the spec."
-		}
-		
-	},
-	"required":[
-		"sub",
-		"cons",
-		"dev",
-		"uri",
-		"aud",
-		"inc",
-		"iat",
-		"exp"
-	]
-}</code></pre><p><strong>Example</strong>:</p><pre><code>{
-	"sub": {
-	  "entityID": "ibmidpuswest-10",
-	  "nameID": "frank@ibm.com"
-	},
-	"cons": "tas-uberapply",
-	"dev": "tas",
-	"uri": "/positionOpenings/{positionId}",
-	"aud": "tas-ats",
-	"inc": 24,
-	"iat": "31 Dec 1999",
-	"exp": "31 Dec 1999"
-}
-</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__patchSets><span class=parent>/tenants/{tenant}</span>/patchSets</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__patchSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__patchSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__patchSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>This endpoint is available only to apps tagged as "storeFront".</p><p>Your app calls this endpoint to validate and then launch a patch document, e.g. to reflect the tenant clicking install on an app.</p><p>The response body is an unguessable unique "launch key" which can be used with GET /tenants/{tenant}/patchSets/{launchKey}.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__patchSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}</span>/patchSets</h4></div><div class=modal-body><div class="alert alert-info"><p>This endpoint is available only to apps tagged as "storeFront".</p><p>Your app calls this endpoint to validate and then launch a patch document, e.g. to reflect the tenant clicking install on an app.</p><p>The response body is an unguessable unique "launch key" which can be used with GET /tenants/{tenant}/patchSets/{launchKey}.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__patchSets_post_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__patchSets_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__patchSets_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__tenants__tenant__patchSets><span class=parent>/tenants/{tenant}</span>/patchSets</a> <span class=methods><a href=# data-toggle=modal data-target=#_tenants__tenant__patchSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__tenants__tenant__patchSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_tenants__tenant__patchSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>This endpoint is available only to apps tagged as "storeFront".</p><p>Your app calls this endpoint to validate and then launch a patch document, e.g. to reflect the tenant clicking install on an app.</p><p>The response body is an unguessable unique "launch key" which can be used with GET /tenants/{tenant}/patchSets/{launchKey}.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_tenants__tenant__patchSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/tenants/{tenant}</span>/patchSets</h4></div><div class=modal-body><div class="alert alert-info"><p>This endpoint is available only to apps tagged as "storeFront".</p><p>Your app calls this endpoint to validate and then launch a patch document, e.g. to reflect the tenant clicking install on an app.</p><p>The response body is an unguessable unique "launch key" which can be used with GET /tenants/{tenant}/patchSets/{launchKey}.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_tenants__tenant__patchSets_post_request data-toggle=tab>Request</a></li><li><a href=#_tenants__tenant__patchSets_post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_tenants__tenant__patchSets_post_request><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
@@ -1489,4 +1145,250 @@
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{ "state": "running",  "publicKey": "jklh875glihfu4f868h" }
-</code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class=panel-heading><h3 id=_patchSets class=panel-title>/patchSets</h3></div><div class=panel-body><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__patchSets><span class=parent></span>/patchSets</a> <span class=methods><a href=# data-toggle=modal data-target=#_patchSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__patchSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_patchSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches to an existing tenant.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_patchSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent></span>/patchSets</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches to an existing tenant.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_patchSets_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_patchSets_post_request></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__patchSets__launchKey_><span class=parent>/patchSets</span>/{launchKey}</a> <span class=methods><a href=# data-toggle=modal data-target=#_patchSets__launchKey__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__patchSets__launchKey_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_patchSets__launchKey__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet, e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_patchSets__launchKey__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/patchSets</span>/{launchKey}</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet, e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_patchSets__launchKey__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_patchSets__launchKey__get_request><h3>URI Parameters</h3><ul><li><strong>launchKey</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#_tenants>/tenants</a></li><li><a href=#_patchSets>/patchSets</a></li></ul></div></div></div></div></body></html>
+</code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class=panel-heading><h3 id=_routes class=panel-title>/routes</h3></div><div class=panel-body><div class=top-resource-description><p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app. Your app needs to first fetch a route in order to consume an API. The route will tell your app about the actual endpoint (where the producer&#39;s server sits on the internet). Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.) that the consumer is allowed to call.</p></div><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT_><span class=parent>/routes</span>/{CT}</a> <span class=methods></span></h4></div><div id=panel__routes__CT_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Consuming tenant: the tenant with the app installed that is consuming the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD_><span class=parent>/routes/{CT}</span>/{CAD}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Consuming app developer: the developer who owns the app consuming the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA_><span class=parent>/routes/{CT}/{CAD}</span>/{CA}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD___CA_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Consuming app: the app consuming the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD_><span class=parent>/routes/{CT}/{CAD}/{CA}</span>/{AD}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD___CA___AD_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>API developer: the developer who owns/defines the API being consumed</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}</span>/{URI}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>API URI Template: the URI template (as per <a href=https://tools.ietf.org/html/rfc6570>https://tools.ietf.org/html/rfc6570</a>) of the API being consumed</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}</span>/{SOT}</a> <span class=methods><a href=# data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false</p></div><div class=list-group><div data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route(s) from the consumer to each producer of a specific API</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_routes__CT___CAD___CA___AD___URI___SOT__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}</span>/{SOT}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route(s) from the consumer to each producer of a specific API</p></div><ul class="nav nav-tabs"><li class=active><a href=#_routes__CT___CAD___CA___AD___URI___SOT__get_request data-toggle=tab>Request</a></li><li><a href=#_routes__CT___CAD___CA___AD___URI___SOT__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_routes__CT___CAD___CA___AD___URI___SOT__get_request><h3>URI Parameters</h3><ul><li><strong>CT</strong>: <em>required (string)</em></li><li><strong>CAD</strong>: <em>required (string)</em></li><li><strong>CA</strong>: <em>required (string)</em></li><li><strong>AD</strong>: <em>required (string)</em></li><li><strong>URI</strong>: <em>required (string)</em></li><li><strong>SOT</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_routes__CT___CAD___CA___AD___URI___SOT__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "./route.json"
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>[
+    {
+        "consTenant": "acme",
+        "consAppDev": "tas",
+        "consApp": "jobboardhub",
+        "consAsSoT": false,
+        "consMethods": [
+            "GET"
+        ],
+        "apiDev": "tas",
+        "apiUriTemplate": "/categories",
+        "prodTenant": "seek",
+        "prodAppDev": "seek",
+        "prodApp": "basecats",
+        "location": "https://ref.seek.com:2109/api/v3.2"
+    },
+    {
+        "consTenant": "acme",
+        "consAppDev": "tas",
+        "consApp": "jobboardhub",
+        "consAsSoT": false,
+        "consMethods": [
+            "GET"
+        ],
+        "apiDev": "tas",
+        "apiUriTemplate": "/categories",
+        "prodTenant": "trademeinst",
+        "prodAppDev": "trademe",
+        "prodApp": "tmcore",
+        "location": "https://api.trademe.co.nz/v1"
+    }
+]</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}</span>/{PT}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Producing tenant: the tenant with the app installed that is producing the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}</span>/{PAD}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Producing app developer: the developer who owns the app producing the API</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}</span>/{PA}</a> <span class=methods><a href=# data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>Producing app: the app producing the API</p></div><div class=list-group><div data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p>Fetch the route, from the given consumer, to the producer (which must be your app) of a specific API. Since both consuming and producing apps are specified, there can only be one or zero routes in the response.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}</span>/{PA}</h4></div><div class=modal-body><div class="alert alert-info"><p>Fetch the route, from the given consumer, to the producer (which must be your app) of a specific API. Since both consuming and producing apps are specified, there can only be one or zero routes in the response.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get_request data-toggle=tab>Request</a></li><li><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get_request><h3>URI Parameters</h3><ul><li><strong>CT</strong>: <em>required (string)</em></li><li><strong>CAD</strong>: <em>required (string)</em></li><li><strong>CA</strong>: <em>required (string)</em></li><li><strong>AD</strong>: <em>required (string)</em></li><li><strong>URI</strong>: <em>required (string)</em></li><li><strong>SOT</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li><li><strong>PAD</strong>: <em>required (string)</em></li><li><strong>PA</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__get_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+    	"consMethods": {
+    		"description": "Consumed methods - the subset of the methods available on this API that the consumer has declared that they use.",
+    		"type": "array",
+    		"uniqueItems": true,
+    		"items":  {
+                    "enum": [
+                        "HEAD", "GET", "DELETE", "PATCH", "POST", "PUT"
+                    ]
+                } 
+    	}
+    },
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "consTenant",
+        "consAppDev",
+        "consApp",
+        "apiDev",
+        "apiUriTemplate",
+        "consAsSoT",
+        "prodTenant",
+        "prodAppDev",
+        "prodApp",
+        "location",
+        "consMethods"
+    ],
+    "properties": {
+        "consTenant": {
+            "type": "string",
+            "description": "Consuming tenant: the tenant with the app installed that is consuming the API"
+        },
+        "consAppDev": {
+            "type": "string",
+            "description": "Consuming app developer: the developer who owns the app consuming the API"
+        },
+        "consApp": {
+            "type": "string",
+            "description": "Consuming app: the app consuming the API"
+        },
+        "apiDev": {
+            "type": "string",
+            "description": "API developer: the developer who owns/defines the API being consumed"
+        },
+        "apiUriTemplate": {
+            "type": "string",
+            "description": "API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed"
+        },
+        "consAsSoT": {
+            "type": "boolean",
+            "description": "Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false"
+        },
+        "prodTenant": {
+            "type": "string",
+            "description": "Producing tenant: the tenant with the app installed that is producing the API"
+        },
+        "prodAppDev": {
+            "type": "string",
+            "description": "Producing app developer: the developer who owns the app producing the API"
+        },
+        "prodApp": {
+            "type": "string",
+            "description": "Producing app: the app producing the API"
+        },
+        "location": {
+            "type": "string",
+            "description": "a URI template as per RFC 6570 which has had the template parameter replaced with the actual value for the producing tenant, and that should be used to prefix the API URI to make the call"
+        },
+        "consMethods": {
+            "$ref": "#/definitions/consMethods"
+        }
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>    {
+        "consTenant": "acme",
+        "consAppDev": "tas",
+        "consApp": "jobboardhub",
+        "consAsSoT": false,
+        "consMethods": [
+            "GET"
+        ],
+        "apiDev": "tas",
+        "apiUriTemplate": "/categories",
+        "prodTenant": "trademeinst",
+        "prodAppDev": "trademe",
+        "prodApp": "tmcore",
+        "location": "https://api.trademe.co.nz/v1"
+    }
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}</span>/tokens</a> <span class=methods><a href=# data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>OAuth tokens are self-contained security tokens in the form of a JWT (json web token; see <a href=http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about>http://www.intridea.com/blog/2013/11/7/json-web-token-the-useful-little-standard-you-haven-t-heard-about</a> and <a href="http://jwt.io/">http://jwt.io/</a>):</p><ul><li>that authorizes a specific consuming app to consume a specific OAuth tenant API at a specific producing app. Because access tokens are self-contained and signed, producers can rely on their content without any network traffic to the authorization server (i.e. TAS). Every call to this endpoint results in a new token being issued, with an expiry time set to either one hour, or (as per <a href=http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html>http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter. If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate. For efficiency consumers should cache the tokens returned by this endpoint until (a) the app is restarted, or (b) the cached token is too close to expiry to serve the needs of the consumer.</li></ul></div><div class=list-group><div data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Create an anonymous OAuth token (not concerned with any principal)</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}</span>/tokens</h4></div><div class=modal-body><div class="alert alert-info"><p>Create an anonymous OAuth token (not concerned with any principal)</p></div><ul class="nav nav-tabs"><li class=active><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_post_request><h3>URI Parameters</h3><ul><li><strong>CT</strong>: <em>required (string)</em></li><li><strong>CAD</strong>: <em>required (string)</em></li><li><strong>CA</strong>: <em>required (string)</em></li><li><strong>AD</strong>: <em>required (string)</em></li><li><strong>URI</strong>: <em>required (string)</em></li><li><strong>SOT</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li><li><strong>PAD</strong>: <em>required (string)</em></li><li><strong>PA</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}/tokens/viaLogin</span>/{E}</a> <span class=methods></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The entityID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}/tokens/viaLogin/{E}</span>/{N}</a> <span class=methods><a href=# data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The nameID of the currently logged in principal, as passed to your app&#39;s SSO-protected web site (see details of authentication).</p></div><div class=list-group><div data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}/tokens/viaLogin/{E}</span>/{N}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post_request data-toggle=tab>Request</a></li><li><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post_request><h3>URI Parameters</h3><ul><li><strong>CT</strong>: <em>required (string)</em></li><li><strong>CAD</strong>: <em>required (string)</em></li><li><strong>CA</strong>: <em>required (string)</em></li><li><strong>AD</strong>: <em>required (string)</em></li><li><strong>URI</strong>: <em>required (string)</em></li><li><strong>SOT</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li><li><strong>PAD</strong>: <em>required (string)</em></li><li><strong>PA</strong>: <em>required (string)</em></li><li><strong>E</strong>: <em>required (string)</em></li><li><strong>N</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaLogin__E___N__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
+	"properties":{
+		"sub":{ "$ref": "../samlSubject.json"	},
+		"cons":{
+			"type":"string",
+			"description":"the app consuming the API"
+		},
+		"dev":{
+			"type":"string",
+			"description":"developer who owns/defines the API"
+		},
+		"uri":{
+			"type":"string",
+			"description":"URI template of the API"
+		},
+		"aud":{
+			"type":"string",
+			"description":"audience - the app producing the API, i.e. the one consuming the token"
+		},
+		"inc":{
+			"type":"integer",
+			"description":"incarnation of the tenant (store) at the time the token was issued"
+		},
+		"iat":{
+			"type":"string",
+			"description":"time the token was issued, as per the spec."
+		},
+		"exp":{
+			"type":"string",
+			"description":"time the token expires, as per the spec."
+		}
+		
+	},
+	"required":[
+		"sub",
+		"cons",
+		"dev",
+		"uri",
+		"aud",
+		"inc",
+		"iat",
+		"exp"
+	]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"sub": {
+	  "entityID": "ibmidpuswest-10",
+	  "nameID": "frank@ibm.com"
+	},
+	"cons": "tas-uberapply",
+	"dev": "tas",
+	"uri": "/positionOpenings/{positionId}",
+	"aud": "tas-ats",
+	"inc": 24,
+	"iat": "31 Dec 1999",
+	"exp": "31 Dec 1999"
+}
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken_><span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}/tokens/viaToken</span>/{accessToken}</a> <span class=methods><a href=# data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken_ class="panel-collapse collapse"><div class=panel-body><div class=resource-description><p>The OAuth access token (a JWT) passed in to the producing app, which has:<ul><li>the producing app as the "aud" field</li><li>the principal via its "sub" field</li></ul></p><p>New tokens generated form this endpoint have no relationship to their ancestor tokens - e.g., if the ancestor token expires, that does not tokens created from it.</p></div><div class=list-group><div data-toggle=modal data-target=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent>/routes/{CT}/{CAD}/{CA}/{AD}/{URI}/{SOT}/{PT}/{PAD}/{PA}/tokens/viaToken</span>/{accessToken}</h4></div><div class=modal-body><div class="alert alert-info"><p>Called by your app to obtain an OAuth token to consume the API of the given route, for the given principal.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post_request data-toggle=tab>Request</a></li><li><a href=#_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post_response data-toggle=tab>Response</a></li></ul><div class=tab-content><div class="tab-pane active" id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post_request><h3>URI Parameters</h3><ul><li><strong>CT</strong>: <em>required (string)</em></li><li><strong>CAD</strong>: <em>required (string)</em></li><li><strong>CA</strong>: <em>required (string)</em></li><li><strong>AD</strong>: <em>required (string)</em></li><li><strong>URI</strong>: <em>required (string)</em></li><li><strong>SOT</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li><li><strong>PAD</strong>: <em>required (string)</em></li><li><strong>PA</strong>: <em>required (string)</em></li><li><strong>accessToken</strong>: <em>required (string)</em></li></ul></div><div class=tab-pane id=_routes__CT___CAD___CA___AD___URI___SOT___PT___PAD___PA__tokens_viaToken__accessToken__post_response><h2>HTTP status code <a href=http://httpstatus.es/200 target=_blank>200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema":"http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"additionalProperties":false,
+	"description":"reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
+	"properties":{
+		"sub":{ "$ref": "../samlSubject.json"	},
+		"cons":{
+			"type":"string",
+			"description":"the app consuming the API"
+		},
+		"dev":{
+			"type":"string",
+			"description":"developer who owns/defines the API"
+		},
+		"uri":{
+			"type":"string",
+			"description":"URI template of the API"
+		},
+		"aud":{
+			"type":"string",
+			"description":"audience - the app producing the API, i.e. the one consuming the token"
+		},
+		"inc":{
+			"type":"integer",
+			"description":"incarnation of the tenant (store) at the time the token was issued"
+		},
+		"iat":{
+			"type":"string",
+			"description":"time the token was issued, as per the spec."
+		},
+		"exp":{
+			"type":"string",
+			"description":"time the token expires, as per the spec."
+		}
+		
+	},
+	"required":[
+		"sub",
+		"cons",
+		"dev",
+		"uri",
+		"aud",
+		"inc",
+		"iat",
+		"exp"
+	]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+	"sub": {
+	  "entityID": "ibmidpuswest-10",
+	  "nameID": "frank@ibm.com"
+	},
+	"cons": "tas-uberapply",
+	"dev": "tas",
+	"uri": "/positionOpenings/{positionId}",
+	"aud": "tas-ats",
+	"inc": 24,
+	"iat": "31 Dec 1999",
+	"exp": "31 Dec 1999"
+}
+</code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class=panel-heading><h3 id=_patchSets class=panel-title>/patchSets</h3></div><div class=panel-body><div class=panel-group><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__patchSets><span class=parent></span>/patchSets</a> <span class=methods><a href=# data-toggle=modal data-target=#_patchSets_post><span class="badge badge_post">post</span></a></span></h4></div><div id=panel__patchSets class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_patchSets_post class=list-group-item><span class="badge badge_post">post</span><div class=method_description><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches to an existing tenant.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_patchSets_post><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_post">post</span> <span class=parent></span>/patchSets</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches to an existing tenant.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_patchSets_post_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_patchSets_post_request></div></div></div></div></div></div></div><div class="panel panel-white"><div class=panel-heading><h4 class=panel-title><a class=collapsed data-toggle=collapse href=#panel__patchSets__launchKey_><span class=parent>/patchSets</span>/{launchKey}</a> <span class=methods><a href=# data-toggle=modal data-target=#_patchSets__launchKey__get><span class="badge badge_get">get</span></a></span></h4></div><div id=panel__patchSets__launchKey_ class="panel-collapse collapse"><div class=panel-body><div class=list-group><div data-toggle=modal data-target=#_patchSets__launchKey__get class=list-group-item><span class="badge badge_get">get</span><div class=method_description><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet, e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.</p></div><div class=clearfix></div></div></div></div></div><div class="modal fade" tabindex=0 id=_patchSets__launchKey__get><div class=modal-dialog><div class=modal-content><div class=modal-header><button type=button class=close data-dismiss=modal aria-hidden=true>&times;</button><h4 class=modal-title id=myModalLabel><span class="badge badge_get">get</span> <span class=parent>/patchSets</span>/{launchKey}</h4></div><div class=modal-body><div class="alert alert-info"><p></p><p>This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet, e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.</p></div><ul class="nav nav-tabs"><li class=active><a href=#_patchSets__launchKey__get_request data-toggle=tab>Request</a></li></ul><div class=tab-content><div class="tab-pane active" id=_patchSets__launchKey__get_request><h3>URI Parameters</h3><ul><li><strong>launchKey</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div></div></div></div></div><div class=col-md-3><div id=sidebar class="hidden-print affix" role=complementary><ul class="nav nav-pills nav-stacked"><li><a href=#_tenants>/tenants</a></li><li><a href=#_routes>/routes</a></li><li><a href=#_patchSets>/patchSets</a></li></ul></div></div></div></div></body></html>
