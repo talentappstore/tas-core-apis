@@ -1,15 +1,29 @@
-    {
-        "consTenant": "acme",
-        "consAppDev": "tas",
-        "consApp": "jobboardhub",
-        "consAsSoT": false,
-        "consMethods": [
-            "GET"
+{
+    "consumingAppInstall": {
+        "tenant": "acme",
+        "appDeveloper": "tas",
+        "app": "jobboardhub",
+        "methods": [
+            "GET",
+            "POST"
         ],
-        "apiDev": "tas",
+        "securityGeneration": 1409
+    },
+    "consumedApi": {
+        "apiDeveloper": "tas",
         "apiUriTemplate": "/categories",
-        "prodTenant": "trademeinst",
-        "prodAppDev": "trademe",
-        "prodApp": "tmcore",
-        "location": "https://api.trademe.co.nz/v1"
+        "consumedAsSourceOfTruth": false,
+        "methods": [
+            "GET",
+            "POST",
+            "DELETE"
+        ]
+    },
+    "producingAppInstall": {
+        "tenant": "seek",
+        "appDeveloper": "seek",
+        "app": "basecats",
+        "endPoint": "https://ref.seek.com:2109/api/v3.2",
+        "securityGeneration": 301
     }
+}

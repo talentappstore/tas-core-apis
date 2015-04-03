@@ -1,13 +1,20 @@
 {
-	"sub": {
-	  "entityID": "ibmidpuswest-10",
-	  "nameID": "frank@ibm.com"
-	},
-	"cons": "tas-uberapply",
-	"dev": "tas",
-	"uri": "/positionOpenings/{positionId}",
-	"aud": "tas-ats",
-	"inc": 24,
-	"iat": "31 Dec 1999",
-	"exp": "31 Dec 1999"
+    "sub": {
+        "entityID": "ibmidpuswest-10",
+        "nameID": "frank@ibm.com"
+    },
+    "cons": {
+        "ct": "acme",
+        "cad": "tas",
+        "ca": "uberapply",
+        "sgen": 219
+    },
+    "aud": {
+        "pt": "acme",
+        "pad": "hrsoft",
+        "pa": "ats",
+        "sgen": 12
+    },
+    "iat": "31 Dec 2014",
+    "exp": "31 Dec 2014"
 }

@@ -1,32 +1,38 @@
-[
-    {
-        "consTenant": "acme",
-        "consAppDev": "tas",
-        "consApp": "jobboardhub",
-        "consAsSoT": false,
-        "consMethods": [
-            "GET"
+{
+    "consumingAppInstall": {
+        "tenant": "acme",
+        "appDeveloper": "tas",
+        "app": "jobboardhub",
+        "methods": [
+            "GET",
+            "POST"
         ],
-        "apiDev": "tas",
-        "apiUriTemplate": "/categories",
-        "prodTenant": "seek",
-        "prodAppDev": "seek",
-        "prodApp": "basecats",
-        "location": "https://ref.seek.com:2109/api/v3.2"
+        "securityGeneration": 1409
     },
-    {
-        "consTenant": "acme",
-        "consAppDev": "tas",
-        "consApp": "jobboardhub",
-        "consAsSoT": false,
-        "consMethods": [
-            "GET"
-        ],
-        "apiDev": "tas",
+    "consumedApi": {
+        "apiDeveloper": "tas",
         "apiUriTemplate": "/categories",
-        "prodTenant": "trademeinst",
-        "prodAppDev": "trademe",
-        "prodApp": "tmcore",
-        "location": "https://api.trademe.co.nz/v1"
-    }
-]
+        "consumedAsSourceOfTruth": false,
+        "methods": [
+            "GET",
+            "POST",
+            "DELETE"
+        ]
+    },
+    "producingAppInstalls": [
+        {
+            "tenant": "seek",
+            "appDeveloper": "seek",
+            "app": "basecats",
+            "endPoint": "https://ref.seek.com:2109/api/v3.2",
+            "securityGeneration": 301
+        },
+        {
+            "tenant": "greenjobsite",
+            "appDeveloper": "greenjobs",
+            "app": "gjcore",
+            "endPoint": "https://api.greenjobs.co.nz/v1",
+            "securityGeneration": 80
+        }
+    ]
+}

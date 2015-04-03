@@ -354,189 +354,492 @@ want to be alerted about new open jobs), TAS will allow them all to be installed
 succeeds for the first 2 producing apps, but then fails for the third? Should the app continue on POST-ing to the
 remaining 3 apps? These types of questions are harder to answer when an app is consuming an endpoint on many producers.</p>
 
-<h1>API Authentication</h1>
 
+<h1>Consuming APIs</h1>
 
-<h2>HMAC authentication</h2>
+<h2>Fetch the route(s) for the API</h2>
 
-<p>Most TAS core APIs are protected using HMAC-SHA256 authentication in a similar manner to <a href='http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html'>Amazon Web Service's approach.</a></p>
+<p>The first step in calling an API is to fetch the route(s) for it.</p>
 
-<p>Essentially, incoming and outgoing core API calls contain an HTTP Authorization header which holds
-a message authentication code - a hashed representation of the entire HTTP request.</p>
+<p>A route is a usage of a specific tenant API, on a specific producing app installed at the producing tenant,
+by a specific consuming app installed at the consuming tenant.</p>
 
-<p>For incoming core API calls (which are outgoing from the perspective of your app), your app must calculate the MAC and add the Authorization header to the request.</p>
-
-<p>For outgoing core API calls, your app must recalculate the MAC based on the incoming request, and compare it
-to the Authorization header found in the request. Your app should only consider the API call valid if the codes match.</p>
-
-<p>The MAC code used depends on the actual API. As described below , there are three different types of key pair managed by TAS. For many APIs, the MAC is calculated
-your app's key - the value that is given to you by TAS when you register your app.</p>
-
-
-<h2>Access hierarchy</h2>
-
-<p>The diagram below shows the 3 different types of key pair (each having a public + private key) held by TAS.</p>
-
-<p>
-<table border=1>
-<thead>
-<tr><td>Key pair</td><td>Held against</td><td>Private key created/updated when?</td></tr>
-</thead>
-<tbody>
-<tr><td>App key</td><td>An app</td><td>When the developer first defines the app in TAS, or asks for the private key to be regenerated</td></tr>
-<tr><td>Install key</td><td>An app, installed by a specific tenant</td><td>Whenever the store is cycled</td></tr>
-<tr><td>Route key</td><td>The consumption, by a specific consumer (app), of a specific API, at a specific producer (app)</td><td>Whenever the store is cycled</td></tr>
-</tbody>
-</table>
+<p>For example:
+<ul>
+<li>the app "ats"
+<li>by the developer "smartyhr"
+<li>and installed by the tenant "acme"
+<li>wants to make a GET call to every app that produces
+<li>the API "/categories"
+<li>as defined by the developer "tas"
+</ul>
 </p>
 
-<p> 
+<p>To fetch the routes (plural since this is non-SoT), the ats app calls:
+
 <div class='codeBlock'>
-+-----------------------------------------------------------+
-|+------------------+                  +------------------+ |
-||[install key]     |----[route key]-->|[install key]     | |--+
-||  installed app A |-+                |  installed app B | |  |
-|+------------------+ |                +------------------+ |  |--+
-|        .            |                +------------------+ |  |  |
-|        .            +--[route key]-->|[install key]     | |  |  |
-|        .                             |  installed app C | |  |  |
-|        .                             +------------------+ |  |  |
-|        .                                                  |  |  |
-|        .                                      tenant acme |  |  |
-+------- . -------------------------------------------------+  |  |
-  |      .                                    tenant joesshoes |  |
-  +----- . ----------------------------------------------------+  |
-    |    .                                         tenant testone |
-    +--- . -------------------------------------------------------+
-         .
-         . tenants
-      -----------------
-         . apps
-         .
-+------------------+
-|[app key]         |
-|            app A |
-+------------------+        
-+------------------+
-|[app key]         |
-|            app B |
-+------------------+        
+GET /routes/acme/smartyhr/ats/tas/%2Fcategories/false
+
+Response:
+<div class='clientInclude' data-href='../examples/routes-simple.json'></div>
 </div>
 </p>
 
-<p>The sequence diagram below shows how security access fans out in TAS. For example:
+<p>From the response, the smartyhr-ats app can see that acme has installed two apps that
+produce /categories. The response also includes the physical endpoint details.
+</p>
+
+<p>The smartyhr-ats app wants to make an API call to the first producer, the greenjobs-gjcore app.
+</p>
+
+
+<h2>Obtain an OAuth access token</h2>
+
+<p>In TAS, tenant API calls are OAuth protected, which means the consumer of the API needs to obtain 
+an OAuth token and then pass it in the Authorization header of the API call.
+</p>
+
+<p>TAS supports several different ways to obtain an OAuth access token.
+</p>
+
+<p>For more background on OAuth and tokens, see the <a href='http://tools.ietf.org/html/rfc6749'>OAuth 2 spec</a>
+and also Google's <a href='https://developers.google.com/accounts/docs/OAuth2WebServer'>OAuth documentation</a> for additional context.
+</p>
+
+
+<h3>Obtaining an anonymous token</h3>
+
+<p>Anonymous OAuth tokens are used to make API calls that are not specific to any particular principal (user).
+</p>
+
+<p>Any app that consumes an API can use the "urn:talentappstore.com:oauth2:tas-direct" grant type to
+create an anonymous OAuth token.
+</p>
+
+<p>In this example:
+<ul>
+<li>the second route for the /categories API leads to the app "gjcore", installed at the tenant "greenjobsite"
+<li>the ats app's business logic is such that it wants to call the /categories API using an anonymous OAuth token.
+</ul>
+</p>
+
+<p>In TAS, OAuth tokens are scoped by the combination of the consuming app install and the producing app install.
+Therefore the app starts by composing a string specifying the "from" and "to" installed apps:
+
+<div class='codeBlock'>
+/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore
+</div>
+</p>
+
+<p>The ats app can now fetch the an anonymous OAuth token via a call to the token endpoint:
+
+<div class='codeBlock'>
+POST /oauth2/v1/token HTTP/1.1
+Host: core.talentappstore.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-direct
+scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore
+</div>
+</p>
+
+<p>TAS issues a new access token and passes it back. Anonymous access tokens created by TAS
+always expire one hour after they are issued.
+
+<div class='codeBlock'>
+Response:
+{
+  "access_token":"1/fFAGRNJru1FTz70BzhT3Zg",
+  "expires_in":3600,
+  "token_type":"Bearer",
+}
+</div>
+</p>
+
+<p><b>Note:</b> the client credentials described in the OAuth 2 spec do not need to be passed in
+the call to GET /token, as all TAS core API calls are secured via HMAC which securely
+identifies the client (i.e. the consuming app).
+</p>
+
+<p>With an anonymous token, the API producer can't apply any principal-specific logic or security
+(e.g. only allowing users in the finance department to view account details, or logging
+on the server who the user was who created a job, etc.).
+</p>
+
+<h3>Obtaining a principal-aware token</h3>
+
+<p>Another type of OAuth token is a principal-aware token. While its easy for apps to create anonymous
+OAuth access tokens, some APIs behave differently or will only work with a principal-aware OAuth token,
+i.e. one that embeds information about a specific user.
+</p>
+
+<p>Any app that consumes an API and is protected via TAS SSO can use the "urn:talentappstore.com:oauth2:tas-direct"
+grant type along with the entityID and nameID parameters to create a principal-aware OAuth token.
+</p>
+
+<p>In this example, the ats app could create a principal-aware OAuth token like this:
+
+<div class='codeBlock'>
+POST /oauth2/v1/token HTTP/1.1
+Host: core.talentappstore.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-direct
+scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore
+entityID=idp3.acme.com
+nameID=fredbloggs1123
+</div>
+</p>
+
+<p>TAS creates a new access token which has the principal's entity ID and name ID embedded
+within it, and and passes it back.
+</p>
+
+<p>The tokens expiry time will be either in one hour, or at the time dictated by the original SAML
+assertion's "on or before" field (TODO: be specific), whichever is sooner.
+
+<div class='codeBlock'>
+Response:
+{
+  "access_token":"1/Gthf5RhgIUvfKUY684578hT3Zg",
+  "expires_in":1533,
+  "token_type":"Bearer"
+}
+</div>
+</p>
+
+<h3>Obtaining a refresh token for offline use</h3>
+
+<p>Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
+</p>
+
+<p>Any app that consumes an API and is protected via TAS SSO and is marked as "offline capable" (TODO:
+exact name) can use the "urn:talentappstore.com:oauth2:tas-direct" grant type to create a
+principal-aware OAuth token and an accompanying refresh token.
+</p>
+
+<p>The access token can be used immediately, and when it expires, the refresh token can be used to generate new
+access tokens even when the user is no longer logged in.
+</p>
+
+<p>The token request is the same as ordinary principal-aware request, except that the app adds
+the keyword "offline" to the scope parameter.
+
+<div class='codeBlock'>
+POST /oauth2/v1/token HTTP/1.1
+Host: core.talentappstore.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-direct
+scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore%20offline
+entityID=idp3.acme.com
+nameID=fredbloggs1123
+</div>
+</p>
+
+<p>The response contains a refresh token alongside the usual access token. Your app should
+store the refresh token in its own long-term storage.
+
+<div class='codeBlock'>
+Response:
+{
+  "access_token":"iuhy76YT785L0GDF23JH7kjhd",
+  "expires_in":3600,
+  "token_type":"Bearer",
+  "refresh_token":"j089777bhkltyHTRFG78969KJH968d"
+}
+</div>
+</p>
+
+<p><b>Note:</b> internally, TAS stores a copy of refresh tokens that it has issued, so it can validate
+requests for new access tokens. These refresh tokens are stored keyed by:
+<ul>
+<li>user identifier (/E/N)
+<li>the SSO-protected app the user logged into (the API consuming app in this case)
+<li>consuming app install
+<li>producing app install
+</ul>
+</p>
+
+<p>You should save refresh tokens in long-term storage and continue to use them as long as they
+remain valid. If your application requests another refresh token for the same combination of
+user, app and app route as described above, a new refresh token will be issued and any previous
+refresh token will be revoked.
+</p>
+
+<p><b>Note:</b> you only need to use refresh tokens if the offline activity is on behalf of a specific user. Otherwise
+your app can simply request a new anonymous OAuth token as soon as the existing one expires.
+</p>
+
+<h3>Obtaining an access token using a refresh token</h3>
+
+<p>Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
+</p>
+
+<p>Any app that has obtained both an access token and a refresh token (via a prior call to the
+token endpoint with scope of "offline") can use the "refresh_token" grant type to create a new access token
+once the original access token expires.
+</p>
+
+<p>In this way, an app can continuously generate access tokens and act on behalf of a principal, even when that
+user may be no longer logged in.
+</p>
+
+<p>The token request is as follows:
+
+<div class='codeBlock'>
+POST /oauth2/v1/token HTTP/1.1
+Host: core.talentappstore.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token
+refresh_token=j089777bhkltyHTRFG78969KJH968d
+
+Response:
+{
+  "access_token":"iuhy76jhbitypLIUhLKkdlkjdnd23JH7kjhd",
+  "expires_in":3600,
+  "token_type":"Bearer"
+}
+</div>
+</p>
+
+<p>Access tokens created via a refresh token always have an expiry of one hour.</p>
+
+<h3>Obtaining an access token from an incoming access token</h3>
+
+<p>Some apps that are API producers in turn consume other APIs, i.e. they are an intermediate link in a chain of API calls.
+</p>
+
+<p>Any app that is an API producer can use the grant type "urn:talentappstore.com:oauth2:tas-inherited"
+with the parameters parent_token and scope to generate a new access token.
+</p>
+
+<p>As when generating an anonymous token, the consuming app starts by composing a string specifying the "from"
+and "to" installed apps, e.g. in this example where the gjcore app consumes an API on the gjrefcodes app:
+
+<div class='codeBlock'>
+/greenjobsite/greenjobs/gjcore/greenjobsite/greenjobs/gjrefcodes/
+</div>
+<p>
+
+<p>The gjcore app can now request an OAuth token via a call to the token endpoint:
+
+<div class='codeBlock'>
+POST /oauth2/v1/token HTTP/1.1
+Host: core.talentappstore.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-inherited
+scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore
+parent_token=iuhy76jhbitypLIUhLKkdlkjdnd23JH7kjhd
+</div>
+</p>
+
+<p>TAS issues a new access token and passes it back.
+</p>
+
+<p>The new access token inherits details of the principal (if any) and the expiry time 
+from the parent access token. This means all access tokens created as part of a nested set
+of API calls will expire simultaneously.
+
+<div class='codeBlock'>
+Response:
+{
+  "access_token":"1/fFAGRNJru1FTz70BzhT3Zg",
+  "expires_in":2012,
+  "token_type":"Bearer",
+}
+</div>
+</p>
+
+<h2>Calling the API</h2>
+
+<p>Once an access token is obtained, the app can now make the API call, by embedding the OAuth token
+in the http Authorization field, for example:
+
+<div class='codeBlock'>
+POST /v1/categories HTTP/1.1
+Host: api.greenjobs.co.nz
+Content-Type: application/json
+Authorization: Bearer 1/fFAGRNJru1FTz70BzhT3Zg
+</div>
+</p>
+
+
+<h2>Caching of tokens by consumers</h2>
+
+<p>Consuming apps should cache access tokens rather than requesting new tokens for every API call they make.</p>
+
+
+<h2>Revoking a refresh token</h2>
+
+<p>To programmatically revoke a refresh token, your app makes a request to the revoke endpoint that
+includes the refresh token as a parameter:
+
+<div class='codeBlock'>
+https://core.talentappstore.com/oauth2/v1/revoke?token={token}
+</div>
+</p>
+
+<p>TODO: add to corein.raml</p>
+
+<p>Revoking a refresh token does not revoke any associated access tokens (TAS does not store access tokens).
+</p>
+
+<h2>Incrementing the security generation</h2>
+
+<p>In the event of a security breach, a tenant may want to perform a bulk revocation of SAML
+assertions, TAS sessions and refresh and access tokens.
+</p>
+
+<p>This has the effect of forcing all principals at the tenant to log in again. Apps that perform
+background or batch operations will need to obtain new refresh tokens.
+</p>
+
+<p>TODO: complete</p>
+
+
+<h1>Producing an API</h1>
+
+<p>The first step in producing a tenant API is to verify that the incoming OAuth token (found in
+the Authorization header) is valid and appropriate.
+</p>
+
+<p>OAuth access tokens in TAS are JWTs, signed by TAS. They are self-contained, and can be examined
+and verified by the consuming app without any communication with TAS itself.
+</p>
+
+<p>The examples below assume that the incoming API call has arrived at the "GET /categories" (an API defined by
+developer "tas") endpoint on the producing app.
+</p>
+
+<h2>Check the integrity of the token</h2>
+
+<p>Decode and perform a cryprographic check that the JWT was issued indeed by TAS and has not been tampered with.
+</p>
+
+<p>[TODO: flesh out]
+</p>
+
+<p>Once decoded, an OAuth access token (in this case the presence of the sub field
+shows this token is principal-aware) will look something like this:
+
+<div class='codeBlock'>
+{
+    "sub": {
+        "entityID": "ibmidpuswest-10",
+        "nameID": "frank@ibm.com"
+    },
+    "cons": {
+        "ct": "acme",
+        "cad": "tas",
+        "ca": "uberapply",
+        "sgen": 219
+    },
+    "aud": {
+        "pt": "acme",
+        "pad": "hrsoft",
+        "pa": "ats",
+        "sgen": 12
+    },
+    "iat": "31 Dec 2014",
+    "exp": "31 Dec 2014"
+}
+</div>
+</p>
+
+<h2>Audience checks</h2>
+
+<p>The producing app MUST check that it is the correct audience, i.e.:
 
 <ol>
-<li>A consumer uses its app key to fetch the routes, and then a token, for a tenant API call
-<li>The resulting access token is signed using an install key, which is shorter lived than an app key
+<li>The "pt" (producing tenant) field must match the current tenant (i.e. as extracted from the incoming request)
+<li>The "pad" (producing app developer) and "pa" (producing app) fields must match the values hard-coded into this app
 </ol>
-</p>
 
-<p>Note the JWT that is passed in to POST /patchSetLaunches is signed by the storefront app key, rather than the install key.
-That's because the launch is creating a store/tenant.   
-</p>
-
-<p>
-<div class='seqDiag' id="securityHierachy">
-participant TAS
-participant app A
-participant app B
-participant app C
-participant storefront app (server)
-participant storefront app (browser)
-note left of app A: app A learns it has\na new tenant
-TAS->app A: POST /tenants {"app":"acme"}\nAuth: HMAC (app key)
-note left of app A: app A calls\nnon-OAuth API on app B
-app A->TAS: GET /tenants/acme/status\nAuth: HMAC (app key)
-app A->TAS: GET /../routes\nAuth: HMAC (app key)
-app A->app B: GET /widgets\nAuth: HMAC (route key)
-note left of app A: app A calls OAuth\nAPI on app C
-app A->TAS: GET /../tokens\nAuth: HMAC (app key)
-app A->app C: GET /widgetWorkers/fred\nAuth: OAuth token (JWT signed\nby app C install key)
-note left of storefront app (server): Tenant clicks to\ninstall new app
-storefront app (server)->TAS: POST /tenants/acme/patchSets\nAuth: HMAC (app key)
-storefront app (browser)->TAS: GET /tenants/acme/patchSets/{launchKey}\nAuth: None
-note left of storefront app (server): Tenant clicks to\ncopy their store
-storefront app (server)->TAS: POST /patchSets\nAuth: HMAC (app key)
-storefront app (browser)->TAS: GET /patchSets/{launchKey}\nAuth: None
-</div>
+<p>This check prevents a malicious app using a token for your app which was intended for another app.
 </p>
 
 
-<h3>Tenant API authentication</h3>
+<h3>API checks</h3>
 
-<p>There are two types of authentication on tenant APIs - OAuth and non-OAuth.<p>
-
-<p>No matter which authentication type is used, the general principle is that TAS provides the credentials
-to the consumer app (so that it can prepare an HTTP Authorization header) and to the producer app (so that
-it can validate incoming requests against the credentials).</p>
-
-<p>Except for basic authentication, TAS generates these credentials automatically, and scopes them down
-as tightly as possible. So for example, TAS will generate an HMAC signing key that is valid for:
+<p>The producing app MUST check that the API call being made is allowed, i.e. that:
 
 <ul>
-<li>a specific consumer;
-<li>of a specific API;
-<li>at a specific producer;
-<li>until a specific expiry time
+<li>a route exists from the consuming app install to the producing app install
+<li>a valid method is being used (GET, POST, etc.)
 </ul>
+</p>
 
-<p>..and will provide that key to both the consumer and the producer of the API.</p>
+<p>This prevents a malicious app calling an API on your app which it has not declared that it calls.
+</p>
 
-<h4>OAuth APIs</h4>
+<p>For example, using the data from the access token above (the "aud" field contains the producer details, so named
+for consistency with the JWT spec), the producing app would concatenate details of its own endpoint to the from
+and to details from the token to make the core API call:
 
-<p>OAuth APIs are more powerful that non-OAuth, as they can be used to obtain the logged in user's identity. The identity
-can be carried down through a chain of OAuth API calls, allowing each app to enforce its own business rules and provide
-the right data based on the user's identity (and their roles, location within org structure, etc.).</p>
+<div class='codeBlock'>
+GET /routes/acme/tas/uberapply/acme/hrsoft/ats/tas/%2Fcategories
+</div>
+</p>
 
-<p>TAS OAuth access tokens are self-contained Java Web Tokens (http://jwt.io/), created by TAS and signed with the tenant's
-secret key. TAS never makes the tenant secret key available to anyone. Because tokens are self-contained,
-API producers can validate incoming access tokens themselves using the tenant's public key - there is no need for the
-API producer (the resource server in OAuth parlance) to use the services of the authorization server (TAS) for this.</p>
+<p>Note the endpoints should be unaware of whether they are being called as SoT or non-SoT. The call
+above will return the route details if it exists as either SoT or non-SoT (API consumption by an
+app must be one or the other but not both).
 
-<p>In other words, TAS needs to be involved to create access tokens, but not to verify them. This helps with scalability.</p> 
-
-<p>TAS's OAuth authentication is fully described in the RAML documentation.</p>
-
-<p>The flow involved in making tenant API calls is more complex, since user-specific access tokens need to be obtained.</p>
-
-<b>Sequence of events - one app calling the OAuth tenant API "/userPreferences/{email}" on another app. There is a business rule
-associated with /userPreferences/{email} that users can only see their own preferences, hence this needs to be an OAuth API
-in order to make user identity available.</b>
-<div class='seqDiag' id="callingAnOAuthApi">
-participant TAS
-participant jobsite app
-participant preferences app
-note right of jobsite app: user is already SSO-ed in at jobsite\nsession holds PrincipalAuthnId = 52034
-jobsite app->TAS: GET /acme/authentications/viaSso/52304
-note right of TAS: Response:\n{ "personDetail":{ "email":"fred@hotmail.com"                
-note right of jobsite app: Now jobsite knows who the user is.\nThat is not required to make the OAuth\ncall, but shown for completeness.\nFetch the route for the API we want to call 
-jobsite app->TAS: GET /acme/routes/jobsite/tas/%2FuserPreferences%2F%7Bemail%7D
-note right of TAS: Response:\n"producer": "preferences",\n"location": "https://acme.preferences.com/",\n"auth": { "kind": "oauthAuth" }
-note right of jobsite app: API is OAuth, so we need an access token
-jobsite app->TAS: GET /acme/routes/jobsite/tas/%2FuserPreferences%2F%7Bemail%7D\n/preferences/tokens/viaSso/52304                
-note right of TAS: Response:\nan access token
-note right of jobsite app: Now jobsite can make the OAuth API call
-jobsite app->preferences app: GET https://acme.preferences.com/api/userPreferences/fred@hotmail.com\n(passing access token in Authorization header)
-note left of preferences app: preferences app needs tenant publicKey to validate the access token
-preferences app->TAS: GET /acme
-note left of preferences app: token is OK, preferences app now performs\nadditional tests, e.g. aud == 'preferences',\ninc == tenant.incarnation
-note left of preferences app: allows the API call 
+<div class='codeBlock'>
+Response:
+<div class='clientInclude' data-href='../examples/route-simple.json'></div>
 </div>
 
- 
+<p>A return code of 200 means that the route exists and is currently valid.
+</p>
 
-<h4>Non-OAuth APIs</h4>
+<p>Finally the producing app should check that the method being used is one of the methods declared:
+<ul>
+<li>by the consuming app as being consumed
+<li>by the producing app as being produced
+</ul>
 
-<p>Non-OAuth APIs are further broken down into HMAC and basic authentication. HMAC is preferred, and is more secure.
-Basic auth should not be used by new apps, but only where the app is fronting a legacy system already using basic authentication.</p>
+<p>In this case, the incoming call was to "GET /categories", and GET is supported by the producer and
+declared as consumed by the consumer, so the test passes.
+</p>
 
-<p>TAS's HMAC and basic authentication is fully described in the RAML documentation.</p>
+<h2>Caching API check results</h2>
 
+Because API checks as described above involve making TAS core API calls, the producing app should
+attempt to cache the results whenever possible.
 
-<h1>App lifecycle</h1>
+<h3>Intra-tenant API calls</h3>
 
-[incomplete]
+<p>For intra-tenant calls (i.e., where the producer and the consumer are the same), the
+producer can cache route verifications as long as the "sgen" (security generation) parameter
+in the token matches the app's own stored value for sgen.
+</p>
+
+<p>This works because sgen cannot be changed without bouncing the tenant, and every app is always
+informed when the tenant is bounced, so the producer always knows it has the latest value for
+sgen.
+</p>
+
+<p>A typical cache implementation might:
+<ul>
+<li>store verification outcomes for intra-tenant calls as booleans in a key value store
+<li>key the outcomes by something like /routes/acme/tas/uberapply/acme/hrsoft/ats/tas/%2Fcategories/GET
+<li>flush the cache whenever sgen changes
+</ul>
+
+<h3>Inter-tenant API calls</h3>
+
+<p>For inter-tenant calls (i.e. where the consumer is a remote app likely installed at another tenant),
+the producer does not receive any notifications when the remote tenant is bounced. Therefore it
+has not way to maintain an up to date copy of the remote tenant's sgen value.
+</p>
+
+<p>This means that  current has no way to know that a reconfiguration has not happened at the remote consumer,
+and so has to verify the route every time.
+</p>
 
 
 <h1>Principal types and roles</h1>
