@@ -366,11 +366,43 @@ but the TAS delegates the password checking to some database of identities (e.g.
 </p>
 
 
-<h1>Consuming APIs</h1>
+<h1>Building apps</h1>
+
+<h2>Registering your app</h2>
+
+<p>Do so at https://developers.talentappstore.com.
+</p>
+
+<h2>Adding SSO</h2>
+
+<p>If your app has a web interface, TAS makes it easy to protect it using SAML. SAML is an industry standard
+for SSO adopted by SaaS vendors like Dropbox, Slack, Salesforce and many others.
+</p>
+
+<p>You don't need to add SAML to your app, and you can choose to continue using your existing login system.
+</p>
+
+<p>However as well as being very desirable to customers (particularly their IT security teams), it's straightforward to add SAML
+to your app. Most web development environments provide SAML plugins or filters.
+</p>
+
+<p>To add SAML to your app:
+<ul>
+<li>find a SAML library or plugin for your environment (e.g. Spring Security SAML http://projects.spring.io/spring-security-saml/
+<li>configure the SAML library to protect some or all of your web pages
+<li>when new tenants install your app, create an SP (service provider) in your app
+</ul>
+</p>
+
+<p>Even though TAS lets tenants mix and match multiple identity providers (like Google, Facebook, LinkedIn and the tenant's own in-house
+identity provider), your app is shielded and just deals with a single identity provider proxy.
+</p>
+
+<h2>Consuming APIs</h2>
 
 <p>This section describes how your app consumes tenant APIs, i.e. makes API calls to other installed apps.</p>
 
-<h2>Fetch the route(s) for the API</h2>
+<h3>Fetch the route(s) for the API</h3>
 
 <p>The first step in calling an API is to fetch the route(s) for it.</p>
 
@@ -406,7 +438,7 @@ produce /categories. The response also includes the physical endpoint details.
 </p>
 
 
-<h2>Obtain an OAuth access token</h2>
+<h3>Obtain an OAuth access token</h3>
 
 <p>In TAS, tenant API calls are OAuth protected, which means the consumer of the API needs to obtain 
 an OAuth token and then pass it in the Authorization header of the API call.
@@ -420,7 +452,7 @@ and also Google's <a href='https://developers.google.com/accounts/docs/OAuth2Web
 </p>
 
 
-<h3>Obtaining an anonymous token</h3>
+<h4>Anonymous token</h4>
 
 <p>Anonymous OAuth tokens are used to make API calls that are not specific to any particular principal (user).
 </p>
@@ -479,11 +511,11 @@ identifies the client (i.e. the consuming app).
 on the server who the user was who created a job, etc.).
 </p>
 
-<h3>Obtaining a principal-aware token</h3>
+<h4>Personal token</h4>
 
-<p>Another type of OAuth token is a principal-aware token. While its easy for apps to create anonymous
-OAuth access tokens, some APIs behave differently or will only work with a principal-aware OAuth token,
-i.e. one that embeds information about a specific user.
+<p>Another type of OAuth token is a personal ()principal-aware token. While its easy for apps to create anonymous
+access tokens, some APIs behave differently or will only work with a personal token, e.g. an app that serves
+information about a specific user.
 </p>
 
 <p>Any app that consumes an API and is protected via TAS SSO can use the "urn:talentappstore.com:oauth2:tas-direct"
@@ -521,7 +553,7 @@ Response:
 </div>
 </p>
 
-<h3>Obtaining a refresh token for offline use</h3>
+<h4>Refresh token (offline use)</h4>
 
 <p>Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
 </p>
@@ -584,7 +616,7 @@ refresh token will be revoked.
 your app can simply request a new anonymous OAuth token as soon as the existing one expires.
 </p>
 
-<h3>Obtaining an access token using a refresh token</h3>
+<h4>Access token via a refresh token</h4>
 
 <p>Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
 </p>
@@ -619,7 +651,7 @@ Response:
 
 <p>Access tokens created via a refresh token always have an expiry of one hour.</p>
 
-<h3>Obtaining an access token from an incoming access token</h3>
+<h4>Access token from incoming access token</h4>
 
 <p>Some apps that are API producers in turn consume other APIs, i.e. they are an intermediate link in a chain of API calls.
 </p>
@@ -666,7 +698,7 @@ Response:
 </div>
 </p>
 
-<h2>Calling the API</h2>
+<h3>Calling the API</h3>
 
 <p>Once an access token is obtained, the app can now make the API call, by embedding the OAuth token
 in the http Authorization field, for example:
@@ -680,12 +712,12 @@ Authorization: Bearer 1/fFAGRNJru1FTz70BzhT3Zg
 </p>
 
 
-<h2>Caching of tokens by consumers</h2>
+<h3>Caching of tokens by consumers</h3>
 
 <p>Consuming apps should cache access tokens rather than requesting new tokens for every API call they make.</p>
 
 
-<h2>Revoking a refresh token</h2>
+<h3>Revoking a refresh token</h3>
 
 <p>To programmatically revoke a refresh token, your app makes a request to the revoke endpoint that
 includes the refresh token as a parameter:
@@ -700,7 +732,7 @@ https://core.talentappstore.com/oauth2/v1/revoke?token={token}
 <p>Revoking a refresh token does not revoke any associated access tokens (TAS does not store access tokens).
 </p>
 
-<h2>Incrementing the security generation</h2>
+<h3>Incrementing the security generation</h3>
 
 <p>In the event of a security breach, a tenant may want to perform a bulk revocation of SAML
 assertions, TAS sessions and refresh and access tokens.
@@ -713,7 +745,7 @@ background or batch operations will need to obtain new refresh tokens.
 <p>TODO: complete</p>
 
 
-<h1>Producing an API</h1>
+<h2>Producing APIs</h2>
 
 <p>The first step in producing a tenant API is to verify that the incoming OAuth token (found in
 the Authorization header) is valid and appropriate.
@@ -727,7 +759,7 @@ and verified by the consuming app without any communication with TAS itself.
 developer "tas") endpoint on the producing app.
 </p>
 
-<h2>Check the integrity of the token</h2>
+<h3>Check the integrity of the token</h3>
 
 <p>Decode and perform a cryprographic check that the JWT was issued indeed by TAS and has not been tampered with.
 </p>
@@ -762,7 +794,7 @@ shows this token is principal-aware) will look something like this:
 </div>
 </p>
 
-<h2>Audience checks</h2>
+<h3>Audience checks</h3>
 
 <p>The producing app MUST check that it is the correct audience, i.e.:
 
@@ -775,7 +807,7 @@ shows this token is principal-aware) will look something like this:
 </p>
 
 
-<h3>API checks</h3>
+<h4>API checks</h4>
 
 <p>The producing app MUST check that the API call being made is allowed, i.e. that:
 
@@ -819,12 +851,12 @@ Response:
 declared as consumed by the consumer, so the test passes.
 </p>
 
-<h2>Caching API check results</h2>
+<h3>Caching API check results</h3>
 
 Because API checks as described above involve making TAS core API calls, the producing app should
 attempt to cache the results whenever possible.
 
-<h3>Intra-tenant API calls</h3>
+<h4>Intra-tenant API calls</h4>
 
 <p>For intra-tenant calls (i.e., where the producer and the consumer are the same), the
 producer can cache route verifications as long as the "sgen" (security generation) parameter
@@ -843,7 +875,7 @@ sgen.
 <li>flush the cache whenever sgen changes
 </ul>
 
-<h3>Inter-tenant API calls</h3>
+<h4>Inter-tenant API calls</h4>
 
 <p>For inter-tenant calls (i.e. where the consumer is a remote app likely installed at another tenant),
 the producer does not receive any notifications when the remote tenant is bounced. Therefore it
