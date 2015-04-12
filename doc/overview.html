@@ -347,7 +347,6 @@ but the TAS delegates the password checking to some database of identities (e.g.
 
 <h2>Provisioning</h2>
 
-
 <h2>SSO</h2>
 
 <p>If your app has a web interface, TAS makes it easy to protect it using SAML. SAML is an industry standard
@@ -372,6 +371,8 @@ to your app. Most web development environments provide SAML plugins or filters.
 <p>Even though TAS lets tenants mix and match multiple identity providers (like Google, Facebook, LinkedIn and the tenant's own in-house
 identity provider), your app is shielded and just deals with a single identity provider proxy.
 </p>
+
+<h2>Auto-provisioning of new users</h2>
 
 <h2>Consuming APIs</h2>
 
@@ -722,7 +723,24 @@ background or batch operations will need to obtain new refresh tokens.
 
 <h2>Producing APIs</h2>
 
-<p>The first step in producing a tenant API is to verify that the incoming OAuth token (found in
+<h3>Producing an API on a local endpoint</h3>
+
+<p>This is a typical REST API endpoint, e.g. a Spring MVC controller.
+
+<h3>Producing an API on a remote endpoint</h3>
+
+<p>Apps can produce APIs by "remote mounting" the API from some hard-coded tenant.</p>
+
+<p>For example, a job board app produces (non-SoT) /categories, so that the tenant can
+query the board's categories. The job board app declares that it is producing the API, but
+that it is doing so by remote mounting. The remote location is on the job board's own
+TAS tenant.
+</p>
+
+
+<h3>Verifying incoming access tokens</h3>
+
+<p>The first step in verifying a call to a tenant API is to verify that the incoming OAuth token (found in
 the Authorization header) is valid and appropriate.
 </p>
 
@@ -734,7 +752,7 @@ and verified by the consuming app without any communication with TAS itself.
 developer "tas") endpoint on the producing app.
 </p>
 
-<h3>Check the integrity of the token</h3>
+<h4>Check the integrity of the token</h4>
 
 <p>Decode and perform a cryprographic check that the JWT was issued indeed by TAS and has not been tampered with.
 </p>
@@ -769,7 +787,7 @@ shows this token is principal-aware) will look something like this:
 </div>
 </p>
 
-<h3>Audience checks</h3>
+<h4>Audience checks</h4>
 
 <p>The producing app MUST check that it is the correct audience, i.e.:
 
@@ -782,7 +800,7 @@ shows this token is principal-aware) will look something like this:
 </p>
 
 
-<h4>API checks</h4>
+<h5>API checks</h5>
 
 <p>The producing app MUST check that the API call being made is allowed, i.e. that:
 
@@ -861,9 +879,29 @@ has not way to maintain an up to date copy of the remote tenant's sgen value.
 and so has to verify the route every time.
 </p>
 
+<h2>Accessing the session</h2>
+
 <h2>Supporting orchestration</h2>
 
+<p>To support orchestration, your apps produces the outwards core API /tenants/{}/starts and /tenants/{}/halts.
 
+<p>When a tenant uses the storefront to install your app, your app receives an incoming API call that
+it has a new tenant and passes their name, org details, etc.. Internally your app might insert a row into its
+customers table, create a working directory on a file server, etc., or otherwise
+lay out any resources needed for the new tenant.
+</p>
+
+
+<h2>Promote your app</h2>
+
+<p>Request that your app be listed in the TAS directory.
+</p> 
+
+<h2>Demo-ware</h2>
+
+<p>Exporting a shopping list of apps.</p> 
+
+  
 <h1>Core APIs</h1>
 
 <p>Core API calls are secured using the same HMAC approach as Amazon Web Service's Signature Version 4 signing process

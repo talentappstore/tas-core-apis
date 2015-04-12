@@ -32,6 +32,6 @@
     {"seq": 26, "event": { "kind": "appUpStart", "app": "tas-tracker"}},
     {"seq": 27, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
     {"seq": 28, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
-    {"seq": 29, "event": { "kind": "patchSetApplyComplete", "elapsedTime": 9603, "newIncarnation": 146}}
+    {"seq": 29, "event": { "kind": "patchSetApplyComplete", "elapsedTime": 9603, "incarnation": 146, "securityGeneration": 10 }}
   ]
 }

@@ -13,5 +13,6 @@
                 "app": "hrsoft-zwango"
             }
         }
-    ]
+    ],
+    "bumpSecurityGeneration": false
 }

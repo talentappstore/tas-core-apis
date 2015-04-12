@@ -6,29 +6,6 @@
         "country": "US",
         "industry": "Manufacturing"
     },
-    "status": {
-        "incarnation": 23,
-        "state": "halting"
-    },
-    "installs": [
-        {
-            "app": "tas-storefront",
-            "servers": [
-                {
-                    "name": "ats0",
-                    "baseUri": "https://acme.atszero.com",
-                    "basicAuthCredentials": {
-                        "user": "fred",
-                        "password": "secret1"
-                    }
-                }
-            ],
-            "status": {
-              "state": "running",
-              "publicKey": "876oihiu5yfd864g0ouiyfgi75"
-            }
-        }
-    ],
     "identitySourceSets": [
         {
             "principalDeveloper": "tas",

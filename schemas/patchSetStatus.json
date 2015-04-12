@@ -250,7 +250,8 @@
             "required": [
                 "kind",
                 "elapsedTime",
-                "newIncarnation"
+                "incarnation",
+                "securityGeneration"
             ],
             "properties": {
                 "kind": {
@@ -261,7 +262,10 @@
                 "elapsedTime": {
                     "$ref": "#/definitions/elapsedTime"
                 },
-                "newIncarnation": {
+                "incarnation": {
+                    "type": "integer"
+                },
+                "securityGeneration": {
                     "type": "integer"
                 }
             }

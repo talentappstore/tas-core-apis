@@ -8,17 +8,17 @@ version: v1
   description: |
     A *tenant* is a customer within the multi-tenanted environment of Talent App Store.
   /{tenant}:
-    get:
-      description: |
-        Get information about the tenant, including the current state and security generation. Normally apps would keep track of this information
-        in response to outgoing core API calls like start, stop, etc., so this is mainly useful if your app is restarted, and needs
-        to check what's been going on while its been offline.
-      responses:
-        200:
-          body:
-            application/json:
-              schema: !include ../schemas/tenant.json
-              example: !include ../examples/tenant-mega.json
+    /status:
+      get:
+        description: |
+          Get the status of the tenant, including the current state and security generation. Normally apps would keep use this information
+          when halted or started to determine whether to flush cached OAuth tokens and routes.
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/tenantStatus.json
+                example: !include ../examples/tenantStatus-simple.json
     /headlessAuthentications:
       /{principalDeveloper}:
         /{principalType}:
@@ -133,9 +133,13 @@ version: v1
     /patchSets:
       post:
         description: |
-          <p>This endpoint is available only to apps tagged as "storeFront".</p>
-          <p>Your app calls this endpoint to validate and then prepare a patch document, e.g. to reflect the tenant clicking install on an app.</p>
-          <p>The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/patchSets/{launchKey}.</p>
+          This endpoint is available only to apps tagged as "storeFront".
+          
+          Your app calls this endpoint to validate and then prepare a patch document, e.g. to reflect the tenant clicking install on an app.
+          
+          The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/patchSets/{launchKey}.
+          
+          Pass true for "bumpSecurityGeneration" to force the security generation to be incremented. 
         body:
           application/json:
             schema: !include ../schemas/patchSetPreparer.json
@@ -177,20 +181,6 @@ version: v1
                 application/json:
                   schema: !include ../schemas/patchSetStatus.json
                   example: !include ../examples/patchSetStatus-juggleApps.json
-    /installs:
-      description: Installs are currently installed apps at the tenant.
-      /{app}:
-        description: An app
-        /status:
-          get:
-            description: |
-              Called by apps to get the install key, so as to validate incoming OAuth tokens. Apps can only call this on themselves.
-            responses:
-              200:
-                body:
-                  application/json:
-                    schema: !include ../schemas/tenantInstallsAppStatus.json
-                    example: !include ../examples/tenantInstallsAppStatus-simple.json
 
 /routes:
   description: |
@@ -313,7 +303,12 @@ version: v1
           An access token passed in to the consuming app. MUST be present when grant_type is urn:talentappstore.com:oauth2:tas-inherited.
           MUST NOT be present for other grant types.
         type: string
-
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include ../schemas/tokenJwt.json
+            example: !include ../examples/tokenJwt-simple.json
 
 /patchSets:
   post:
