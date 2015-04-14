@@ -347,6 +347,12 @@ but the TAS delegates the password checking to some database of identities (e.g.
 
 <h2>Provisioning</h2>
 
+<p>When a tenant uses the storefront to install your app, your app receives an incoming API call that
+it has a new tenant and passes their name, org details, etc.. Internally your app might insert a row into its
+customers table, create a working directory on a file server, etc., or otherwise
+lay out any resources needed for the new tenant.
+</p>
+
 <h2>SSO</h2>
 
 <p>If your app has a web interface, TAS makes it easy to protect it using SAML. SAML is an industry standard
@@ -373,6 +379,15 @@ identity provider), your app is shielded and just deals with a single identity p
 </p>
 
 <h2>Auto-provisioning of new users</h2>
+
+<p>TAS allows you to protect your app so that only people trusted by the SSO can log into your app.
+</p>
+
+<p>Some apps however need not just a login, but also an actual row in their own users (or candidates or whatever) table.
+</p>
+
+<p>If your app is like this, you should consider adding user just-in-time provisioning.</p>  
+
 
 <h2>Consuming APIs</h2>
 
@@ -433,7 +448,7 @@ and also Google's <a href='https://developers.google.com/accounts/docs/OAuth2Web
 <p>Anonymous OAuth tokens are used to make API calls that are not specific to any particular principal (user).
 </p>
 
-<p>Any app that consumes an API can use the "urn:talentappstore.com:oauth2:tas-direct" grant type to
+<p>Any app that consumes an API can use the <a href='https://tools.ietf.org/html/rfc6749#section-4.4'>OAuth client credentials grant type</a> to
 create an anonymous OAuth token.
 </p>
 
@@ -459,7 +474,7 @@ POST /oauth2/v1/token HTTP/1.1
 Host: core.talentappstore.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-direct
+grant_type=client_credentials
 scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore
 </div>
 </p>
@@ -489,13 +504,14 @@ on the server who the user was who created a job, etc.).
 
 <h4>Personal token</h4>
 
-<p>Another type of OAuth token is a personal ()principal-aware token. While its easy for apps to create anonymous
+<p>Another type of OAuth token is a personal (principal-aware) token. While its easy for apps to create anonymous
 access tokens, some APIs behave differently or will only work with a personal token, e.g. an app that serves
 information about a specific user.
 </p>
 
-<p>Any app that consumes an API and is protected via TAS SSO can use the "urn:talentappstore.com:oauth2:tas-direct"
-grant type along with the entityID and nameID parameters to create a principal-aware OAuth token.
+<p>Any app that consumes an API and is protected via TAS SSO can use the
+<a href='https://tools.ietf.org/html/draft-ietf-oauth-saml2-bearer-23#section-2.1'>OAuth SAML bearer assertion</a>
+grant type, along with the original SAML assertion, to create a principal-aware OAuth token.
 </p>
 
 <p>In this example, the ats app could create a principal-aware OAuth token like this:
@@ -505,10 +521,9 @@ POST /oauth2/v1/token HTTP/1.1
 Host: core.talentappstore.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-direct
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Asaml2-bearer
 scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore
-entityID=idp3.acme.com
-nameID=fredbloggs1123
+assertion=kjh9786gJHGutvfUT765Kkjghf70978klhjhgIUYGkpoiygEciYnjOi...
 </div>
 </p>
 
@@ -535,8 +550,8 @@ Response:
 </p>
 
 <p>Any app that consumes an API and is protected via TAS SSO and is marked as "offline capable" (TODO:
-exact name) can use the "urn:talentappstore.com:oauth2:tas-direct" grant type to create a
-principal-aware OAuth token and an accompanying refresh token.
+exact name) can use the <a href='https://tools.ietf.org/html/draft-ietf-oauth-saml2-bearer-23#section-2.1'>OAuth SAML bearer assertion</a>
+grant type to create a principal-aware OAuth token and an accompanying refresh token.
 </p>
 
 <p>The access token can be used immediately, and when it expires, the refresh token can be used to generate new
@@ -551,10 +566,9 @@ POST /oauth2/v1/token HTTP/1.1
 Host: core.talentappstore.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=urn%3Atalentappstore.com%3Aoauth2%3Atas-direct
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Asaml2-bearer
 scope=/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore%20offline
-entityID=idp3.acme.com
-nameID=fredbloggs1123
+assertion=kjh9786gJHGutvfUT765Kkjghf70978klhjhgIUYGkpoiygEciYnjOi...
 </div>
 </p>
 
@@ -598,8 +612,8 @@ your app can simply request a new anonymous OAuth token as soon as the existing 
 </p>
 
 <p>Any app that has obtained both an access token and a refresh token (via a prior call to the
-token endpoint with scope of "offline") can use the "refresh_token" grant type to create a new access token
-once the original access token expires.
+token endpoint with scope of "offline") can <a href='https://tools.ietf.org/html/rfc6749#section-6'>use the refresh token</a>
+to create a new access token once the original access token expires.
 </p>
 
 <p>In this way, an app can continuously generate access tokens and act on behalf of a principal, even when that
@@ -729,14 +743,22 @@ background or batch operations will need to obtain new refresh tokens.
 
 <h3>Producing an API on a remote endpoint</h3>
 
-<p>Apps can produce APIs by "remote mounting" the API from some hard-coded tenant.</p>
+<p>Apps can produce APIs (SoT or non-SoT) by "remote mounting" a specified tenant's SoT production of the same API.</p>
 
-<p>For example, a job board app produces (non-SoT) /categories, so that the tenant can
-query the board's categories. The job board app declares that it is producing the API, but
-that it is doing so by remote mounting. The remote location is on the job board's own
-TAS tenant.
+<p>For example:
+<ol>
+<li>tenant acme has installed a number of job board apps
+<li>the tenant wants each job board app to produce (non-SoT) the /categories API
+<li>then acme's other apps can query each job board's unique category setup, build mappings, etc.
+<li>the job board "green jobs" provides such a job board app
+<li>that app produces (non-SoT) /categories
+<li>however it does so by remote mounting the same API at the central green jobs tenant
+<li>inside the green jobs tenant, the app "corestuff" produces (SoT) the /categories API
+<li>therefore corestuff finishes up producing the API when consumed by some other app at the acme tenant 
+</ol>
 </p>
 
+<p>TAS detects and disallows loops.</p> 
 
 <h3>Verifying incoming access tokens</h3>
 
@@ -883,14 +905,23 @@ and so has to verify the route every time.
 
 <h2>Supporting orchestration</h2>
 
+
 <p>To support orchestration, your apps produces the outwards core API /tenants/{}/starts and /tenants/{}/halts.
 
-<p>When a tenant uses the storefront to install your app, your app receives an incoming API call that
-it has a new tenant and passes their name, org details, etc.. Internally your app might insert a row into its
-customers table, create a working directory on a file server, etc., or otherwise
-lay out any resources needed for the new tenant.
-</p>
+<p>The order of events for ATS is:
 
+<ol>
+<li>start halting tenant
+<li>halt all apps
+<li>tenant halt complete
+<li>adjust routes
+<li>increment tenant.incarnation (always)
+<li>increment tenant.securityGeneration (optionally)
+<li>revoke refresh tokens as required (based on securityGeneration)
+<li>start all apps
+<li>start tenant
+<li>tenant start complete
+</ol>
 
 <h2>Promote your app</h2>
 

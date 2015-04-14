@@ -1,5 +1,7 @@
 {
     "sub": {
+        "pd": "tas",
+        "pt": "candidate",
         "entityID": "ibmidpuswest-10",
         "nameID": "frank@ibm.com"
     },

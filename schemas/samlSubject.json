@@ -1,19 +1,28 @@
 {
-  "$schema":"http://json-schema.org/draft-04/schema#",
-  "type":"object",
-  "description":"A set of SAML values that uniquely identify this person, consistently across TAS apps, and with any number of potential IdPs",
-  "additionaProperties": false,
-  "required":[
-    "nameID",
-    "entityID"
-  ],
-  "properties":{
-    "nameID":{
-      "type":"string"
-    },
-    "entityID":{
-      "type":"string"
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "A set of SAML values that uniquely identify this person, consistently across TAS apps, and with any number of potential IdPs",
+    "additionaProperties": false,
+    "required": [
+        "pd",
+        "pt",
+        "nameID",
+        "entityID"
+    ],
+    "properties": {
+        "pd": {
+            "type": "string",
+            "description": "developer who owns the principal type"
+        },
+        "pt": {
+            "type": "string",
+            "description": "principal type"
+        },
+        "nameID": {
+            "type": "string"
+        },
+        "entityID": {
+            "type": "string"
+        }
     }
-    
-  }
 }

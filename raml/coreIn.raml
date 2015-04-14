@@ -209,7 +209,12 @@ version: v1
                 Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
               get:
                 description: | 
-                  Fetch the route(s) from the consumer to each producer of a specific API
+                  Fetch the route(s) from the consumer to each producer of a specific API.
+                  
+                  An app may only make this call if:
+                  - its developer and app name match {CAD} and {CA}
+                  - it is installed at {CT}
+                  - it has declared that it consumes the given API, in the given way (SoT or not).
                 responses:
                   200:
                     body:
@@ -236,6 +241,11 @@ version: v1
                       Fetch the route, from the given consumer, to the producer (which must be your app)
                       of a specific API. Since both consuming and producing apps are specified, there can only be
                       one or zero routes in the response.
+
+                      An app may only make this call if
+                      - it is installed at {PT}
+                      - it has declared that it consumes the given API (whether as SoT, non-SoT or both)
+                      
                     responses:
                       200:
                         body:

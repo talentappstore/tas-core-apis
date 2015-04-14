@@ -1,4 +1,6 @@
 {
+      "pd": "tas",
+      "pt": "candidate",  
 	  "nameID": "frank@ibm.com",
 	  "entityID": "some other SAML info"
 }
