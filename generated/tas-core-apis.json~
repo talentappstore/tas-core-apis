@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "javaType": "com.tas.api.Core",
+  "properties": {
+    "patchSet": { 
+      "allOf": [
+        { "$ref": "../schemas/patchSet.json" },
+        { "javaType": "com.tas.api.core.PatchSet" }
+      ]
+    },
+    "patchSetLaunchKey": { 
+      "allOf": [
+        { "$ref": "../schemas/patchSetLaunchKey.json" },
+        { "javaType": "com.tas.api.core.PatchSetLaunchKey" }
+      ]
+    },
+    "patchSetPreparer": { 
+      "allOf": [
+        { "$ref": "../schemas/patchSetPreparer.json" },
+        { "javaType": "com.tas.api.core.PatchSetPreparer" }
+      ]
+    },
+    "patchSetStatus": {
+      "$ref": "../schemas/patchSetStatus.json" },
+      "javaType": "com.tas.api.core.PatchSetStatus"
+    },
+    "routeBase": { 
+      "allOf": [
+        { "$ref": "../schemas/routeBase.json" },
+        { "javaType": "com.tas.api.core.RouteBase" }
+      ]
+    },
+    "route": { 
+      "allOf": [
+        { "$ref": "../schemas/route.json" },
+        { "javaType": "com.tas.api.core.Route" }
+      ]
+    },
+    "routes": { 
+      "allOf": [
+        { "$ref": "../schemas/routes.json" },
+        { "javaType": "com.tas.api.core.Routes" }
+      ]
+    },
+    "samlSubject": { 
+      "allOf": [
+        { "$ref": "../schemas/samlSubject.json" },
+        { "javaType": "com.tas.api.core.SamlSubject" }
+      ]
+    },
+    "storeFrontMainPage": { 
+      "allOf": [
+        { "$ref": "../schemas/storeFrontMainPage.json" },
+        { "javaType": "com.tas.api.core.StoreFrontMainPage" }
+      ]
+    },
+    "tenantInstallsAppStatus": { 
+      "allOf": [
+        { "$ref": "../schemas/tenantInstallsAppStatus.json" },
+        { "javaType": "com.tas.api.core.TenantInstallsAppStatus" }
+      ]
+    },
+    "tenant": { 
+      "allOf": [
+        { "$ref": "../schemas/tenant.json" },
+        { "javaType": "com.tas.api.core.Tenant" }
+      ]
+    },
+    "tenantStatus": { 
+      "allOf": [
+        { "$ref": "../schemas/tenantStatus.json" },
+        { "javaType": "com.tas.api.core.TenantStatus" }
+      ]
+    },
+    "tokenJwt": { 
+      "allOf": [
+        { "$ref": "../schemas/tokenJwt.json" },
+        { "javaType": "com.tas.api.core.TokenJwt" }
+      ]
+    }
+
+  }
+}

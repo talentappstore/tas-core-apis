@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "javaType": "com.tas.api.core.Core",
+  "properties": {
+    "patchSet": { "$ref": "../schemas/patchSet.json" },
+    "patchSetLaunchKey": { "$ref": "../schemas/patchSetLaunchKey.json" },
+    "patchSetPreparer": { "$ref": "../schemas/patchSetPreparer.json" },
+    "patchSetStatus": { "$ref": "../schemas/patchSetStatus.json" },
+    "routeBase": { "$ref": "../schemas/routeBase.json" },
+    "route": { "$ref": "../schemas/route.json" },
+    "routes": { "$ref": "../schemas/routes.json" },
+    "samlSubject": { "$ref": "../schemas/samlSubject.json" },
+    "storeFrontMainPage": { "$ref": "../schemas/storeFrontMainPage.json" },
+    "tenantInstallsAppStatus": { "$ref": "../schemas/tenantInstallsAppStatus.json" },
+    "tenant": { "$ref": "../schemas/tenant.json" },
+    "tenantStatus": { "$ref": "../schemas/tenantStatus.json" },
+    "tokenJwt": { "$ref": "../schemas/tokenJwt.json" }
+
+  }
+}
