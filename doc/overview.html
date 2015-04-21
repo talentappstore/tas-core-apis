@@ -766,8 +766,11 @@ background or batch operations will need to obtain new refresh tokens.
 the Authorization header) is valid and appropriate.
 </p>
 
-<p>OAuth access tokens in TAS are JWTs, signed by TAS. They are self-contained, and can be examined
-and verified by the consuming app without any communication with TAS itself.
+<p>OAuth access tokens in TAS are JWTs. They:
+<ul>
+<li>Are unencrypted. Any app can examine the contents of any token.
+<li>Are signed by TAS's master secret key. Tokens are always issued by TAS. Any app can verify that any token has been signed by TAS.
+<li>Are self-contained. They can be examined and verified by the consuming app without any communication with TAS itself.
 </p>
 
 <p>The examples below assume that the incoming API call has arrived at the "GET /categories" (an API defined by
@@ -776,14 +779,11 @@ developer "tas") endpoint on the producing app.
 
 <h4>Check the integrity of the token</h4>
 
-<p>Decode and perform a cryprographic check that the JWT was issued indeed by TAS and has not been tampered with.
+<p>Check the signing of the token to check that the JWT was indeed issued by TAS and has not been tampered with.
 </p>
 
-<p>[TODO: flesh out]
-</p>
-
-<p>Once decoded, an OAuth access token (in this case the presence of the sub field
-shows this token is principal-aware) will look something like this:
+<p>An OAuth access token (in this case, a personal token as shown by the presence of the sub field)
+ will look something like this:
 
 <div class='codeBlock'>
 {
@@ -935,9 +935,9 @@ and so has to verify the route every time.
   
 <h1>Core APIs</h1>
 
-<p>Core API calls are secured using the same HMAC approach as Amazon Web Service's Signature Version 4 signing process
-(http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html, and see also
-http://security.stackexchange.com/questions/77372/unusual-design-aspects-of-aws-hmac-based-authentication-v4),
+<p>Core API calls are secured using the same HMAC approach as
+<a href='http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html'>Amazon Web Service's Signature Version 4 signing process</a>,
+and see also http://security.stackexchange.com/questions/77372/unusual-design-aspects-of-aws-hmac-based-authentication-v4),
 except that whereas an AWS signature key
 is generated like this (see http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html)...
 
@@ -953,7 +953,7 @@ static byte[] getSignatureKey(String key, String dateStamp, String regionName, S
 </div>
 </p>
 
-<p>A TAS signature key for a core API call (in or out) is generated like this:
+<p>A TAS signature key for a core API call (in or out) is generated like this...
 
 <div class='codeBlock'>
 static byte[] getSignatureKey(String key, String dateStamp) throws Exception  {
@@ -963,6 +963,13 @@ static byte[] getSignatureKey(String key, String dateStamp) throws Exception  {
      return kSigning;
 }
 </div>
+</p>
+
+<p><b>Note:</b> this approach relies on the app's public key (e.g. "tas-simpleapply") being visible in the API request
+so that TAS knows what private key to use for decryption...details...
+
+<p>The same applies to coreOut API calls -the app's control server needs to be able to extract app name from the
+API request, so that a single control server can serve multiple apps.   
 </p>
 
 
