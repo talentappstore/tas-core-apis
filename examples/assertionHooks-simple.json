@@ -1,0 +1,30 @@
+[
+    {
+        "allowLogin": {
+            "condition": {
+                "attribute": "tas.emails.home.email",
+                "wildCard": "*.aol.com"
+            }
+        }
+    },
+    {
+        "injectRoles": {
+            "condition": {
+                "attribute": "tas.emails.home.email",
+                "wildCard": "fred.aol.com"
+            },
+            "roles": [
+                "recruiter"
+            ]
+        }
+    },
+    {
+        "injectRoles": {
+            "condition": true,
+            "roles": [
+                "hrAppAdmin",
+                "hrAppViewer"
+            ]
+        }
+    }
+]

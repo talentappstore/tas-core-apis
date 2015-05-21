@@ -1,0 +1,87 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "wildCardCondition": {
+            "type": "object",
+            "properties": {
+                "attribute": {
+                    "type": "string",
+                    "description": "the SAML attribute to run the wildcard against"
+                },
+                "wildCard": {
+                    "type": "string",
+                    "description": "the wildcard, with * supported"
+                }
+            }
+        },
+        "alwaysCondition": {
+            "type": "boolean"
+        },
+        "condition": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/wildCardCondition"
+                },
+                {
+                    "$ref": "#/definitions/alwaysCondition"
+                }
+            ]
+        },
+        "injectRoles": {
+            "type": "object",
+            "properties": {
+                "injectRoles": {
+                    "type": "object",
+                    "properties": {
+                        "condition": {
+                            "$ref": "#/definitions/condition"
+                        },
+                        "roles": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "condition",
+                        "roles"
+                    ]
+                }
+            },
+            "required": [
+                "injectRoles"
+            ]
+        },
+        "allowLogin": {
+            "type": "object",
+            "properties": {
+                "allowLogin": {
+                    "type": "object",
+                    "properties": {
+                        "condition": {
+                            "$ref": "#/definitions/condition"
+                        }
+                    },
+                    "required": [
+                        "condition"
+                    ]
+                }
+            },
+            "required": [
+                "allowLogin"
+            ]
+        }
+    },
+    "type": "array",
+    "items": {
+        "oneOf": [
+            {
+                "$ref": "#/definitions/allowLogin"
+            },
+            {
+                "$ref": "#/definitions/injectRoles"
+            }
+        ]
+    }
+}
