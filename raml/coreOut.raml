@@ -23,28 +23,37 @@ version: v1
       post:
         description: |
           Called by TAS to request your app to stop, i.e. stop producing or consuming APIs or accepting logins for this tenant.
-          The app may choose to continue producing APIs for a few seconds to contribute to an
-          orderly tenant shutdown (as long as doing so does not require
-          consuming other app's APIs, since those apps are likely also shutting down), but in any case should aim to shut
-          down within a few seconds. The app should respond to this API until it is halted.
+          Your app should immediately (before responding) stop making tenant API calls. Once your app responds, TAS marks
+          its state as <b>dormant</b>. While dormant, your app should consume no tenant APIs, and only these core APIs:
+          
+          - GET /tenants/{tenant}/status
+          
+          Once the tenant's last installed app becomes dormant, TAS marks the tenant's status as <b>halted</b>.
 
+          See [Orchestration](../doc/overview.html#Supporting_orchestration) for more details. 
         responses:
           200:
     /starts:
       post:         
         description: |
-          Called by TAS to notify your app that it should start up. When dormant, apps should never accept logins or other end user activity (such
-          as page serves, or incoming API calls from external systems outside TAS) until they have received a startUp notification.
-          However producer apps (i.e. API servers) may, due to network delays, receive incoming API requests from other tenant apps
-          before they have received their own startUp notification. To check for this, producers receiving an incoming tenant API call
-          while dormant may choose to call GET /tenants/{tenant}/status, and treat a status of 'startingUp' as being the same as if a startUp
-          notification had been seen, i.e. produce the API normally.
+          Called by TAS to notify your app that it should leave the <b>dormant</b> state and start up, i.e. start making core API calls
+          and tenant API calls.
 
-          When starting up, your app should call GET /tenants/{tenant}/status to fetch the tenant's new security generation, and:
+          Normally while your app is dormant, it should not serve any incoming tenant API calls. However the restart phase,
+          its possible that some other app that consumes APIs that your app produces might receive its start notification
+          before your app. Therefore, when dormant, before rejecting the incoming tenant API call, your app should call
+          GET /tenants/{tenant}/status, and treat a status of 'startingUp' as being the same as if a start
+          notification had been seen - i.e. perform startup processing and then produce the API normally. Your app should
+          be wary of attempts by attacking apps to flood it with tenant API calls while the tenant is in the halted state.   
+
+          In startup processing, your app should call GET /tenants/{tenant}/status to fetch the tenant's new security generation,
+          and:
           - apps that consume APIs should discard any cached OAuth tokens where the consumer sgen does not match the
           tenant's new sgen  
           - apps that produce APIs should discard any cached OAuth tokens (i.e. cached to avoid re-checking) where the producer sgen
           does not match the tenant's new sgen  
+
+          See [Orchestration](../doc/overview.html#Supporting_orchestration) for more details. 
           
     /m/storeFrontMainPage:
       get:

@@ -1,0 +1,33 @@
+{
+  "kind": "patchSetStatus",
+  "applyStatus": "complete",
+  "latestEvent": 24,
+  "events": [
+    {"seq": 0, "event": {"kind": "bumpSecurityGenerationStart"}},
+    {"seq": 1, "event": { "kind": "tenantDownStart"}},
+    {"seq": 2, "event": { "kind": "appDownStart", "app": "tas-zoom"}},
+    {"seq": 3, "event": { "kind": "appDownStart", "app": "hrlabs-fratly"}},
+    {"seq": 4, "event": { "kind": "appDownComplete", "app": "tas-zoom"}},
+    {"seq": 5, "event": { "kind": "appDownStart", "app": "tas-dummyjobs"}},
+    {"seq": 6, "event": { "kind": "appDownStart", "app": "tas-uberapply"}},
+    {"seq": 7, "event": { "kind": "appDownComplete", "app": "tas-uberapply"}},
+    {"seq": 8, "event": { "kind": "appDownComplete", "app": "hrlabs-fratly"}},
+    {"seq": 9, "event": { "kind": "appDownComplete", "app": "tas-dummyjobs"}},
+    {"seq": 10, "event": { "kind": "tenantDownComplete", "elapsedTime": 2033}},
+    {"seq": 11, "event": { "kind": "tenantBumpSecurityGenerationComplete"}},
+    {"seq": 12, "event": { "kind": "tenantUpStart"}},
+    {"seq": 13, "event": { "kind": "appUpStart", "app": "tas-zoom"}},
+    {"seq": 14, "event": { "kind": "appUpStart", "app": "hrlabs-fratly"}},
+    {"seq": 15, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
+    {"seq": 16, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
+    {"seq": 17, "event": { "kind": "appUpStart", "app": "tas-uberapply"}},
+    {"seq": 18, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
+    {"seq": 19, "event": { "kind": "appUpStart", "app": "supersoft-refly"}},
+    {"seq": 20, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
+    {"seq": 21, "event": { "kind": "appUpStart", "app": "tas-tracker"}},
+    {"seq": 22, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
+    {"seq": 23, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
+    {"seq": 24, "event": { "kind": "bumpSecurityGenerationComplete", "elapsedTime": 9603, "incarnation": 146, "securityGeneration": 11 }}
+  ]
+}
+

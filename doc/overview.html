@@ -905,23 +905,63 @@ and so has to verify the route every time.
 
 <h2>Supporting orchestration</h2>
 
+<h3>Reboots</h3>
 
-<p>To support orchestration, your apps produces the outwards core API /tenants/{}/starts and /tenants/{}/halts.
+<p>Orchestration involves TAS performing an orderly shutdown and startup of all of the installed apps for a tenant,
+i.e. a reboot of the tenant.
+</p>
 
-<p>The order of events for ATS is:
+<p>As a reboot happens, TAS maintains a status for:
+<ul>
+<li>the tenant as a whole (see 
+<a href='../schemas/tenantStatus.json'>tenantsStatus.json</a>)
+<li>each individual app
+</ul>  
+</p>
+
+<p>TAS reboots a tenant, keeping a detailed log of events, when:
+<ul>
+<li>Any change is made to the tenant's installed apps or idps (e.g. this 
+<a href='../examples/patchSetStatus-juggleApps.json'>response</a> to POST /tenants/{}/reboots/launchKey)
+<li>The "reboot" button is clicked in the storefront  (e.g. this 
+<a href='../examples/patchSetStatus-reboot.json'>response</a> to POST /tenants/{}/reboots/launchKey)
+<li>The "flush credentials" button is clicked in the storefront (e.g. this 
+<a href='../examples/patchSetStatus-bumpSecurityGeneration.json'>response</a> to POST /tenants/{}/reboots/launchKey)
+<li>The tenant is first created
+</ul>
+</p>
+
+<h3>Responding to reboots</h3>
+
+<p>To respond correctly to reboots, your app's control server should produce the core out APIs:
+<ul>
+<li>/tenants/{}/starts
+<li>/tenants/{}/halts
+</ul>
+
+
+<p>To actually start a reboot, the storefront app launches it by calling <a href='../generated/coreIn.raml.html#_tenants__tenant__reboots__launchKey__post'>POST /tenants/{}/reboots/launchKey/{}</a>.
+
+<p>The order of events in a reboot is:
 
 <ol>
 <li>start halting tenant
 <li>halt all apps
 <li>tenant halt complete
 <li>adjust routes
-<li>increment tenant.incarnation (always)
-<li>increment tenant.securityGeneration (optionally)
+<li>increment tenant.incarnation
+<li>perform some activity within the quiet period:
+<ul>
+<li>apply a patch set
+<li>increment tenant.securityGeneration
+</ul> 
 <li>revoke refresh tokens as required (based on securityGeneration)
 <li>start all apps
 <li>start tenant
 <li>tenant start complete
 </ol>
+
+
 
 <h2>Promote your app</h2>
 

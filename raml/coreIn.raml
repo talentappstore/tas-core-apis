@@ -130,6 +130,28 @@ version: v1
                 application/json:
                   schema: !include ../schemas/samlSubject.json
                   example: !include ../examples/samlSubject-simple.json
+    /credentialFlushes:
+      post:
+        description: |
+          This endpoint is available only to apps tagged as "storeFront".
+          
+          Your app calls this endpoint to reboot the tenant and increment the security generation. This effectively
+          (since apps should always check for changed security generation) invalidates all OAuth tokens for
+          APIs consumed or produced by this tenant. This is used to mitigate an attack where an app has an OAuth token
+          stolen from it (tenant admin person clicks "Flush credentials" in the storefront).
+          
+          The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/reboots/{launchKey}.
+           
+        body:
+          application/json:
+            schema: !include ../schemas/patchSetPreparer.json
+            example: !include ../examples/patchSetPreparer-installApp.json
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/patchSetLaunchKey.json
+                example: !include ../examples/patchSetLaunchKey-simple.json
     /patchSets:
       post:
         description: |
@@ -137,7 +159,7 @@ version: v1
           
           Your app calls this endpoint to validate and then prepare a patch document, e.g. to reflect the tenant clicking install on an app.
           
-          The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/patchSets/{launchKey}.
+          The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/reboots/{launchKey}.
           
           Pass true for "bumpSecurityGeneration" to force the security generation to be incremented. 
         body:
@@ -150,11 +172,12 @@ version: v1
               application/json:
                 schema: !include ../schemas/patchSetLaunchKey.json
                 example: !include ../examples/patchSetLaunchKey-simple.json
+    /reboots:                
       /{launchKey}:
         post:
           description: |
-            Launch a previously prepared patch document (if not already launched), and get the latest events and the current summary
-            details for the patch document.
+            Launch a previously prepared reboot (if not already launched), and get the latest events and the current summary
+            details.
             
             This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
             belongs to a storefront app which does not share the same domain as the tas core).

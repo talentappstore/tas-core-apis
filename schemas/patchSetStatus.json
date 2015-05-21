@@ -22,6 +22,34 @@
                 }
             }
         },
+        "bumpSecurityGenerationStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "bumpSecurityGenerationStart"
+                    ]
+                }
+            }
+        },
+        "simpleRebootStart": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "simpleRebootStart"
+                    ]
+                }
+            }
+        },
         "tenantDownStart": {
             "type": "object",
             "additionalProperties": false,
@@ -176,6 +204,20 @@
                 }
             }
         },
+        "tenantBumpSecurityGenerationComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "tenantBumpSecurityGenerationComplete"
+                    ]
+                }
+            }
+        },
         "tenantUpStart": {
             "type": "object",
             "additionalProperties": false,
@@ -270,6 +312,58 @@
                 }
             }
         },
+        "bumpSecurityGenerationComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime",
+                "incarnation",
+                "securityGeneration"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "bumpSecurityGenerationComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                },
+                "incarnation": {
+                    "type": "integer"
+                },
+                "securityGeneration": {
+                    "type": "integer"
+                }
+            }
+        },
+        "simpleRebootComplete": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "kind",
+                "elapsedTime",
+                "incarnation",
+                "securityGeneration"
+            ],
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "simpleRebootComplete"
+                    ]
+                },
+                "elapsedTime": {
+                    "$ref": "#/definitions/elapsedTime"
+                },
+                "incarnation": {
+                    "type": "integer"
+                },
+                "securityGeneration": {
+                    "type": "integer"
+                }
+            }
+        },
         "orderedEvent": {
             "type": "object",
             "properties": {
@@ -280,6 +374,12 @@
                     "oneOf": [
                         {
                             "$ref": "#/definitions/patchSetApplyStart"
+                        },
+                        {
+                            "$ref": "#/definitions/bumpSecurityGenerationStart"
+                        },
+                        {
+                            "$ref": "#/definitions/simpleRebootStart"
                         },
                         {
                             "$ref": "#/definitions/tenantDownStart"
@@ -309,6 +409,9 @@
                             "$ref": "#/definitions/appPatchesApplyComplete"
                         },
                         {
+                            "$ref": "#/definitions/tenantBumpSecurityGenerationComplete"
+                        },
+                        {
                             "$ref": "#/definitions/tenantUpStart"
                         },
                         {
@@ -322,6 +425,12 @@
                         },
                         {
                             "$ref": "#/definitions/patchSetApplyComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/bumpSecurityGenerationComplete"
+                        },
+                        {
+                            "$ref": "#/definitions/simpleRebootComplete"
                         }
                     ]
                 }
