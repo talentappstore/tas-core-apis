@@ -12,15 +12,35 @@
                     "type": "string",
                     "description": "the wildcard, with * supported"
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "attribute",
+                "wildCard"
+            ]
         },
         "alwaysCondition": {
             "type": "boolean"
+        },
+        "notCondition": {
+            "type": "object",
+            "properties": {
+                "not": {
+                    "$ref": "#/definitions/condition"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "not"
+            ]
         },
         "condition": {
             "oneOf": [
                 {
                     "$ref": "#/definitions/wildCardCondition"
+                },
+                {
+                    "$ref": "#/definitions/notCondition"
                 },
                 {
                     "$ref": "#/definitions/alwaysCondition"

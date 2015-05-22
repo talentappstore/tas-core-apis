@@ -1066,113 +1066,196 @@ error response (unless the success reported previously was hiding an existing er
 
 
 
-<h1>The session document</h1>
+<h1>Well-known SAML attributes</h1>
+
+<p>Whenever a principal logs into an SSO-protected app, the app is passed a SAML assertion, containing a set of attributes.
+</p>
+
+<p>TAS defines two well known sets of attributes - personal detail and role - that apps can examine
+(perhaps using the TAS-supplied Java libraries) to be informed about the logged in user.
+</p>
+
+<p>Personal detail attributes are named <b>"tas.personal.*"</b>, and hold the user's given (first) name, family (last) name, email and image.
+These might be useful for the app to customise web pages (e.g., "Welcome, Fred Bloggs"), and/or to populate user records
+(e.g. when doing just-in-time provisioning of users when they first log in). These attributes must be of type string.
+</p>
+
+<p>Role attributes named <b>"tas.role.*"</b> hold the user's membership of a given role. These might be useful for the app to
+do user-based authentication checks, e.g. is this person allowed to see this web page? And if so, what menu items should they see?
+These attributes must be of type boolean, with a value of true.
+</p>
 
 
-<p>TAS stores a json session document for every recently authenticated principal (user).</p>
+<p>The following example shows that the logged in candidate has the name Fred Bloggs, and holds the role "internal".  
+<div class='codeBlock'>
+...
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.personal.givenName"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;Fred&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.personal.familyName"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;Bloggs&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.role.internal"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:boolean"&gt;true&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+</div>
+</p>
 
-<p>The TAS session document holds slowly changing information about the user such as:
+
+<h2>Injecting well-known attributes</h2>
+ 
+ <p>As for any other SAML attributes, the well-known attributes may be attached by the idp that principal logged in with. This approach
+ allows the tenant to use their idp as a single source of truth about theie users, and the roles that they hold.
+ </p>
+ 
+ <p>However TAS also provides mechanisms for the well-known attributes to be injected into the SAML assertion after it has
+ been produced by the idp, but before it is passed to the SSO app.
+</p>
+
+<h3>Injecting personal detail attributes - mapping document</h3>
+
+<p>Tenants can set up their <b>mapping document</b> to convert arbitrarily named incoming SAML attributes to their well-known personal detail
+equivalents. This is useful when the tenant has limited control over the naming of their SAML attributes.
+</p>
+
+<p>For example, perhaps acme's idp always attaches first name in an attribute named "acme.first.name", and this can't be easily changed.
+To work around this, acme could set up their mapping document like this:
+
+<div class='codeBlock'>
+<div class='clientInclude' data-href='../examples/attributeMappings-simple.json'></div>
+</div>
+</p>
+
+
+<h3>Injecting role attributes - assertion hooks</h3>
+
+<p>Tenants can set up <b>assertion hooks</b> to check for patterns in named SAML assertions (email addresses are often used),
+and conditionally insert role attributes.
+</p>
+
+<p>As well as injecting roles, assertion hooks can also be used to deny login altogether.
+</p>
+
+<p>The assertion hooks below:
 <ul>
-<li>their roles and entitlements (such as whether the user is a recruiter, and if so, for which department(s))
-<li>their personal details (like first name and email)
-<li>a set of common identifying information typically available from IdPs and social networks such as first name, last name, image, email, etc.
-<li>anything specific to the user that apps wish to make available to themselves or to other apps, e.g. perhaps even OAuth tokens obtained from the authenticating social network
+<li>prevent any AOL user from logging in at all
+<li>grant the role of "recruiter" to anyone with the email fred@gmail.com
+<li>grant the role of "hrAppViewer to everyone
 </ul>
 </p>
 
-<p>"Slowly changing" means that the TAS session is only updated at authentication time (as opposed to the more frequently changing data on the user's session in a specific app, e.g. a list of currently selected jobs).</p>
-
-<p>Apps typically use the TAS session document to do things like user-based authentication checks, e.g. is this person allowed to see this web page? And if so, what menu items should they see?</p>
-
-<p>As far as TAS is concerned, the session document is simply an opaque json document. TAS does not understand the structure of the document, it simply:
-<ul>
-<li>coordinates the document's assembly at user login time
-<li>makes the document available to apps that are working on behalf of the user, i.e.:
-<ul>
-<li>SSO protected web sites
-<li>OAuth API producers
-</ul>
-</ul>
 <p>
+<div class='codeBlock'>
+<div class='clientInclude' data-href='../examples/assertionHooks-simple.json'></div>
+</div>
+</p>
 
-<p>Apps can store anything they like, in any format that can be contained in json, inside the TAS session document. However the data should be small, i.e. in the order of kilobytes or less.</p>
 
-<h2>How the session document is created</h2>
+<h3>Injecting role attributes - assertion decorator apps</h3>
 
-<p>TAS coordinates the creation of a user's session document whenever they log in to an SSO-protected app. The flow is shown below.</p>
+<p>Special marked <b>assertion decorator</b> apps are called at login time to allow them to inject role attributes.
+</p>
 
-<p> 
+<p>As well as injecting roles, session decorator apps can also deny login altogether.
+</p>
+
+<p>
+For example, TAS makes the following call to an assertion decorator app: 
+<div class='codeBlock'>
+POST /tenants/{tenant}/logins/{pd}/{pt}/{nameID}
+
+Response:
+[ "alumni" ]
+</div>
+</p>
+
+<p>The response indicates to TAS that it should merge in a role attribute for the role "alumni".
+
+
+<h3>Order of operations</h3>
+
+<p>TAS performs the above actions in the following order:
+<ol>
+<li>Apply mapping document
+<li>Apply assertion hooks
+<li>Invoke assertion decorator apps (in alphebetical order of app name)
+</ol>
+</p>
+
+<p>
+For example: 
 <div class='codeBlock'>
 
-Below is a sample for the *candidate* principal type. Note we use home email and address for this type.
 
 +------------------+
 |external SAML IdP |
 +------------------+
    |
    ...
-   | attributes:
-   | firstName = Barry
-   | lastName = Gibb
-   | email = bg@acme.com
+   | incoming SAML attributes:
+   | acme.first.name = Barry
+   | acme.last.name = Barry
+   | acme.email = bg@acme.com
    |
-+-----------------------+
-|TAS attribute mapping  |
-+-----------------------+
++--------------------+
+| attribute mapping  |
++--------------------+
    |
-   | mapping rules:
-   | firstName -> tas.name.givenName 
-   | lastName -> tas.name.familyName
-   | email -> tas.emails.home.email  
+   | tenant's mapping document:
+   | [
+   |     {
+   |         "tas.personal.givenName": "acme.first.name"
+   |     },
+   |     {
+   |         "tas.personal.familyName": "acme.last.name"
+   |     }
+   | ]   
    |
-   | updated attributes:
-   | tas.name.givenName = Barry
-   | tas.name.familyName = Gibb
-   | tas.emails.home.email = bg@acme.com
-   |   
-+-----------------------+
-|TAS auth filtering     |
-+-----------------------+
+   | resulting SAML attributes:
+   | tas.personal.givenName = Barry
+   | tas.personal.familyName = Gibb
+   | tas.personal.email = bg@acme.com
    |
-   | filtering rules:
++-----------------+
+| assertion hooks |
++-----------------+
    |
-   |    "authFilters": [
-   |        {
-   |            "regexp": {
-   |                "tas.emails.home.email": "*.aol.com"
-   |            },
-   |            "authPass": false
-   |        },
-   |        {
-   |            "booleanTest": true,
-   |            "inject": [
-   |                {
-   |                    "tas.bogus.value": "hello world"
-   |                }
-   |            ]
-   |        },
-   |        {
-   |            "regexp": {
-   |                "tas.emails.home.email": "*.acme.com"
-   |            },
-   |            "inject": [
-   |                {
-   |                    "tas.candidate.type": "internal"
-   |                },
-   |                {
-   |                    "tas.candidate.type": "trusted"
-   |                }
-   |            ]
-   |        }
-   |    ]
+   | tenant's assertion hooks:
+   | [
+   |     {
+   |         "injectRoles": {
+   |             "condition": {
+   |                 "attribute": "tas.personal.email",
+   |                 "wildCard": "*.acme.com"
+   |             },
+   |             "roles": [
+   |                 "internal"
+   |             ]
+   |         }
+   |     }
+   | ]   
    |
-   | updated attributes:
-   | tas.name.givenName = Barry
-   | tas.name.familyName = Gibb
-   | tas.emails.home.email = bg@acme.com
-   | tas.bogus.value = hello world
-   | tas.candidate.type = internal
-   | tas.candidate.type = trusted
+   | resulting SAML attributes:
+   | tas.personal.givenName = Barry
+   | tas.personal.familyName = Gibb
+   | tas.personal.email = bg@acme.com
+   | tas.role.internal = true
+   |
++--------------------------+
+| assertion decorator apps |
++--------------------------+
+   |
+   | TAS calls POST /tenants/{tenant}/logins/{pd}/{pt}/{nameID}
+   | Response:
+   | 200
+   | [ "alumni" ]
+   |
+   | resulting SAML attributes:
+   | tas.personal.givenName = Barry
+   | tas.personal.familyName = Gibb
+   | tas.personal.email = bg@acme.com
+   | tas.role.internal = true
+   | tas.role.alumni = true
    |
 +------------------------------+
 |TAS session document creation |
@@ -1180,175 +1263,23 @@ Below is a sample for the *candidate* principal type. Note we use home email and
 </div>
 </p>
 
+<h2>SAML assertion and auto-provisioning</h2>
 
-<p>TAS composes the document from the data by merging data from:
-
-<ol>
-<li>specially named SAML attributes from the user's IdP (for example, a corporate Active
-Directory system that holds against the user's record that they are a learner in the LMS,
-or Facebook which knows that the user's first name is Fred)
-
-<li>json merge documents passed back from "role-defining apps", which TAS calls
-via POST /tenants/{tenant}/logins/{principalDev}/{principalType}/{entityID}/{nameID}
- (for example, a legacy ATS that holds against the user's record that they are allowed
- to search the candidate database).
-</ol>
+<p>Auto-provisioning refers to creating users "on the fly", i.e. at the time when they first log in to the app.
 </p>
 
-<p>In more detail, this merging happens as follows:
+<p>To decide whether, and how, to auto-provisioning a new logging in user, an app may look at the
+well known attributes in the SAML assertion, such as email or roles.</p>
 
-<ol>
-<li>The user authenticates, and a SAML assertion flows back through the TAS SAML proxy, on its way
-to the SSO-protected app (i.e., the Service Provider, or SP)
+<p>It is possible for an app to be both auto-provisioning and also an assertionDecorator.</p>
 
-<li>
-<p>Before passing the assertion to the SP, TAS examines its attributes and converts any that it
-recognises to json. For example if a user logs with a SAML assertion containing:</p>
-
-<div class='codeBlock'>
-...
-&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.roles.recruitment.recruiter.org"&gt;
-	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;sales_west&lt;/saml:AttributeValue&gt;
-	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;sales_east&lt;/saml:AttributeValue&gt;
-&lt;/saml:Attribute&gt;
-&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.roles.recruitment.recruiter.hasAdmin"&gt;
-	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:boolean"&gt;true&lt;/saml:AttributeValue&gt;
-&lt;/saml:Attribute&gt;
-</div>
-
-<p>TAS converts this to this session document:</p>
-
-<div class='codeBlock'>
-{
-    "recruitment": {
-        "recruiter": {
-            "org": [
-                "sales_west",
-                "sales_east"
-            ],
-            "hasAdmin": true
-        }
-    }
-}
-</div>
-
-<p>The conversion is done using these rules [INCOMPLETE]:
-<ul>
-<li>leaf attributes of type other than boolean are treated as arrays
-<li>attributes with multiple values and multiple attributes with the same name are treated the same (as arrays), and cannot be of type boolean
-<li>passing false for attributes is not supported as ths conflicts with the merge patch semantics
-</ul>
-</p>
-
-<li>
-<p>Next, TAS gives every individual app tagged as loginListeners the chance to provide their own session data, by calling:</p>
-
-<div class='codeBlock'>
-POST /tenants/{tenant}/logins/{principalDev}/{principalType}/{entityID}/{nameID}
-</div>
-
-<p>In the request, TAS passes the starting session data (as extracted from the SAML assertion, see previous example).</p>
-
-<p>In its response, the login listener can optionally pass include a json document to be merged into the session document.</p>
-
-<p>For example, a learning management system (LMS) might pass back:</p>
-
-<div class='codeBlock'>
-{
-    "learning": {
-        "learner": true
-    }
-}
-</div>
-
-<p>After merging, the session data is now:</p>
-
-<div class='codeBlock'>
-{
-    "learning": {
-        "learner": true
-    },
-    "recruitment": {
-        "recruiter": {
-            "org": [
-                "sales_west",
-                "sales_east"
-            ],
-            "hasAdmin": true
-        }
-    }
-}
-</div>
-</p>
-</li>
-</ol>
-
-<h2>Merge details</h2>
-
-<p>TAS merges session document data from login listeners with the IdP's session data using the patch merge semantics
-defined in <a href='https://tools.ietf.org/html/rfc7386)'>rfc7386</a>.</p>
-
-<p>TAS always merges the IdP's data into the login listeners data, rather than the other way around.
-This ensures that the IdP's version of the user's roles/entitlements always takes precedence over any data held in apps.</p>
-
-<p>If there are multiple login listeners, then each one sees only the IdP's session data in the request. I.e.: all login listeners are isolated from each
-other for the purposes of building up their own session data.</p>
-
-<p>If multiple login listeners pass back session data, TAS merges them in one at a time, in alphabetical order of app name. This means that
-apps with later names could potentially undo or alter the session data from earlier apps.</p>
-
-<p>TAS's use of the merge patch semantics of rfc7386 introduces some limitations. For example, the merge cannot operate on individual members
-within an array, meaning that (for example) a manager could not be given authority over some departments via
-SAML attributes and others via rows in an app's database. Instead,
-the department list passed in SAML would completely replace any departments passed back by the login listener.</p>
-
-
-<h2>Changes to the session document while user logged in</h2>
-
-<p>In a case where the document contains details of the user's roles, those roles might change while the user is logged in (e.g. when an administrator
-changes the user's permissions thourgh some admin screen, or directly on the IdP).</p>
-
-<p>However since user's session document is fixed at the time when they log in to an SSO-protected app, those role changes would not be seen until the user reauthenticates.</p>
-
-<p>Depending on the expiry details in the SAML authentication assertion, this might be every few minutes, or hours.</p>
-
-
-<h2>Accessing the session document from within an app</h2>
-
-<p>To obtain the session document, apps use the entityID and nameID representing the logged in user to call:</p>
-
-<div class='codeBlock'>
-GET /tenants/{tenant}/logins/{principalDeveloper}/{principalType}/{entityID}/{nameID}
-</div>
-
-<p>An app with an SSO-protected web page can parse the entityID and nameID from the incoming SAML assertion (using the TAS-supplied library).<p>
-
-<p>An app which is an API producer can extract the entityID and nameID from the incoming OAuth token.</p>
-
-<h2>Session document and auto-provisioning</h2>
-
-<p>Auto-provisioning refers to creating users "on the fly", i.e. at the time when they first log in.</p>
-
-<p>To decide whether, and how, to auto-provisioning a new logging in user, an app may look at information
-in the user's session document, like their email, or their permissions.</p>
-
-<p>That session document was built in the first place by TAS intercepting the user's login, and using that opportunity
-to call each loginListener in turn, merging their responses into the master session document.</p>
-
-<p>Although apps normally auto-provision users at the point where they first login to the app, it is also theoretically possible for
-loginListening apps to do auto-provisioning, i.e. when the user logs in at some <b>other</b> app. However because loginListeners only see the
-base session document, i.e. the one built from IdP-supplied data alone, and not the session data from all of the other loginListeners,
-auto-provisioning in this way may not be desirable.</p>
-
-<h2>Apps that are both auto-provisioning and loginListeners</h2>
-
-<p>In a situation where a loginListener app is asked to produce session data for a user that does not exist in the app, but would due
-to auto-provisioning were they to log in to the app, then the app should normally provide session data just as if the user had been
+<p>In a situation where an assertionDecorator app is asked to decorate the assertion for a user that does not exist in the app, but would due
+to auto-provisioning were they to log in to the app, then the app should normally decorate the assertion just as if the user had been
 auto-provisioned.</p>
 
-<p>This sort of situation would arise for example with a legacy ATS app designed to auto-provision new users and grant them access to a
+<p>This sort of situation would arise, for example with a legacy ATS app designed to auto-provision new users and grant them access to a
 separate candidate search app. In this case, if the user logs in to the search app first, having never visisted the legacy ATS app, then
-the legacy ATS app (acting as a loginListener) should attach session data (possibly including the right to access the search app)
+the legacy ATS app (acting as an assertionDecorator) should inject roles (possibly including the right to access the search app)
 as if the user had instead logged into the ATS first and therefore been auto-provisioned and gained the default permissions.</p>
  
 

@@ -55,7 +55,7 @@ version: v1
 
           See [Orchestration](../doc/overview.html#Supporting_orchestration) for more details. 
           
-    /m/storeFrontMainPage:
+    /storeFrontMainPage:
       get:
         description: |
           <p>Only called on apps tagged with storeFront.</p>
@@ -71,30 +71,41 @@ version: v1
                 schema: !include ../schemas/storeFrontMainPage.json
                 example: !include ../examples/storeFrontMainPage-simple.json
     /logins:
-      /{principalDeveloper}:
-        /{principalType}:
-          /{entityID}:
-            /{nameID}:
-              post:
-                description: |
-                  <p>Called by TAS to tell your loginListener app about someone logging in.</p>
-                  <p>LoginListeners are special, highly privileged apps that can merge information about the logged in user
-                  into their session document, such as roles and entitlements.</p>
-                  <p>Since your loginListener app cannot know all of the possible types of principal that might log in, it should
-                  return with status 200 immediately unless the type is one that the app understands.</p>
-                  <p>A typical loginListener would be a legacy ATS system. On someone logging in, the app might:
-                  <ul>
-                  <li>examine the existing session data for an "auto-provisioning == true" attribute (possibly injected for all users logging in through
-                  a specific IdP, such as a support team's IdP) to determine whether to auto-provision or not
-                  <li>if auto-provisioning, next use other attributes (name, etc.) to make tenant API calls against the SCIM SoT server
-                  by making calls to GET /users/{}, POST /users, etc.</p>
-                  </ul>
-                  <p>TAS will only call this API on apps that are declared to be authListeners. TAS will
-                  wait until all authListeners have responded with 200 before it passes the login through to the web app, so that any
-                  auto-provisioning type operations are complete by the time the user login hits the web site.</p>
-                  <p>RAML (the tool used to create this documentation) does not allow currently allow describing the different parts
-                  of multipart/form-data, but for this endpoint your app will receive two parts - the raw SAML authentication assertion
-                  itself, and the derived samlSubject object (json).
-                body:
-                  multipart/form-data:
+      /{pd}:
+        description: the developer who owns the principal type
+        /{pt}:
+          description: the principal type
+          /{nameID}:
+            description: the base64-encoded nameID of the principal logging in
+            post:
+              description: |
+                Called by TAS to tell your assertionDecorator app about someone logging in. The request body contains
+                the incoming SAML assertion. 
+                
+                AssertionDecorators are special, highly privileged apps that can inject roles into the SAML assertion
+                or deny login altogether.
+
+                Since your assertionDecorator app cannot know all of the possible types of principal that might log in, it should
+                return with status 200 and an empty set of roles in the response body immediately if it does not recognise the
+                principal type.
+
+                A typical assertionDecorators would be a legacy ATS system. On someone logging in, the app might look up the
+                principal in its database, and inject the role of "alumni" (for example) if appropriate. Then, the candidate
+                can securely log into some other system that requires the role of alumni but has no users table of its own.
+
+                TAS will only call this API on apps that are declared to be assertionDecorators. TAS will
+                wait until all assertionDecorators have responded with 200 before it passes the login through to the web app.
+                
+                See [Well-known SAML attributes](../doc/overview.html#Well-known_SAML_attributes) for more.
+              body:
+                application/xml:
+              responses:
+                403:
+                  description: this code indicates that login should fail 
+                200:
+                  description: this code indicates that login should proceed, and any roles passed in the response should be merged into the SAML assertion 
+                  body:
+                    application/json:
+                      schema: !include ../schemas/injectedRoles.json
+                      example: !include ../examples/injectedRoles-simple.json
   

@@ -1,0 +1,14 @@
+[
+    {
+        "tas.personal.givenName": "acme.first.name"
+    },
+    {
+        "tas.personal.familyName": "acme.last.name"
+    },
+    {
+        "tas.personal.email": "email"
+    },
+    {
+        "tas.personal.image": "acme.personal.imageURL"
+    }
+]
