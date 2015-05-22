@@ -278,9 +278,13 @@ version: v1
                             
 /token:
   description: |
+    See [obtaining an OAuth token](../doc/overview.html#Obtain_an_OAuth_access_token) for more details.
+    
     TAS OAuth access tokens are self-contained security tokens in the form of a JWT (json web token; see http://jwt.io/).
     
-    An access token authorizes a specific consuming app to consume APIs at a specific producing app.
+    An access token authorizes a specific consuming app to consume APIs at a specific producing app. Tokens
+    may further be personal, i.e. principal-aware, in which case they also identify the end user and
+    include any roles that person has (copied down from the SAML assertion).
     
     Because access tokens are self-contained and signed, producers can rely on their content without any network
     traffic to the authorization server (i.e. TAS).
@@ -299,10 +303,10 @@ version: v1
       grant_type:
         description: |
            One of:
-           - urn:talentappstore.com:oauth2:tas-direct
+           - client_credentials
+           - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
            - urn:talentappstore.com:oauth2:tas-inherited
            - refresh_token
-           
         type: string
         example: refresh_token
       scope:
@@ -310,22 +314,10 @@ version: v1
           A space separated set of values for the OAuth scope of this token, which may include: 
           - A string starting with "/" that denotes a consuming app installed at a specific tenant
           and a producing app installed at a specific tenant (MUST be present for all grant types other than refresh_token)
-          - the keyword "offline" (MAY be present when grant_type is urn:talentappstore.com:oauth2:tas-direct
+          - the keyword "offline" (MAY be present when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer
           and the principal type parameters are present)         
         type: string
         example: /acme/smartyhr/ats/greenjobsite/greenjobs/gjcore offline 
-      entityID:
-        description: |
-          The entity ID from the SAML assertion when this user logged in (MAY be present only when grant_type is
-          urn:talentappstore.com:oauth2:tas-direct; MUST be present if nameID is present)
-        type: string
-        example: idp3.acme.com 
-      nameID:
-        description: |
-          The name ID from the SAML assertion when this user logged in (MAY be present only when grant_type is
-          urn:talentappstore.com:oauth2:tas-direct; MUST be present if entityID is present)
-        type: string
-        example: idp3.acme.com 
       refresh_token:
         description: |
           A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is

@@ -3,7 +3,8 @@
         "pd": "tas",
         "pt": "candidate",
         "entityID": "ibmidpuswest-10",
-        "nameID": "frank@ibm.com"
+        "nameID": "frank@ibm.com",
+        "roles": [ "internal" ]
     },
     "cons": {
         "ct": "acme",
