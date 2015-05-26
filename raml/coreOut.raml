@@ -8,52 +8,89 @@ version: v1
   /{tenant}:
     description: |
       A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls
-      that your app makes to TAS are within the context of a single tenant.   
+      that your app makes to TAS are within the context of a single tenant.
     post:
       description: |
-        Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant is dormant.
-        The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but should wait until the
-        startUp event before loading caches, producing or consuming APIs, accepting logins, etc.  
+        Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant has
+        status of "halted".
+        
+        The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but
+        should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
+          
+        See [Reboots](../doc/overview.html#Reboots) for more details. 
     delete:
       description: |
-        Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on the app). The app can assume the tenant
-        is dormant. The app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API
-        calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data.   
+        Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on your app). Your app can
+        assume the tenant has status "halted".
+        
+        Your app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API
+        calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data. If this
+        cleanup is long-running, you should handle a case where the tenant immediately reinstalls your app, and ensure the
+        cleanup from the earlier install(s) can continue.
+
+        See [Reboots](../doc/overview.html#Reboots) for more details. 
+    /preHalts:
+      post:
+        description: |
+          Called by TAS to request your app (for a specific tenant) to immediately stop any chains of tenant API calls
+          that it "owns", i.e. has started.
+          
+          For example if your app includes a daemon, it should shut down the daemon or at least stop it from consuming
+          tenant APIs, and if it includes a UI, it should log out the user and not allow the UI to make any tenant API calls.
+          
+          Your app should complete the stopping process and return 200 within a few seconds.
+
+          After this, your app should continue producing tenant APIs, and, in response to incoming tenant APIs, consuming
+          tenant APIs on other apps - it just should not initiate new tenant API activity.
+          
+          See [Reboots](../doc/overview.html#Reboots) for more details. 
+        responses:
+          200:
+          
     /halts:
       post:
         description: |
-          Called by TAS to request your app to stop, i.e. stop producing or consuming APIs or accepting logins for this tenant.
-          Your app should immediately (before responding) stop making tenant API calls. Once your app responds, TAS marks
-          its state as <b>dormant</b>. While dormant, your app should consume no tenant APIs, and only these core APIs:
+          Called by TAS to request your app to (for a specific tenant)
+          - stop producing or consuming tenant APIs
+          - stop consuming core APIs
+           - stop accepting logins
+          
+          Your app should immediately (before responding) stop making tenant API calls, then respond with 200.
+          
+          After this, until your app receives the init call, it should consume no tenant APIs, and only these core APIs:
           
           - GET /tenants/{tenant}/status
           
-          Once the tenant's last installed app becomes dormant, TAS marks the tenant's status as <b>halted</b>.
-
-          See [Orchestration](../doc/overview.html#Supporting_orchestration) for more details. 
+          See [Reboots](../doc/overview.html#Reboots) for more details. 
         responses:
           200:
-    /starts:
+          
+    /preStarts:
       post:         
         description: |
-          Called by TAS to notify your app that it should leave the <b>dormant</b> state and start up, i.e. start making core API calls
-          and tenant API calls.
+          Called by TAS to notify your app that it is being started up as part of a reboot, and that it can now start making core API calls.
 
-          Normally while your app is dormant, it should not serve any incoming tenant API calls. However the restart phase,
-          its possible that some other app that consumes APIs that your app produces might receive its start notification
-          before your app. Therefore, when dormant, before rejecting the incoming tenant API call, your app should call
-          GET /tenants/{tenant}/status, and treat a status of 'startingUp' as being the same as if a start
-          notification had been seen - i.e. perform startup processing and then produce the API normally. Your app should
-          be wary of attempts by attacking apps to flood it with tenant API calls while the tenant is in the halted state.   
-
-          In startup processing, your app should call GET /tenants/{tenant}/status to fetch the tenant's new security generation,
-          and:
+          Your app should perform normal init processing (as below), and then return 200 as soon as possible.
           - apps that consume APIs should discard any cached OAuth tokens where the consumer sgen does not match the
           tenant's new sgen  
           - apps that produce APIs should discard any cached OAuth tokens (i.e. cached to avoid re-checking) where the producer sgen
           does not match the tenant's new sgen  
+          
+          After returning 200, your app should start producing tenant API calls immediately. However it should not consume any tenant APIs,
+          except in response to an incoming tenant API call (i.e. your app may take part in, but should not initiate, chains of tenant API calls).
 
-          See [Orchestration](../doc/overview.html#Supporting_orchestration) for more details. 
+          See [Reboots](../doc/overview.html#Reboots) for more details. 
+          
+    /starts:
+      post:         
+        description: |
+          Called by TAS to notify your app that it is being started up as part of a reboot, and that it can now start making tenant API calls.
+
+          Your app should return 200 as soon as possible.
+          
+          After returning 200, your app can start consuming tenant API calls as normal.
+
+          See [Reboots](../doc/overview.html#Reboots) for more details. 
           
     /storeFrontMainPage:
       get:

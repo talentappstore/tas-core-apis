@@ -13,13 +13,14 @@
         },
         "state": {
             "enum": [
-                "starting",
-                "running",
                 "halting",
                 "halted",
+                "initing",
+                "starting",
+                "running",
                 "broken"
             ],
-            "description": "The tenant's current status. Your app should not make core API calls other than GET /tenants/{tenant} unless the status is 'running' or 'starting'."
+            "description": "The tenant's current status. Your app should not make core API calls other than GET /tenants/{tenant} unless the status is 'initing', 'running' or 'starting'."
         }
     }
 }

@@ -156,13 +156,14 @@
         },
         "state": {
             "enum": [
-                "starting",
-                "running",
                 "halting",
                 "halted",
+                "initing",
+                "starting",
+                "running",
                 "broken"
             ],
-            "description": "The tenant&#x27;s current status. Your app should not make core API calls other than GET /tenants/{tenant} unless the status is &#x27;running&#x27; or &#x27;starting&#x27;."
+            "description": "The tenant&#x27;s current status. Your app should not make core API calls other than GET /tenants/{tenant} unless the status is &#x27;initing&#x27;, &#x27;running&#x27; or &#x27;starting&#x27;."
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{

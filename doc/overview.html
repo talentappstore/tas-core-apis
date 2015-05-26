@@ -901,67 +901,6 @@ has not way to maintain an up to date copy of the remote tenant's sgen value.
 and so has to verify the route every time.
 </p>
 
-<h2>Accessing the session</h2>
-
-<h2>Supporting orchestration</h2>
-
-<h3>Reboots</h3>
-
-<p>Orchestration involves TAS performing an orderly shutdown and startup of all of the installed apps for a tenant,
-i.e. a reboot of the tenant.
-</p>
-
-<p>As a reboot happens, TAS maintains a status for:
-<ul>
-<li>the tenant as a whole (see 
-<a href='../schemas/tenantStatus.json'>tenantsStatus.json</a>)
-<li>each individual app
-</ul>  
-</p>
-
-<p>TAS reboots a tenant, keeping a detailed log of events, when:
-<ul>
-<li>Any change is made to the tenant's installed apps or idps (e.g. this 
-<a href='../examples/patchSetStatus-juggleApps.json'>response</a> to POST /tenants/{}/reboots/launchKey)
-<li>The "reboot" button is clicked in the storefront  (e.g. this 
-<a href='../examples/patchSetStatus-reboot.json'>response</a> to POST /tenants/{}/reboots/launchKey)
-<li>The "flush OAuth tokens" button is clicked in the storefront (e.g. this 
-<a href='../examples/patchSetStatus-bumpSecurityGeneration.json'>response</a> to POST /tenants/{}/reboots/launchKey)
-<li>The tenant is first created
-</ul>
-</p>
-
-<h3>Responding to reboots</h3>
-
-<p>To respond correctly to reboots, your app's control server should produce the core out APIs:
-<ul>
-<li>/tenants/{}/starts
-<li>/tenants/{}/halts
-</ul>
-
-
-<p>To actually start a reboot, the storefront app launches it by calling <a href='../generated/coreIn.raml.html#_tenants__tenant__reboots__launchKey__post'>POST /tenants/{}/reboots/launchKey/{}</a>.
-
-<p>The order of events in a reboot is:
-
-<ol>
-<li>start halting tenant
-<li>halt all apps
-<li>tenant halt complete
-<li>adjust routes
-<li>increment tenant.incarnation
-<li>perform some activity within the quiet period:
-<ul>
-<li>apply a patch set
-<li>increment tenant.securityGeneration
-</ul> 
-<li>revoke refresh tokens as required (based on securityGeneration)
-<li>start all apps
-<li>start tenant
-<li>tenant start complete
-</ol>
-
-
 
 <h2>Promote your app</h2>
 
@@ -1011,6 +950,111 @@ so that TAS knows what private key to use for decryption...details...
 <p>The same applies to coreOut API calls -the app's control server needs to be able to extract app name from the
 API request, so that a single control server can serve multiple apps.   
 </p>
+
+<h1>Reboots</h1>
+
+<p>A reboot is the process of TAS performing an orderly shutdown and startup of all of the installed apps for a specific tenant whenever major
+changes are made to the tenant.
+</p>
+
+<p>To play its part correctly when a reboot happens, your app's control server should produce the reboot APIs.
+TAS then consumes these APIs during the reboot:
+
+<ul>
+<li>/tenants/{}/halts
+<li>/tenants/{}/inits
+<li>/tenants/{}/starts
+</ul>
+
+<p>As a reboot happens, TAS maintains a set of history events that the storefront app can use to feed a progress dialogue. 
+</p>
+
+<h2>How the storefront prepares a reboot</h2>
+
+<p>A reboot is initiated as a result of a tenant's actions in the storefront app's UI:
+<table border=1>
+<thead>
+<tr><td>tenant action</td><td>storefont app makes core API call</td><td>example reboot events</td></tr>
+</thead>
+<tbody>
+<tr>
+<td>click "install" or "uninstall" on an app</td>
+<td>POST /tenants/{}/patchSets</td>
+<td><a href='../examples/patchSetStatus-juggleApps.json'>example events</a></td>
+</tr>
+<tr>
+<td>click the "reboot" button in the storefront</td>
+<td>POST /tenants/{}/reboots</td>
+<td><a href='../examples/patchSetStatus-reboot.json'>example events</a></td>
+</tr>
+<tr>
+<td>click the "flush OAuth tokens" button in the storefront</td>
+<td>POST /tenants/{}/OAuthFlushes</td>
+<td><a href='../examples/patchSetStatus-reboot.json'>example events</a></td>
+</tr>
+</tbody>
+</table>
+
+<h2>How the storefront launches a reboot</h2>
+
+<p>When the storefront app calls the APIs above, the reboot does not start immediately. Instead, the APIs
+return a launch key.
+</p>
+
+<p>To actually start a reboot, the storefront app (typically from within a web page's
+onClick handler of a "Continue" button) uses this launch key
+to make a call to <a href='../generated/coreIn.raml.html#_tenants__tenant__reboots__launchKey__post'>POST /tenants/{}/reboots/launchKey/{}</a>.
+</p>
+
+<p>As a reboot happens, TAS maintains the event history, and also a status for:
+<ul>
+<li>the tenant as a whole (see 
+<a href='../schemas/tenantStatus.json'>tenantsStatus.json</a>)
+<li>each individual app
+</ul>  
+</p>
+
+<h2>How the storefront launches a reboot</h2>
+
+<p>During a reboot, the order of events is:
+
+<ol>
+<li>TAS sets the tenant's status to "halting"
+<li>TAS calls /tenants/{}/halts on each installed app
+<li>When the last app returns 200, TAS sets the tenant's status to "halted"
+<li>TAS increments tenant.incarnation
+<li>while apps are halted, TAS performs the actual operation, i.e.:
+<ul>
+<li>do nothing (if this reboot is in response to a call to POST /tenants/{}/reboots)
+<li>apply the patch set, e.g. to install an app (if this reboot is in response to a call to POST /tenants/{}/patchSets)
+<ul>
+<li>apps are installed or uninstalled
+<li>routes are adjusted
+</ul> 
+<li>increment tenant.securityGeneration
+<ul>
+<li>explicitly (if this reboot is in response to a call to POST /tenants/{}/OAuthFlushes, i.e. the tenant clicked "Flush OAuth tokens"); or
+<li>implicitly (if this reboot is in response to a call to POST /tenants/{}/patchSets and
+TAS finds that the patch set is making changes to the tenant's idps or assertion hooks)
+</ul>
+</ul>
+<li>TAS sets the tenant's status to "initing"
+<li>TAS calls /tenants/{}/inits on each installed app
+<li>When the last app returns 200, TAS sets the tenant's status to "starting"
+<li>TAS calls /tenants/{}/starts on each installed app
+<li>When the last app returns 200, TAS sets the tenant's status to "running"
+</ol>
+
+
+<h2>Responding to reboots</h2>
+
+<p>To respond correctly to reboots, your app's control server should produce the core out APIs:
+
+<h4>/tenants/{}/halts</h4>
+
+<li>/tenants/{}/inits
+<li>/tenants/{}/starts
+</ul>
 
 
 <h1>Misc.</h1>
