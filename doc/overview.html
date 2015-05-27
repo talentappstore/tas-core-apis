@@ -902,6 +902,19 @@ and so has to verify the route every time.
 </p>
 
 
+<h2>Responding to reboots</h2>
+
+<p>To respond correctly to reboots, your app's control server should produce the core out APIs:
+<ul>
+<li>/tenants/{}/preHalts
+<li>/tenants/{}/halts
+<li>/tenants/{}/preStarts
+<li>/tenants/{}/starts
+</ul>
+</p>
+
+<p>See section on reboots for more information.</p>
+
 <h2>Promote your app</h2>
 
 <p>Request that your app be listed in the TAS directory.
@@ -961,8 +974,9 @@ changes are made to the tenant.
 TAS then consumes these APIs during the reboot:
 
 <ul>
+<li>/tenants/{}/preHalts
 <li>/tenants/{}/halts
-<li>/tenants/{}/inits
+<li>/tenants/{}/preStarts
 <li>/tenants/{}/starts
 </ul>
 
@@ -980,17 +994,17 @@ TAS then consumes these APIs during the reboot:
 <tr>
 <td>click "install" or "uninstall" on an app</td>
 <td>POST /tenants/{}/patchSets</td>
-<td><a href='../examples/patchSetStatus-juggleApps.json'>example events</a></td>
+<td><a href='../examples/rebootStatus-juggleApps.json'>example events</a></td>
 </tr>
 <tr>
 <td>click the "reboot" button in the storefront</td>
 <td>POST /tenants/{}/reboots</td>
-<td><a href='../examples/patchSetStatus-reboot.json'>example events</a></td>
+<td><a href='../examples/rebootStatus-simpleReboot.json'>example events</a></td>
 </tr>
 <tr>
 <td>click the "flush OAuth tokens" button in the storefront</td>
 <td>POST /tenants/{}/OAuthFlushes</td>
-<td><a href='../examples/patchSetStatus-reboot.json'>example events</a></td>
+<td><a href='../examples/rebootStatus-bumpSecurityGeneration.json'>example events</a></td>
 </tr>
 </tbody>
 </table>
@@ -1014,16 +1028,22 @@ to make a call to <a href='../generated/coreIn.raml.html#_tenants__tenant__reboo
 </ul>  
 </p>
 
-<h2>How the storefront launches a reboot</h2>
+<h2>Order of events during reboot</h2>
 
 <p>During a reboot, the order of events is:
 
 <ol>
+<li>Halt all apps
+<ol>
+<li>TAS sets the tenant's status to "preHalting"
+<li>TAS calls /tenants/{}/preHalts on each installed app
+<li>When the last app returns 200, TAS sets the tenant's status to "preHalted"
 <li>TAS sets the tenant's status to "halting"
 <li>TAS calls /tenants/{}/halts on each installed app
 <li>When the last app returns 200, TAS sets the tenant's status to "halted"
+</ol>
 <li>TAS increments tenant.incarnation
-<li>while apps are halted, TAS performs the actual operation, i.e.:
+<li>TAS performs the actual operation, i.e.:
 <ul>
 <li>do nothing (if this reboot is in response to a call to POST /tenants/{}/reboots)
 <li>apply the patch set, e.g. to install an app (if this reboot is in response to a call to POST /tenants/{}/patchSets)
@@ -1038,23 +1058,16 @@ to make a call to <a href='../generated/coreIn.raml.html#_tenants__tenant__reboo
 TAS finds that the patch set is making changes to the tenant's idps or assertion hooks)
 </ul>
 </ul>
-<li>TAS sets the tenant's status to "initing"
+<li>Start all apps
+<ol>
+<li>TAS sets the tenant's status to "preStarting"
 <li>TAS calls /tenants/{}/inits on each installed app
-<li>When the last app returns 200, TAS sets the tenant's status to "starting"
+<li>When the last app returns 200, TAS sets the tenant's status to "preStarted"
+<li>TAS sets the tenant's status to "starting"
 <li>TAS calls /tenants/{}/starts on each installed app
-<li>When the last app returns 200, TAS sets the tenant's status to "running"
+<li>When the last app returns 200, TAS sets the tenant's status to "starting"
 </ol>
-
-
-<h2>Responding to reboots</h2>
-
-<p>To respond correctly to reboots, your app's control server should produce the core out APIs:
-
-<h4>/tenants/{}/halts</h4>
-
-<li>/tenants/{}/inits
-<li>/tenants/{}/starts
-</ul>
+</ol>
 
 
 <h1>Misc.</h1>

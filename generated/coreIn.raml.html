@@ -156,14 +156,17 @@
         },
         "state": {
             "enum": [
+                "preHalting",
+                "preHalted",
                 "halting",
                 "halted",
-                "initing",
+                "preStarting",
+                "preStarted",
                 "starting",
-                "running",
+                "started",
                 "broken"
             ],
-            "description": "The tenant&#x27;s current status. Your app should not make core API calls other than GET /tenants/{tenant} unless the status is &#x27;initing&#x27;, &#x27;running&#x27; or &#x27;starting&#x27;."
+            "description": "The tenant&#x27;s current status."
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
@@ -294,7 +297,7 @@
             "description": "elapsed time of the operation in milliseconds",
             "type": "integer"
         },
-        "patchSetApplyStart": {
+        "tenantEvent": {
             "type": "object",
             "additionalProperties": false,
             "required": [
@@ -303,54 +306,28 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "patchSetApplyStart"
+                        "patchSetApplyRebootStart",
+                        "bumpSecurityGenerationRebootStart",
+                        "simpleRebootStart",
+                        "tenantPreHaltStart",
+                        "tenantPreHaltComplete",
+                        "tenantHaltStart",
+                        "tenantHaltComplete",
+                        "appPatchesApplyStart",
+                        "appPatchesApplyComplete",
+                        "bumpSecurityGenerationComplete",
+                        "tenantPreStartStart",
+                        "tenantPreStartComplete",
+                        "tenantStartStart",
+                        "tenantStartComplete",
+                        "patchSetApplyRebootComplete",
+                        "bumpSecurityGenerationRebootComplete",
+                        "simpleRebootComplete"
                     ]
                 }
             }
         },
-        "bumpSecurityGenerationStart": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "bumpSecurityGenerationStart"
-                    ]
-                }
-            }
-        },
-        "simpleRebootStart": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "simpleRebootStart"
-                    ]
-                }
-            }
-        },
-        "tenantDownStart": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "tenantDownStart"
-                    ]
-                }
-            }
-        },
-        "appDownRequest": {
+        "appEvent": {
             "type": "object",
             "additionalProperties": false,
             "required": [
@@ -360,92 +337,16 @@
             "properties": {
                 "kind": {
                     "enum": [
-                        "appDownStart"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "appDownComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appDownComplete"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "tenantDownComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "elapsedTime"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "tenantDownComplete"
-                    ]
-                },
-                "elapsedTime": {
-                    "$ref": "#/definitions/elapsedTime"
-                }
-            }
-        },
-        "appPatchesApplyStart": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appPatchesApplyStart"
-                    ]
-                }
-            }
-        },
-        "appInstallComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appInstallComplete"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "appEditComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
+                        "appPreHaltStart",
+                        "appPreHaltComplete",
+                        "appHaltStart",
+                        "appHaltComplete",
+                        "appPreStartStart",
+                        "appPreStartComplete",
+                        "appStartStart",
+                        "appStartComplete",
+                        "appInstallComplete",
+                        "appUninstallComplete",
                         "appEditComplete"
                     ]
                 },
@@ -454,193 +355,19 @@
                 }
             }
         },
-        "appUnInstallComplete": {
+        "tenantStatusEvent": {
             "type": "object",
             "additionalProperties": false,
             "required": [
                 "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appUnInstallComplete"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "appPatchesApplyComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "elapsedTime"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appPatchesApplyComplete"
-                    ]
-                },
-                "elapsedTime": {
-                    "$ref": "#/definitions/elapsedTime"
-                }
-            }
-        },
-        "tenantBumpSecurityGenerationComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "tenantBumpSecurityGenerationComplete"
-                    ]
-                }
-            }
-        },
-        "tenantUpStart": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "tenantUpStart"
-                    ]
-                }
-            }
-        },
-        "appUpStart": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appUpStart"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "appUpComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appUpComplete"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "tenantUpComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "elapsedTime"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "tenantUpComplete"
-                    ]
-                },
-                "elapsedTime": {
-                    "$ref": "#/definitions/elapsedTime"
-                }
-            }
-        },
-        "patchSetApplyComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "elapsedTime",
                 "incarnation",
                 "securityGeneration"
             ],
             "properties": {
                 "kind": {
                     "enum": [
-                        "patchSetApplyComplete"
+                        "tenantStatusEvent"
                     ]
-                },
-                "elapsedTime": {
-                    "$ref": "#/definitions/elapsedTime"
-                },
-                "incarnation": {
-                    "type": "integer"
-                },
-                "securityGeneration": {
-                    "type": "integer"
-                }
-            }
-        },
-        "bumpSecurityGenerationComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "elapsedTime",
-                "incarnation",
-                "securityGeneration"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "bumpSecurityGenerationComplete"
-                    ]
-                },
-                "elapsedTime": {
-                    "$ref": "#/definitions/elapsedTime"
-                },
-                "incarnation": {
-                    "type": "integer"
-                },
-                "securityGeneration": {
-                    "type": "integer"
-                }
-            }
-        },
-        "simpleRebootComplete": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "elapsedTime",
-                "incarnation",
-                "securityGeneration"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "simpleRebootComplete"
-                    ]
-                },
-                "elapsedTime": {
-                    "$ref": "#/definitions/elapsedTime"
                 },
                 "incarnation": {
                     "type": "integer"
@@ -656,97 +383,52 @@
                 "seq": {
                     "type": "integer"
                 },
+                "time": {
+                    "type": "string",
+                    "format": "date-time"
+                },
                 "event": {
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/patchSetApplyStart"
+                            "$ref": "#/definitions/tenantEvent"
                         },
                         {
-                            "$ref": "#/definitions/bumpSecurityGenerationStart"
+                            "$ref": "#/definitions/appEvent"
                         },
                         {
-                            "$ref": "#/definitions/simpleRebootStart"
-                        },
-                        {
-                            "$ref": "#/definitions/tenantDownStart"
-                        },
-                        {
-                            "$ref": "#/definitions/appDownRequest"
-                        },
-                        {
-                            "$ref": "#/definitions/appDownComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/tenantDownComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/appPatchesApplyStart"
-                        },
-                        {
-                            "$ref": "#/definitions/appInstallComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/appEditComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/appUnInstallComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/appPatchesApplyComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/tenantBumpSecurityGenerationComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/tenantUpStart"
-                        },
-                        {
-                            "$ref": "#/definitions/appUpStart"
-                        },
-                        {
-                            "$ref": "#/definitions/appUpComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/tenantUpComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/patchSetApplyComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/bumpSecurityGenerationComplete"
-                        },
-                        {
-                            "$ref": "#/definitions/simpleRebootComplete"
+                            "$ref": "#/definitions/tenantStatusEvent"
                         }
                     ]
                 }
-            }
+            },
+            "required": [
+                "seq",
+                "time",
+                "event"
+            ],
+            "additionalProperties": false
         }
     },
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "kind",
-        "applyStatus"
+        "rebootStatus"
     ],
     "properties": {
-        "kind": {
-            "enum": [
-                "patchSetStatus"
-            ]
-        },
-        "applyStatus": {
+        "rebootStatus": {
             "enum": [
                 "notLaunched",
                 "inProcess",
-                "complete",
-                "broken"
+                "complete"
             ]
         },
         "latestEvent": {
             "type": "integer"
         },
-       "continuePage": { "type": "string", "description": "the URI that the browser should redirect the user to once this patch set is complete, possibly at a new storefront if the patch set swapped out the current one" },
+        "continuePage": {
+            "type": "string",
+            "description": "the URI that the browser should redirect the user to once this reboot is complete, possibly at a new storefront if a patch set apply swapped out the current one"
+        },
         "events": {
             "type": "array",
             "items": {
@@ -755,40 +437,62 @@
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-  "kind": "patchSetStatus",
-  "applyStatus": "complete",
-  "latestEvent": 29,
+  "rebootStatus": "complete",
+  "latestEvent": 52,
   "events": [
-    {"seq": 0, "event": {"kind": "patchSetApplyStart"}},
-    {"seq": 1, "event": { "kind": "tenantDownStart"}},
-    {"seq": 2, "event": { "kind": "appDownStart", "app": "tas-zoom"}},
-    {"seq": 3, "event": { "kind": "appDownStart", "app": "hrlabs-fratly"}},
-    {"seq": 4, "event": { "kind": "appDownComplete", "app": "tas-zoom"}},
-    {"seq": 5, "event": { "kind": "appDownStart", "app": "tas-dummyjobs"}},
-    {"seq": 6, "event": { "kind": "appDownStart", "app": "tas-uberapply"}},
-    {"seq": 7, "event": { "kind": "appDownComplete", "app": "tas-uberapply"}},
-    {"seq": 8, "event": { "kind": "appDownComplete", "app": "hrlabs-fratly"}},
-    {"seq": 9, "event": { "kind": "appDownComplete", "app": "tas-dummyjobs"}},
-    {"seq": 10, "event": { "kind": "tenantDownComplete", "elapsedTime": 2033}},
-    {"seq": 11, "event": { "kind": "appPatchesApplyStart"}},
-    {"seq": 12, "event": { "kind": "appInstallComplete", "app": "tas-tracker"}},
-    {"seq": 13, "event": { "kind": "appInstallComplete", "app": "supersoft-refly"}},
-    {"seq": 14, "event": { "kind": "appEditComplete", "app": "tas-zoom"}},
-    {"seq": 15, "event": { "kind": "appUnInstallComplete", "app": "tas-dummyjobs"}},
-    {"seq": 16, "event": { "kind": "appPatchesApplyComplete", "elapsedTime": 3122}},
-    {"seq": 17, "event": { "kind": "tenantUpStart"}},
-    {"seq": 18, "event": { "kind": "appUpStart", "app": "tas-zoom"}},
-    {"seq": 19, "event": { "kind": "appUpStart", "app": "hrlabs-fratly"}},
-    {"seq": 20, "event": { "kind": "appUpComplete", "app": "tas-zoom"}},
-    {"seq": 21, "event": { "kind": "appUpComplete", "app": "hrlabs-fratly"}},
-    {"seq": 22, "event": { "kind": "appUpStart", "app": "tas-uberapply"}},
-    {"seq": 23, "event": { "kind": "appUpComplete", "app": "tas-uberapply"}},
-    {"seq": 24, "event": { "kind": "appUpStart", "app": "supersoft-refly"}},
-    {"seq": 25, "event": { "kind": "appUpComplete", "app": "supersoft-refly"}},
-    {"seq": 26, "event": { "kind": "appUpStart", "app": "tas-tracker"}},
-    {"seq": 27, "event": { "kind": "appUpComplete", "app": "tas-tracker"}},
-    {"seq": 28, "event": { "kind": "tenantUpComplete", "elapsedTime": 533}},
-    {"seq": 29, "event": { "kind": "patchSetApplyComplete", "elapsedTime": 9603, "incarnation": 146, "securityGeneration": 10 }}
+    {"seq": 0, "time": "2015-11-05T13:15:30Z", "event": {"kind": "patchSetApplyRebootStart"}},
+    {"seq": 1, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantPreHaltStart"}},
+    {"seq": 2, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltStart", "app": "tas-zoom"}},
+    {"seq": 3, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltStart", "app": "hrlabs-fratly"}},
+    {"seq": 4, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltComplete", "app": "tas-zoom"}},
+    {"seq": 5, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltStart", "app": "tas-dummyjobs"}},
+    {"seq": 6, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltStart", "app": "tas-uberapply"}},
+    {"seq": 7, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltComplete", "app": "hrlabs-fratly"}},
+    {"seq": 8, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltComplete", "app": "tas-dummyjobs"}},
+    {"seq": 9, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreHaltComplete", "app": "tas-uberapply"}},
+    {"seq": 10, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantPreHaltComplete"}},
+    {"seq": 11, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantHaltStart"}},
+    {"seq": 12, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltStart", "app": "tas-zoom"}},
+    {"seq": 13, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltStart", "app": "hrlabs-fratly"}},
+    {"seq": 14, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltComplete", "app": "tas-zoom"}},
+    {"seq": 15, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltStart", "app": "tas-dummyjobs"}},
+    {"seq": 16, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltStart", "app": "tas-uberapply"}},
+    {"seq": 17, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltComplete", "app": "hrlabs-fratly"}},
+    {"seq": 18, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltComplete", "app": "tas-dummyjobs"}},
+    {"seq": 19, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appHaltComplete", "app": "tas-uberapply"}},
+    {"seq": 20, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantHaltComplete"}},
+    {"seq": 21, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPatchesApplyStart"}},
+    {"seq": 22, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appInstallComplete", "app": "tas-tracker"}},
+    {"seq": 23, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appInstallComplete", "app": "supersoft-refly"}},
+    {"seq": 24, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appEditComplete", "app": "tas-zoom"}},
+    {"seq": 25, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appUninstallComplete", "app": "tas-dummyjobs"}},
+    {"seq": 26, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPatchesApplyComplete"}},
+    {"seq": 27, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantPreStartStart"}},
+    {"seq": 28, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartStart", "app": "tas-zoom"}},
+    {"seq": 29, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartStart", "app": "hrlabs-fratly"}},
+    {"seq": 30, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartComplete", "app": "tas-zoom"}},
+    {"seq": 31, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartComplete", "app": "hrlabs-fratly"}},
+    {"seq": 32, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartStart", "app": "tas-uberapply"}},
+    {"seq": 33, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartStart", "app": "tas-tracker"}},
+    {"seq": 34, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartComplete", "app": "tas-tracker"}},
+    {"seq": 35, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartStart", "app": "supersoft-refly"}},
+    {"seq": 36, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartComplete", "app": "tas-uberapply"}},
+    {"seq": 37, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appPreStartComplete", "app": "supersoft-refly"}},
+    {"seq": 38, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantPreStartComplete"}},
+    {"seq": 39, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantStartStart"}},
+    {"seq": 40, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartStart", "app": "tas-zoom"}},
+    {"seq": 41, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartStart", "app": "hrlabs-fratly"}},
+    {"seq": 42, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartStart", "app": "tas-uberapply"}},
+    {"seq": 43, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartStart", "app": "tas-tracker"}},
+    {"seq": 44, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartStart", "app": "supersoft-refly"}},
+    {"seq": 45, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartComplete", "app": "tas-zoom"}},
+    {"seq": 46, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartComplete", "app": "hrlabs-fratly"}},
+    {"seq": 47, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartComplete", "app": "tas-uberapply"}},
+    {"seq": 48, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartComplete", "app": "tas-tracker"}},
+    {"seq": 49, "time": "2015-11-05T13:15:30Z", "event": {"kind": "appStartComplete", "app": "supersoft-refly"}},
+    {"seq": 50, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantStartComplete"}},
+    {"seq": 51, "time": "2015-11-05T13:15:30Z", "event": {"kind": "patchSetApplyRebootComplete"}},
+    {"seq": 52, "time": "2015-11-05T13:15:30Z", "event": {"kind": "tenantStatusEvent", "incarnation": 146, "securityGeneration": 10 }}
   ]
 }
 </code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="_routes" class="panel-title">/routes</h3></div><div class="panel-body"><div class="top-resource-description"><p>Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app. Your app needs to first fetch a route in order to consume an API. The route will tell your app about the actual endpoint (where the producer&#39;s server sits on the internet). Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.) that the consumer is allowed to call.</p></div><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__routes__CT_"><span class="parent">/routes</span>/{CT}</a> <span class="methods"></span></h4></div><div id="panel__routes__CT_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Consuming tenant: the tenant with the app installed that is consuming the API</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__routes__CT___CAD_"><span class="parent">/routes/{CT}</span>/{CAD}</a> <span class="methods"></span></h4></div><div id="panel__routes__CT___CAD_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Consuming app developer: the developer who owns the app consuming the API</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__routes__CT___CAD___CA_"><span class="parent">/routes/{CT}/{CAD}</span>/{CA}</a> <span class="methods"></span></h4></div><div id="panel__routes__CT___CAD___CA_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Consuming app: the app consuming the API</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__routes__CT___CAD___CA___AD_"><span class="parent">/routes/{CT}/{CAD}/{CA}</span>/{AD}</a> <span class="methods"></span></h4></div><div id="panel__routes__CT___CAD___CA___AD_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>API developer: the developer who owns/defines the API being consumed</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__routes__CT___CAD___CA___AD___URI_"><span class="parent">/routes/{CT}/{CAD}/{CA}/{AD}</span>/{URI}</a> <span class="methods"></span></h4></div><div id="panel__routes__CT___CAD___CA___AD___URI_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>API URI Template: the URI template (as per <a href="https://tools.ietf.org/html/rfc6570">https://tools.ietf.org/html/rfc6570</a>) of the API being consumed</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__routes__CT___CAD___CA___AD___URI___SOT_"><span class="parent">/routes/{CT}/{CAD}/{CA}/{AD}/{URI}</span>/{SOT}</a> <span class="methods"><a href="#_routes__CT___CAD___CA___AD___URI___SOT__get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel__routes__CT___CAD___CA___AD___URI___SOT_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false</p></div><div class="list-group"><div onclick="window.location.href = '#_routes__CT___CAD___CA___AD___URI___SOT__get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Fetch the route(s) from the consumer to each producer of a specific API.</p><p>An app may only make this call if:</p><ul><li>its developer and app name match {CAD} and {CA}</li><li>it is installed at {CT}</li><li>it has declared that it consumes the given API, in the given way (SoT or not).</li></ul></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_routes__CT___CAD___CA___AD___URI___SOT__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/routes/{CT}/{CAD}/{CA}/{AD}/{URI}</span>/{SOT}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Fetch the route(s) from the consumer to each producer of a specific API.</p><p>An app may only make this call if:</p><ul><li>its developer and app name match {CAD} and {CA}</li><li>it is installed at {CT}</li><li>it has declared that it consumes the given API, in the given way (SoT or not).</li></ul></div><ul class="nav nav-tabs"><li class="active"><a href="#_routes__CT___CAD___CA___AD___URI___SOT__get_request" data-toggle="tab">Request</a></li><li><a href="#_routes__CT___CAD___CA___AD___URI___SOT__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_routes__CT___CAD___CA___AD___URI___SOT__get_request"><h3>URI Parameters</h3><ul><li><strong>CT</strong>: <em>required (string )</em></li><li><strong>CAD</strong>: <em>required (string )</em></li><li><strong>CA</strong>: <em>required (string )</em></li><li><strong>AD</strong>: <em>required (string )</em></li><li><strong>URI</strong>: <em>required (string )</em></li><li><strong>SOT</strong>: <em>required (string )</em></li></ul></div><div class="tab-pane" id="_routes__CT___CAD___CA___AD___URI___SOT__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
