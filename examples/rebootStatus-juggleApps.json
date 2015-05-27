@@ -1,5 +1,5 @@
 {
-  "rebootStatus": "complete",
+  "status": "complete",
   "latestEvent": 52,
   "events": [
     {"seq": 0, "time": "2015-11-05T13:15:30Z", "event": {"kind": "patchSetApplyRebootStart"}},

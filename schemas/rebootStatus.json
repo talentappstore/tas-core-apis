@@ -123,10 +123,10 @@
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "rebootStatus"
+        "status"
     ],
     "properties": {
-        "rebootStatus": {
+        "status": {
             "enum": [
                 "notLaunched",
                 "inProcess",

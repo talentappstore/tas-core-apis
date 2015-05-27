@@ -412,10 +412,10 @@
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "rebootStatus"
+        "status"
     ],
     "properties": {
-        "rebootStatus": {
+        "status": {
             "enum": [
                 "notLaunched",
                 "inProcess",
@@ -437,7 +437,7 @@
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-  "rebootStatus": "complete",
+  "status": "complete",
   "latestEvent": 52,
   "events": [
     {"seq": 0, "time": "2015-11-05T13:15:30Z", "event": {"kind": "patchSetApplyRebootStart"}},
