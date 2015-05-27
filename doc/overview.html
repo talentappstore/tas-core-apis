@@ -1171,12 +1171,12 @@ These attributes must be of type boolean, with a value of true.
 
 <h3>Injecting personal detail attributes - mapping document</h3>
 
-<p>Tenants can set up their <b>mapping document</b> to convert arbitrarily named incoming SAML attributes to their well-known personal detail
+<p>Tenants can set up per-idp <b>mapping documents</b> to convert arbitrarily named incoming SAML attributes to their well-known personal detail
 equivalents. This is useful when the tenant has limited control over the naming of their SAML attributes.
 </p>
 
 <p>For example, perhaps acme's idp always attaches first name in an attribute named "acme.first.name", and this can't be easily changed.
-To work around this, acme could set up their mapping document like this:
+To work around this, acme could set up a mapping document for that idp like this:
 
 <div class='codeBlock'>
 <div class='clientInclude' data-href='../examples/attributeMappings-simple.json'></div>
