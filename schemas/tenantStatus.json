@@ -13,15 +13,15 @@
         },
         "state": {
             "enum": [
-                "preHalting",
-                "preHalted",
-                "halting",
-                "halted",
-                "preStarting",
-                "preStarted",
-                "starting",
-                "started",
-                "broken"
+                "PREHALTING",
+                "PREHALTED",
+                "HALTING",
+                "HALTED",
+                "PRESTARTING",
+                "PRESTARTED",
+                "STARTING",
+                "STARTED",
+                "BROKEN"
             ],
             "description": "The tenant's current status."
         }
