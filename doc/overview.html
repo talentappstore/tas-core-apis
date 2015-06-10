@@ -177,22 +177,32 @@ not a bottleneck or a point of failure.
 </ul>
 
 
-<h1>Concepts</h1>
+<h1>Concepts and parties</h1>
+
+<h2>Developers</h2>
+
+<p>Developers are organizations who:
+<ul>
+<li>create apps
+<li>define APIs
+</ul>
+
+<p>Developers register at <a href='https://developer.talentappstore.com'>developer.talentappstore.com</a>.
+</p>
+
 
 <h2>Tenants</h2>
 
 <p>Tenants are organizations who use Talent App Store to build up their HR technology stack.</p>
 
-<p>Tenants register at https://www.talentappstore.com.</p>
+<p>Tenants register at <a href='https://www.talentappstore.com'>www.talentappstore.com</a>.
+</p>
 
-<p>Once registered, tenants can install apps, and click through to use their web interfaces.</p>
-
-
-<h2>Developers</h2>
-
-<p>Developers are organizations who create apps for tenants to purchase</p>
-
-<p>Developers register at https://developers.tas.com
+<p>Once registered, a tenant can:
+<ul>
+<li>install apps into their tenant
+<li>configure idps (identity providers) to define who can access their installed apps
+</ul>
 </p>
 
 
@@ -203,6 +213,38 @@ other apps to make up the tenant's overall HR technology stack.
 </p>
 
 <p>Apps make REST API calls to each other on behalf of their tenant.
+</p>
+
+
+<h2>Principal types</h2>
+
+<p>A principal type is a class of (typically) person who can:
+<ul>
+<li>log into a TAS SSO-protected app
+<li>have API calls made on their behalf
+</ul>
+</p>
+
+<p>For example:
+<ul>
+<li>a job board app might be SSO protected by <b>&lt;tas&gt; candidate</b>
+<li>a talent pool search app might be SSO protected by <b>&lt;tas&gt; user</b>
+<li>an app for sourcing candidates through recruitment agencies might be SSO protected by <b>&lt;tas&gt; agency</b>
+<li>an app for applying for jobs might make an API call like GET /applications on behalf of a specific <b>&lt;tas&gt; candidate</b>  
+</ul> 
+</p>
+
+<p>The principal type acts as a boundry between the app and the tenant. Apps deal in principal types, tenants
+map those principal types to their own, specific idps.
+ 
+<p>For example, the tenant acme might have set mapped the principal type of candidate to these idps:
+<ul>
+<li>Corporate idp, e.g. Active Directory. Everyone like this gets the internal role.
+<li>Backdoor idp - these people log in at a dialogue presented by TAS,
+but the TAS delegates the password checking to some database of identities (e.g. the users table of an ATS)  
+<li>RealMe. Since acme is an NZ public sector organization, RealMe is allowed. Marked as internal if they have an *@acme.com email.
+<li>LinkedIn. Marked as internal if they have an *@acme.com email. Marked as alumni if they are in the LinkedIn group 'Official ACME alumni group'
+</ul>
 </p>
 
 
@@ -307,35 +349,6 @@ always takes place directly between the consuming app and the producing app. Thi
 bottleneck or point of failure into the ecosystem.
 </p>
 
-
-<h2>Principal types and roles</h2>
-
-<p>A principal type is a class of (typically) person that can log into a TAS SSO-protected app.
-</p>
-
-<p>Some example principal types:
-<ul>
-<li>a job board app might be protected by <b>&lt;tas&gt; candidate</b>
-<li>a talent pool search app might be protected by <b>&lt;tas&gt; user</b>
-<li>an app for sourcing candidates through recruitment agencies might be protected by <b>&lt;tas&gt; agency</b>
-</ul> 
-</p>
-
-<p>Currently in TAS an app must be mapped to zero (i.e., non-SSO) or one principal types.
-</p>
-
-<p>The principal type acts as a boundry between the app and the tenant. Apps deal in principal types, tenants
-map those principal types to their own, specific idps.
- 
-<p>For example, the tenant acme might have set mapped the principal type of candidate to these idps:
-<ul>
-<li>Corporate idp, e.g. Active Directory. Everyone like this gets the internal role.
-<li>Backdoor idp - these people log in at a dialogue presented by TAS,
-but the TAS delegates the password checking to some database of identities (e.g. the users table of an ATS)  
-<li>RealMe. Since acme is an NZ public sector organization, RealMe is allowed. Marked as internal if they have an *@acme.com email.
-<li>LinkedIn. Marked as internal if they have an *@acme.com email. Marked as alumni if they are in the LinkedIn group 'Official ACME alumni group'
-</ul>
-</p>
 
 
 <h1>Building apps</h1>
@@ -442,11 +455,17 @@ an OAuth token and then pass it in the Authorization header of the API call.
 and also Google's <a href='https://developers.google.com/accounts/docs/OAuth2WebServer'>OAuth documentation</a> for additional context.
 </p>
 
+<img src='images/legend.jpg' style="width: 40%; height: 40%"/>​
+<br />
+
 
 <h4>Anonymous token</h4>
 
 <p>Anonymous OAuth tokens are used to make API calls that are not specific to any particular principal (user).
 </p>
+
+<img src='images/anonymous.jpg' style="width: 40%; height: 40%"/>​
+<br />
 
 <p>Any app that consumes an API can use the <a href='https://tools.ietf.org/html/rfc6749#section-4.4'>OAuth client credentials grant type</a> to
 create an anonymous OAuth token.
@@ -502,19 +521,22 @@ identifies the client (i.e. the consuming app).
 on the server who the user was who created a job, etc.).
 </p>
 
-<h4>Personal token</h4>
+<h4>On behalf token</h4>
 
-<p>Another type of OAuth token is a personal (principal-aware) token. While its easy for apps to create anonymous
+<p>Another type of OAuth token is an on behalf (principal-aware) token. While its easy for apps to create anonymous
 access tokens, some APIs behave differently or will only work with a personal token, e.g. an app that serves
 information about a specific user.
 </p>
 
+<img src='images/onbehalf.jpg' style="width: 40%; height: 40%"/>​
+<br />
+
 <p>Any app that consumes an API and is protected via TAS SSO can use the
 <a href='https://tools.ietf.org/html/draft-ietf-oauth-saml2-bearer-23#section-2.1'>OAuth SAML bearer assertion</a>
-grant type, along with the original SAML assertion, to create a principal-aware OAuth token.
+grant type, along with the original SAML assertion, to create an on behalf OAuth token.
 </p>
 
-<p>In this example, the ats app could create a principal-aware OAuth token like this:
+<p>In this example, the ats app could create an on behalf OAuth token like this:
 
 <div class='codeBlock'>
 POST /oauth2/v1/token HTTP/1.1
@@ -548,6 +570,9 @@ Response:
 
 <p>Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
 </p>
+
+<img src='images/onbehalfrefresh.jpg' style="width: 40%; height: 40%"/>​
+<br />
 
 <p>Any app that consumes an API and is protected via TAS SSO and is marked as "offline capable" (TODO:
 exact name) can use the <a href='https://tools.ietf.org/html/draft-ietf-oauth-saml2-bearer-23#section-2.1'>OAuth SAML bearer assertion</a>
@@ -611,6 +636,9 @@ your app can simply request a new anonymous OAuth token as soon as the existing 
 <p>Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
 </p>
 
+<img src='images/refresh.jpg' style="width: 40%; height: 40%"/>​
+<br />
+
 <p>Any app that has obtained both an access token and a refresh token (via a prior call to the
 token endpoint with scope of "offline") can <a href='https://tools.ietf.org/html/rfc6749#section-6'>use the refresh token</a>
 to create a new access token once the original access token expires.
@@ -645,6 +673,9 @@ Response:
 
 <p>Some apps that are API producers in turn consume other APIs, i.e. they are an intermediate link in a chain of API calls.
 </p>
+
+<img src='images/inherited.jpg' style="width: 40%; height: 40%"/>​
+<br />
 
 <p>Any app that is an API producer can use the grant type "urn:talentappstore.com:oauth2:tas-inherited"
 with the parameters parent_token and scope to generate a new access token.
