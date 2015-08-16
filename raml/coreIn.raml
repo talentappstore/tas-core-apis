@@ -11,8 +11,8 @@ version: v1
     /status:
       get:
         description: |
-          Get the status of the tenant, including the current state and security generation. Normally apps would keep use this information
-          when halted or started to determine whether to flush cached OAuth tokens and routes.
+          Get the status of the tenant, including the current state and security generation. Normally apps would use this information
+          when restarting to determine whether to flush cached OAuth tokens and routes.
         responses:
           200:
             body:
