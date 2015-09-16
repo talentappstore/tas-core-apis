@@ -8,6 +8,15 @@ version: v1
   description: |
     A *tenant* is a customer within the multi-tenanted environment of Talent App Store.
   /{tenant}:
+    get:
+      description: |
+        Get details of the tenant
+      responses:
+        200:
+          body:
+            application/json:
+              schema: !include ../schemas/tenant.json
+              example: !include ../examples/tenant-simple.json
     /status:
       get:
         description: |

@@ -34,16 +34,16 @@
                             "description": "allow patching any number attribute"
                         },
                         {
-                            "$ref": "./tenant.json"
+                            "$ref": "./tenantExtended.json"
                         },
                         {
-                            "$ref": "./tenant.json#/definitions/install"
+                            "$ref": "./tenantExtended.json#/definitions/install"
                         },
                         {
-                            "$ref": "./tenant.json#/definitions/installs"
+                            "$ref": "./tenantExtended.json#/definitions/installs"
                         },
                         {
-                            "$ref": "./tenant.json#/definitions/servers"
+                            "$ref": "./tenantExtended.json#/definitions/servers"
                         }
                         
                     ]

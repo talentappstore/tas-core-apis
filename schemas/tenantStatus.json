@@ -24,14 +24,7 @@
                 "BROKEN"
             ],
             "description": "The tenant's current status."
-        },
-        "type": {
-            "enum": [
-                "PRODUCTION",
-                "SANDBOX"
-            ],
-            "description": "The type of tenant, i.e. sandbox or not. Apps behave differently when installed in a sandbox."
         }
     },
-    "required": [ "incarnation", "securityGeneration", "type"]
+    "required": [ "incarnation", "securityGeneration"]
 }

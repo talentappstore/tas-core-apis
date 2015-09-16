@@ -17,7 +17,11 @@ version: v1
         The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but
         should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
           
-        See [Reboots](../doc/overview.html#Reboots) for more details. 
+        See [Reboots](../doc/overview.html#Reboots) for more details.
+      body:
+        application/json:
+          schema: !include ../schemas/tenant.json
+          example: !include ../examples/tenant-simple.json
     delete:
       description: |
         Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on your app). Your app can
