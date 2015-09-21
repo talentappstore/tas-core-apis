@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "shortCode": {
+            "type": "string",
+            "description": "a short, lower case identifier for the app, e.g. jobboard"
+        },
+        "developer": {
+            "type": "string",
+            "description": "the shortCode for the app's developer"
+        }
+    },
+    "required": ["shortCode","developer"]
+}

@@ -4,6 +4,20 @@ title: TAS core incoming (app -> TAS)
 baseUri: http://talentappstore.com/{version}
 version: v1
 
+/apps:
+  description: An *app* is a microservice that can be installed by a tenant
+  /{app}:
+    get:
+      description: |
+        Get details of the app. Can only be called by the app itself. This useful when some piece of software (like a proxy)
+        is acting on behalf of the app, but has only been given its shortCode and secret key.
+      responses:
+        200:
+          body:
+            application/json:
+              schema: !include ../schemas/app.json
+              example: !include ../examples/app-simple.json
+     
 /tenants:  
   description: |
     A *tenant* is a customer within the multi-tenanted environment of Talent App Store.
