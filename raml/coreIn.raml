@@ -244,15 +244,15 @@ version: v1
       /{CA}:
         description: |
           Consuming app: the app consuming the API
-        /{AD}:
+        /{SOT}:
           description: |
-            API developer: the developer who owns/defines the API being consumed
-          /{URI}:
+            Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
+          /{AD}:
             description: |
-              API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
-            /{SOT}:
+              API developer: the developer who owns/defines the API being consumed
+            /{URI}:
               description: |
-                Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
+                API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
               get:
                 description: | 
                   Fetch the route(s) from the consumer to each producer of a specific API.
