@@ -238,66 +238,54 @@ version: v1
   /{CT}:
     description: |
       Consuming tenant: the tenant with the app installed that is consuming the API
-    /{CAD}:
+    /{CA}:
       description: |
-        Consuming app developer: the developer who owns the app consuming the API
-      /{CA}:
+        Consuming app: the app consuming the API
+      /{SOT}:
         description: |
-          Consuming app: the app consuming the API
-        /{SOT}:
+          Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
+        /{URI}:
           description: |
-            Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
-          /{AD}:
+            API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
+          get:
+            description: | 
+              Fetch the route(s) from the consumer to each producer of a specific API.
+                  
+              An app may only make this call if:
+              - its developer and app name match {CAD} and {CA}
+              - it is installed at {CT}
+              - it has declared that it consumes the given API, in the given way (SoT or not).
+            responses:
+              200:
+                body:
+                  application/json:
+                    schema: !include ../schemas/routes.json
+                    example: !include ../examples/routes-simple.json
+        /{PT}:
+          description: |
+            Producing tenant: the tenant with the app installed that is producing the API
+          /{PA}:
             description: |
-              API developer: the developer who owns/defines the API being consumed
+              Producing app: the app producing the API
             /{URI}:
               description: |
                 API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
               get:
                 description: | 
-                  Fetch the route(s) from the consumer to each producer of a specific API.
-                  
-                  An app may only make this call if:
-                  - its developer and app name match {CAD} and {CA}
-                  - it is installed at {CT}
-                  - it has declared that it consumes the given API, in the given way (SoT or not).
+                  Fetch the route, from the given consumer, to the producer (which must be your app)
+                  of a specific API. Since both consuming and producing apps are specified, there can only be
+                  one or zero routes in the response.
+
+                  An app may only make this call if
+                  - it is installed at {PT}
+                  - it has declared that it consumes the given API (whether as SoT, non-SoT or both)
+                      
                 responses:
                   200:
                     body:
                       application/json:
-                        schema: !include ../schemas/routes.json
-                        example: !include ../examples/routes-simple.json
-        /{PT}:
-          description: |
-            Producing tenant: the tenant with the app installed that is producing the API
-          /{PAD}:
-            description: |
-              Producing app developer: the developer who owns the app producing the API
-            /{PA}:
-              description: |
-                Producing app: the app producing the API
-              /{AD}:
-                description: |
-                  API developer: the developer who owns/defines the API being consumed
-                /{URI}:
-                  description: |
-                    API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
-                  get:
-                    description: | 
-                      Fetch the route, from the given consumer, to the producer (which must be your app)
-                      of a specific API. Since both consuming and producing apps are specified, there can only be
-                      one or zero routes in the response.
-
-                      An app may only make this call if
-                      - it is installed at {PT}
-                      - it has declared that it consumes the given API (whether as SoT, non-SoT or both)
-                      
-                    responses:
-                      200:
-                        body:
-                          application/json:
-                            schema: !include ../schemas/route.json
-                            example: !include ../examples/route-simple.json
+                        schema: !include ../schemas/route.json
+                        example: !include ../examples/route-simple.json
                             
 /token:
   description: |

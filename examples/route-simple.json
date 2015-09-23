@@ -1,7 +1,6 @@
 {
     "consumingAppInstall": {
         "tenant": "acme",
-        "appDeveloper": "tas",
         "app": "jobboardhub",
         "methods": [
             "GET",
@@ -21,7 +20,6 @@
     },
     "producingAppInstall": {
         "tenant": "seek",
-        "appDeveloper": "seek",
         "app": "basecats",
         "endPoint": "https://ref.seek.com:2109/api/v3.2",
         "securityGeneration": 301

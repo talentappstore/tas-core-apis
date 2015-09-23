@@ -22,9 +22,6 @@
                 "tenant": {
                     "type": "string"
                 },
-                "appDeveloper": {
-                    "type": "string"
-                },
                 "app": {
                     "type": "string"
                 },
@@ -40,7 +37,6 @@
             },
             "required": [
                 "tenant",
-                "appDeveloper",
                 "app",
                 "securityGeneration"
             ],
