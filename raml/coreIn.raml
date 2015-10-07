@@ -4,6 +4,7 @@ title: TAS core incoming (app -> TAS)
 baseUri: http://talentappstore.com/{version}
 version: v1
 
+
 /apps:
   description: An *app* is a microservice that can be installed by a tenant
   /{app}:
@@ -17,6 +18,13 @@ version: v1
             application/json:
               schema: !include ../schemas/app.json
               example: !include ../examples/app-simple.json
+
+/ping:
+  get:
+    description: Always return http 200. Useful for testing app is working OK (has correct secret key etc.).
+    responses:
+      200:
+      403:
      
 /tenants:  
   description: |
