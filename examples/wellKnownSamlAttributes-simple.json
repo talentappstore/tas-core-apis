@@ -1,4 +1,6 @@
 {
+    "nameID": "frank@ibm.com",
+    "entityID": "some other SAML info",
     "tas.personal.givenName": "Fred",
     "tas.personal.familyName": "Bloggs",
     "tas.personal.email": "fredbloggs@gmail.com",

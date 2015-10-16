@@ -2,6 +2,12 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
+        "entityID": {
+            "type": "string"
+        },
+        "nameID": {
+            "type": "string"
+        },
         "tas.personal.givenName": {
             "type": "string"
         },
@@ -22,5 +28,7 @@
             }
         }
     },
-    "additionalProperties": false
+    "additionalProperties": false,
+    "required": [ "entityID", "nameID" ]
+    
 }
