@@ -20,7 +20,8 @@
     "tenantInstallsAppStatus": { "$ref": "../schemas/tenantInstallsAppStatus.json" },
     "tenant": { "$ref": "../schemas/tenant.json" },
     "tenantStatus": { "$ref": "../schemas/tenantStatus.json" },
-    "tokenJwt": { "$ref": "../schemas/tokenJwt.json" }
+    "tokenJwt": { "$ref": "../schemas/tokenJwt.json" },
+    "wellKnownSamlAttributes": { "$ref": "../schemas/wellKnownSamlAttributes.json" }
 
   }
 }
