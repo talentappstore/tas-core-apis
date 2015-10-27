@@ -19,6 +19,15 @@ version: v1
               schema: !include ../schemas/app.json
               example: !include ../examples/app-simple.json
 
+/OAuthKey:
+  get:
+    description: Get the public key needed to verify that OAuth tokens were correctly signed by TAS.
+    responses:
+      200:
+        body:
+          text/plain:
+            example: kuh9876guhgfyr76453dytrfUTYGuytfUrt
+
 /ping:
   get:
     description: Always return http 200. Useful for testing app is working OK (has correct secret key etc.).
