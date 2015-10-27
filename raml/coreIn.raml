@@ -249,45 +249,49 @@ version: v1
     /{CA}:
       description: |
         Consuming app: the app consuming the API
-      /{SOT}:
+      /{ADEV}:
         description: |
-          Consuming as Source of Truth: true if the app is consuming this as a source of truth API, otherwise false
+           Developer who defined the API
         /{URI}:
           description: |
             API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
-          get:
-            description: | 
-              Fetch the route(s) from the consumer to each producer of a specific API.
-                  
-              An app may only make this call if:
-              - its developer and app name match {CAD} and {CA}
-              - it is installed at {CT}
-              - it has declared that it consumes the given API, in the given way (SoT or not).
-            responses:
-              200:
-                body:
-                  application/json:
-                    schema: !include ../schemas/routes.json
-                    example: !include ../examples/routes-simple.json
-        /{PT}:
-          description: |
-            Producing tenant: the tenant with the app installed that is producing the API
-          /{PA}:
+          /{SOT}:
             description: |
-              Producing app: the app producing the API
-            /{URI}:
+              True if the consuming app is consuming this as SoT (source of truth), otherwise false
+            get:
+              description: | 
+                Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
+                  
+                The core will check that:
+                - the app making the core API call is the consuming app (i.e., matches {CA})
+                - the consuming app is installed at {CT}
+                - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
+              responses:
+                200:
+                  body:
+                    application/json:
+                      schema: !include ../schemas/routes.json
+                      example: !include ../examples/routes-simple.json
+          /{PT}:
+            description: |
+              Producing tenant: the tenant with the app installed that is producing the API
+            /{PA}:
               description: |
-                API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
+                Producing app: the app producing the API
               get:
-                description: | 
-                  Fetch the route, from the given consumer, to the producer (which must be your app)
-                  of a specific API. Since both consuming and producing apps are specified, there can only be
-                  one or zero routes in the response.
+                description: |
 
-                  An app may only make this call if
-                  - it is installed at {PT}
-                  - it has declared that it consumes the given API (whether as SoT, non-SoT or both)
-                      
+                  Used by tenant API producers to verify that the consumer is allowed to consume this API.
+
+                  The core will check that:
+                  - the app making the core API call is the producing app (i.e., matches {PA})
+                  - the producing app is installed at {PT}
+                  - the consuming app has declared that it consumes the given API
+                  - the producing app has declared that it produces the given API
+                  - the consuming app has declared that it consumes the given API in the same way that the producer has declared that it produces it (SoT or not).
+                 
+                  Since both consuming and producing apps are specified, there can only be one or zero routes in the response.
+
                 responses:
                   200:
                     body:
@@ -297,7 +301,7 @@ version: v1
                             
 /token:
   description: |
-    Obtain an OAuth token that an app installed at a tenant (the consuming app) can use to consume tenant
+    Used by tenant API consumers to obtain an OAuth token, i.e. that an app installed at a tenant (the consuming app) can use to consume tenant
     APIs on a specific app installed at a tenant (the producing app). Currently, producing and consuming tenants are always the same.
     Tokens may further be personal, i.e. principal-aware, in which case they also identify the end user.
     
@@ -312,6 +316,8 @@ version: v1
     Before issuing a token, the core checks that:
     - the consuming app is installed at the consuming tenant
     - the producing app is installed at the producing tenant
+    - there exists at least one route between the consumer and producer, for any API (this prevents apps probing for
+    the presence of other apps)
         
     Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or
     (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
