@@ -1,19 +1,16 @@
 {
     "sub": {
-        "pd": "tas",
         "pt": "candidate",
         "entityID": "ibmidpuswest-10",
         "nameID": "frank@ibm.com"
     },
     "cons": {
         "ct": "acme",
-        "cad": "tas",
         "ca": "uberapply",
         "sgen": 219
     },
     "aud": {
         "pt": "acme",
-        "pad": "hrsoft",
         "pa": "ats",
         "sgen": 12
     },

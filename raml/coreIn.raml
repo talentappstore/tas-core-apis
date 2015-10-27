@@ -297,17 +297,22 @@ version: v1
                             
 /token:
   description: |
-    See [obtaining an OAuth token](../doc/overview.html#Obtain_an_OAuth_access_token) for more details.
+    Obtain an OAuth token that an app installed at a tenant (the consuming app) can use to consume tenant
+    APIs on a specific app installed at a tenant (the producing app). Currently, producing and consuming tenants are always the same.
+    Tokens may further be personal, i.e. principal-aware, in which case they also identify the end user.
     
-    TAS OAuth access tokens are self-contained security tokens in the form of a JWT (json web token; see http://jwt.io/).
-    
-    An access token authorizes a specific consuming app to consume APIs at a specific producing app. Tokens
-    may further be personal, i.e. principal-aware, in which case they also identify the end user and
-    include any roles that person has (copied down from the SAML assertion).
-    
+    The request body must be of content-type application/x-www-form-urlencoded, and contain values for grant_type
+    and optionally other parameters, encoded as per	https://tools.ietf.org/html/rfc6749#appendix-B.
+    See also https://tools.ietf.org/html/rfc7522#section-4.
+
+    OAuth access tokens in TAS are self-contained security tokens in the form of a JWT (json web token; see http://jwt.io/).
     Because access tokens are self-contained and signed, producers can rely on their content without any network
     traffic to the authorization server (i.e. TAS).
-    
+
+    Before issuing a token, the core checks that:
+    - the consuming app is installed at the consuming tenant
+    - the producing app is installed at the producing tenant
+        
     Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or
     (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
     assertion's SessionNotOnOrAfter value (if present), whichever is shorter.
@@ -316,37 +321,45 @@ version: v1
     
     For efficiency consumers should cache the tokens returned by this endpoint until (a) the tenant's security generation
     number changes, or (b) the cached token is too close to expiry to serve the needs of the consumer.
+
   post:
-    description: Get a new access token, and optionally a refresh token
-    queryParameters:
-      grant_type:
-        description: |
-           One of:
-           - client_credentials
-           - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
-           - urn:talentappstore.com:oauth2:tas-inherited
-           - refresh_token
-        type: string
-        example: refresh_token
-      scope:
-        description: |
-          A space separated set of values for the OAuth scope of this token, which may include: 
-          - A string starting with "/" that denotes a consuming app installed at a specific tenant
-          and a producing app installed at a specific tenant (MUST be present for all grant types other than refresh_token)
-          - the keyword "offline" (MAY be present when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer
-          and the principal type parameters are present)         
-        type: string
-        example: /acme/smartyhr/ats/greenjobsite/greenjobs/gjcore offline 
-      refresh_token:
-        description: |
-          A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is
-          refresh_token. MUST NOT be present for other grant types.
-        type: string
-      parent_token:
-        description: |
-          An access token passed in to the consuming app. MUST be present when grant_type is urn:talentappstore.com:oauth2:tas-inherited.
-          MUST NOT be present for other grant types.
-        type: string
+    description: |
+      Get a new access token, and optionally a refresh token.
+
+    body:
+      application/x-www-form-urlencoded:
+        formParameters:
+          grant_type:
+            description: |
+               One of:
+               - client_credentials
+               - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
+               - urn:talentappstore.com:oauth2:tas-inherited
+               - refresh_token
+            type: string
+            example: refresh_token
+          scope:
+            description: |
+              A space separated set of values for the OAuth scope of this token, which may include: 
+              - A string starting with "/" that denotes a consuming app installed at a specific tenant
+              and a producing app installed at a specific tenant (MUST be present for all grant types other than refresh_token)
+              - the keyword "offline" (MAY be present only when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer)
+            type: string
+            example: /acme/jobboard/acme/ats offline 
+          refresh_token:
+            description: |
+              A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is
+              refresh_token. MUST NOT be present for other grant types.
+            type: string
+          parent_token:
+            description: |
+              An access token passed in to the consuming app. MUST be present when grant_type is urn:talentappstore.com:oauth2:tas-inherited.
+              MUST NOT be present for other grant types.
+            type: string
+          assertion:
+            description: |
+              The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
+              MUST NOT be present for other grant types.
     responses:
       200:
         body:

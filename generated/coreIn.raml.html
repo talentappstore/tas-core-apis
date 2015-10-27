@@ -234,18 +234,13 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "description": "A set of SAML values that uniquely identify this person, consistently across TAS apps, and with any number of potential IdPs",
-    "additionaProperties": false,
+    "additionalProperties": false,
     "required": [
-        "pd",
         "pt",
         "nameID",
         "entityID"
     ],
     "properties": {
-        "pd": {
-            "type": "string",
-            "description": "developer who owns the principal type"
-        },
         "pt": {
             "type": "string",
             "description": "principal type"
@@ -258,7 +253,6 @@
         }
     }
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
-      "pd": "tas",
       "pt": "candidate",  
 	  "nameID": "frank@ibm.com",
 	  "entityID": "some other SAML info"
@@ -642,7 +636,7 @@
         "endPoint": "https://ref.seek.com:2109/api/v3.2",
         "securityGeneration": 301
     }
-}</code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="token" class="panel-title">/token</h3></div><div class="panel-body"><div class="top-resource-description"><p>See <a href="../doc/overview.html#Obtain_an_OAuth_access_token">obtaining an OAuth token</a> for more details.</p><p>TAS OAuth access tokens are self-contained security tokens in the form of a JWT (json web token; see <a href="http://jwt.io/">http://jwt.io/</a>).</p><p>An access token authorizes a specific consuming app to consume APIs at a specific producing app. Tokens may further be personal, i.e. principal-aware, in which case they also identify the end user and include any roles that person has (copied down from the SAML assertion).</p><p>Because access tokens are self-contained and signed, producers can rely on their content without any network traffic to the authorization server (i.e. TAS).</p><p>Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or (as per <a href="http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html">http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter.</p><p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.</p><p>For efficiency consumers should cache the tokens returned by this endpoint until (a) the tenant&#39;s security generation number changes, or (b) the cached token is too close to expiry to serve the needs of the consumer.</p></div><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_token"><span class="parent"></span>/token</a> <span class="methods"><a href="#token_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_token" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#token_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Get a new access token, and optionally a refresh token</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="token_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent"></span>/token</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get a new access token, and optionally a refresh token</p></div><ul class="nav nav-tabs"><li class="active"><a href="#token_post_request" data-toggle="tab">Request</a></li><li><a href="#token_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="token_post_request"><h3>Query Parameters</h3><ul><li><strong>grant_type</strong>: <em>(string)</em><p>One of:</p><ul><li>client_credentials</li><li>urn:ietf:params:oauth:client-assertion-type:saml2-bearer</li><li>urn:talentappstore.com:oauth2:tas-inherited</li><li>refresh_token</li></ul><p><strong>Example</strong>:</p><pre>refresh_token</pre></li><li><strong>scope</strong>: <em>(string)</em><p>A space separated set of values for the OAuth scope of this token, which may include:</p><ul><li>A string starting with "/" that denotes a consuming app installed at a specific tenant and a producing app installed at a specific tenant (MUST be present for all grant types other than refresh_token)</li><li>the keyword "offline" (MAY be present when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer and the principal type parameters are present)</li></ul><p><strong>Example</strong>:</p><pre>/acme/smartyhr/ats/greenjobsite/greenjobs/gjcore offline</pre></li><li><strong>refresh_token</strong>: <em>(string)</em><p>A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is refresh_token. MUST NOT be present for other grant types.</p></li><li><strong>parent_token</strong>: <em>(string)</em><p>An access token passed in to the consuming app. MUST be present when grant_type is urn:talentappstore.com:oauth2:tas-inherited. MUST NOT be present for other grant types.</p></li></ul></div><div class="tab-pane" id="token_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="token" class="panel-title">/token</h3></div><div class="panel-body"><div class="top-resource-description"><p>Obtain an OAuth token that an app installed at a tenant (the consuming app) can use to consume tenant APIs on a specific app installed at a tenant (the producing app). Currently, producing and consuming tenants are always the same. Tokens may further be personal, i.e. principal-aware, in which case they also identify the end user.</p><p>The request body must be of content-type application/x-www-form-urlencoded, and contain values for grant_type and optionally other parameters, encoded as per <a href="https://tools.ietf.org/html/rfc6749#appendix-B">https://tools.ietf.org/html/rfc6749#appendix-B</a>. See also <a href="https://tools.ietf.org/html/rfc7522#section-4">https://tools.ietf.org/html/rfc7522#section-4</a>.</p><p>OAuth access tokens in TAS are self-contained security tokens in the form of a JWT (json web token; see <a href="http://jwt.io/">http://jwt.io/</a>). Because access tokens are self-contained and signed, producers can rely on their content without any network traffic to the authorization server (i.e. TAS).</p><p>Before issuing a token, the core checks that:</p><ul><li>the consuming app is installed at the consuming tenant</li><li>the producing app is installed at the producing tenant</li></ul><p>Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or (as per <a href="http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html">http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html</a>) to the time specified in the SAML assertion&#39;s SessionNotOnOrAfter value (if present), whichever is shorter.</p><p>If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.</p><p>For efficiency consumers should cache the tokens returned by this endpoint until (a) the tenant&#39;s security generation number changes, or (b) the cached token is too close to expiry to serve the needs of the consumer.</p></div><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_token"><span class="parent"></span>/token</a> <span class="methods"><a href="#token_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_token" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#token_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Get a new access token, and optionally a refresh token.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="token_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent"></span>/token</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get a new access token, and optionally a refresh token.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#token_post_request" data-toggle="tab">Request</a></li><li><a href="#token_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="token_post_request"><h3>Body</h3><p><strong>Type: application/x-www-form-urlencoded</strong></p><strong>Form Parameters</strong><ul><li><strong>grant_type</strong>: <em>(string)</em><p>One of:</p><ul><li>client_credentials</li><li>urn:ietf:params:oauth:client-assertion-type:saml2-bearer</li><li>urn:talentappstore.com:oauth2:tas-inherited</li><li>refresh_token</li></ul><p><strong>Example</strong>:</p><pre>refresh_token</pre></li><li><strong>scope</strong>: <em>(string)</em><p>A space separated set of values for the OAuth scope of this token, which may include:</p><ul><li>A string starting with "/" that denotes a consuming app installed at a specific tenant and a producing app installed at a specific tenant (MUST be present for all grant types other than refresh_token)</li><li>the keyword "offline" (MAY be present only when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer)</li></ul><p><strong>Example</strong>:</p><pre>/acme/jobboard/acme/ats offline</pre></li><li><strong>refresh_token</strong>: <em>(string)</em><p>A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is refresh_token. MUST NOT be present for other grant types.</p></li><li><strong>parent_token</strong>: <em>(string)</em><p>An access token passed in to the consuming app. MUST be present when grant_type is urn:talentappstore.com:oauth2:tas-inherited. MUST NOT be present for other grant types.</p></li><li><strong>assertion</strong>: <em>(string)</em><p>The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer. MUST NOT be present for other grant types.</p></li></ul></div><div class="tab-pane" id="token_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "additionalProperties": false,
@@ -659,10 +653,6 @@
                     "type": "string",
                     "description": "the tenant who has installed the app consuming the API"
                 },
-                "cad": {
-                    "type": "string",
-                    "description": "the developer of the app consuming the API"
-                },
                 "ca": {
                     "type": "string",
                     "description": "the app consuming the API"
@@ -674,7 +664,6 @@
             },
             "required": [
                 "ct",
-                "cad",
                 "ca",
                 "sgen"
             ]
@@ -687,10 +676,6 @@
                     "type": "string",
                     "description": "the tenant who has installed the app producing the API"
                 },
-                "pad": {
-                    "type": "string",
-                    "description": "the developer of the app producing the API"
-                },
                 "pa": {
                     "type": "string",
                     "description": "the app producing the API"
@@ -702,7 +687,6 @@
             },
             "required": [
                 "pt",
-                "pad",
                 "pa",
                 "sgen"
             ]
@@ -725,20 +709,17 @@
 }
 </code></pre><p><strong>Example</strong>:</p><pre><code>{
     "sub": {
-        "pd": "tas",
         "pt": "candidate",
         "entityID": "ibmidpuswest-10",
         "nameID": "frank@ibm.com"
     },
     "cons": {
         "ct": "acme",
-        "cad": "tas",
         "ca": "uberapply",
         "sgen": 219
     },
     "aud": {
         "pt": "acme",
-        "pad": "hrsoft",
         "pa": "ats",
         "sgen": 12
     },

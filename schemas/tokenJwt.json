@@ -15,10 +15,6 @@
                     "type": "string",
                     "description": "the tenant who has installed the app consuming the API"
                 },
-                "cad": {
-                    "type": "string",
-                    "description": "the developer of the app consuming the API"
-                },
                 "ca": {
                     "type": "string",
                     "description": "the app consuming the API"
@@ -30,7 +26,6 @@
             },
             "required": [
                 "ct",
-                "cad",
                 "ca",
                 "sgen"
             ]
@@ -43,10 +38,6 @@
                     "type": "string",
                     "description": "the tenant who has installed the app producing the API"
                 },
-                "pad": {
-                    "type": "string",
-                    "description": "the developer of the app producing the API"
-                },
                 "pa": {
                     "type": "string",
                     "description": "the app producing the API"
@@ -58,7 +49,6 @@
             },
             "required": [
                 "pt",
-                "pad",
                 "pa",
                 "sgen"
             ]
