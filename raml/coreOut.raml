@@ -111,18 +111,19 @@ version: v1
               application/json:
                 schema: !include ../schemas/storeFrontMainPage.json
                 example: !include ../examples/storeFrontMainPage-simple.json
+                
     /logins:
-      /{pd}:
-        description: the developer who owns the principal type
-        /{pt}:
-          description: the principal type
+      /{PT}:
+        description: the principal type
+        /{entityID}:
+          description: the base64-encoded entityID of the principal logging in
           /{nameID}:
             description: the base64-encoded nameID of the principal logging in
             post:
               description: |
                 Called by TAS to tell your assertionDecorator app about someone logging in. The request body contains
                 the incoming SAML assertion. 
-                
+              
                 AssertionDecorators are special, highly privileged apps that can inject roles into the SAML assertion
                 or deny login altogether.
 
