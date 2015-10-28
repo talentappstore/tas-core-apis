@@ -20,28 +20,139 @@ version: v1
               example: !include ../examples/app-simple.json
 
 /OAuthKey:
+  description: The public key used to verify that OAuth tokens were correctly signed by TAS.
   get:
-    description: Get the public key needed to verify that OAuth tokens were correctly signed by TAS.
+    description: Get the current public key used by TASA to sign OAuth tokens.
     responses:
       200:
         body:
           text/plain:
             example: kuh9876guhgfyr76453dytrfUTYGuytfUrt
 
+/patchSets:
+  post:
+    description: |
+      This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches
+      to an existing tenant.
+  /{launchKey}:
+    post:
+      description: |
+        This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet,
+        e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.
+
+                  
 /ping:
+  description: A ping is the simplest call an app can make against the TAS core
   get:
     description: Always return http 200. Useful for testing app is working OK (has correct secret key etc.).
     responses:
       200:
       403:
-     
+
+
+/routes:
+  description: |
+    Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.
+    Your app needs to first fetch a route in order to consume an API. The route will tell your app about
+    the actual endpoint (where the producer's server sits on the internet).
+    Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
+    that the consumer is allowed to call.
+  /{CT}:
+    description: |
+      Consuming tenant: the tenant with the app installed that is consuming the API
+    /{CA}:
+      description: |
+        Consuming app: the app consuming the API
+      /{ADEV}:
+        description: |
+           Developer who defined the API
+        /{URI}:
+          description: |
+            API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
+          /{SOT}:
+            description: |
+              True if the consuming app is consuming this as SoT (source of truth), otherwise false
+            get:
+              description: | 
+                Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
+                  
+                The core will check that:
+                - the app making the core API call is the consuming app (i.e., matches {CA})
+                - the consuming app is installed at {CT}
+                - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
+              responses:
+                200:
+                  body:
+                    application/json:
+                      schema: !include ../schemas/routes.json
+                      example: !include ../examples/routes-simple.json
+          /{PT}:
+            description: |
+              Producing tenant: the tenant with the app installed that is producing the API
+            /{PA}:
+              description: |
+                Producing app: the app producing the API
+              get:
+                description: |
+
+                  Used by tenant API producers to verify that the consumer is allowed to consume this API.
+
+                  The core will check that:
+                  - the app making the core API call is the producing app (i.e., matches {PA})
+                  - the producing app is installed at {PT}
+                  - the consuming app has declared that it consumes the given API
+                  - the producing app has declared that it produces the given API
+                  - the consuming app has declared that it consumes the given API in the same way that the producer has declared that it produces it (SoT or not).
+                 
+                  Since both consuming and producing apps are specified, there can only be one or zero routes in the response.
+
+                responses:
+                  200:
+                    body:
+                      application/json:
+                        schema: !include ../schemas/route.json
+                        example: !include ../examples/route-simple.json
+
+/saml:
+  /assertions:
+    /{PT}:
+      /{key}:
+        get:
+          description: Fetch a SAML assertion via its database key.
+          responses:
+            200:
+              body:
+                application/xml:
+              
+  /keyLookups:
+    /{PT}:
+      description: the principal type the assertion is for
+      post:
+        description: |
+          Used by apps which include their own SAML SP layer (rather than sitting behind the proxy) to obtain the database key
+          of the incoming SAML assertion. TAS acts as a SAML proxy, and captures and stores assertions in an internal
+          database, partitioned by principal type, prior to handing them off to the app (SP).
+
+          The assertion to search for is passed in the request body.
+           
+          The core will:
+          - check if the app making the call is linked to the stated principal type, and fail if not
+          - check whether the assertion has expired, and fail if so
+          - search its internal SAML assertions database for the assertion, and fail if not found
+          - pass back the assertion's reference
+        body:
+          application/xml:
+              
 /tenants:  
   description: |
     A *tenant* is a customer within the multi-tenanted environment of Talent App Store.
   /{tenant}:
     get:
       description: |
-        Get details of the tenant
+        Get details of the tenant.
+        
+        The core will:
+        - check that the app is installed by the tenant, and fail if not. 
       responses:
         200:
           body:
@@ -53,63 +164,15 @@ version: v1
         description: |
           Get the status of the tenant, including the current state and security generation. Normally apps would use this information
           when restarting to determine whether to flush cached OAuth tokens and routes.
+          
+          The core will:
+          - check that the app is installed by the tenant, and fail if not. 
         responses:
           200:
             body:
               application/json:
                 schema: !include ../schemas/tenantStatus.json
                 example: !include ../examples/tenantStatus-simple.json
-    /headlessAuthentications:
-      /{principalDeveloper}:
-        /{principalType}:
-          /viaVerifiedEmail:
-            /{email}:
-              post:
-                description: |
-                  This endpoint is available only to apps tagged as "headless authenticators".
-
-                  Useful for:
-                  - adding "work on behalf of" behaviour (e.g. a recruiter logs in and works on behalf of a candidate)
-                  - when creating a new user (or candidate), finding existing auth info and reusing it
-                            
-                  Your app can call this API to to headlessly log in as the principal with the given email address, assuming:
-                  - they already have a row with that email in the users table of some SoT app
-                  - that row is tagged with {E} and {N}, where {E} is for a non-attribute supplying idp (e.g., Google, email, backdoor idp).
-              
-                  Example:
-                  - your app wants to create a job application for fred@acme.com, but is cognisant that Fred may already have a record, maybe authenticated via Google or whatever; so
-                  - your app calls POST /tenants/acme/headlessAuthentications/tas/candidate/viaVerifiedEmail/fred@acme.com
-                  - TAS starts preparing its response:
-                  - On all apps marked as "principal holders" (i.e, apps that have SoT user tables), TAS calls GET /tenants/acme/m/principals/tas/candidate/byEmail/fred@acme.com
-                  - the fancycruit app responds first - it does hold a record for fred@acme.com, and so replies with:
-                  { "E": "acme-tas-candidate-google-idp", "N": "1246349464" }
-                  - TAS synthesizes a SAML assertion with the given E and N and stops asking other apps (i.e. no testing is done for conflicting /E/N values for fred - something for apps to build at some stage)
-                  - TAS processes the SAML assertion just as if fred had logged in, e.g. session decoration happens
-                  - if no "principal holder" app responds, then no SAML assertion is returned and your app can assume no candidate exists
-                  - Finally TAS replies to your app. Your app can now access /E/N, request OAuth tokens, and generally act as if fred had logged in
-
-                  Because this API allows apps to log in on behalf of users, tenants must have complete trust in the integrity of your app, and also that your app
-                  *always* verifies that the email address does belong to the end user. Not verifying email addresses opens a security hole.    
-    /sessions:
-      /viaLogin:
-        /{app}:
-          description: |
-            Your app, i.e. the SSO-protected web site where the principal authenticated.
-          /{E}:
-            description: |
-              The entityID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-            /{N}:
-              description: |
-                The nameID of the currently logged in principal, as passed to your app's SSO-protected web site (see details of authentication).
-              get:
-                description: |
-                  Fetch principal's TAS session using details from the SAML assertion passed when they logged in.
-      /viaToken:
-        /{accessToken}:
-          description: The OAuth access token (a JWT) passed in to the producing app
-          get:
-            description: |
-              Fetch principal's TAS session using details from an OAuth token
 
     /samlSPMetadata:
       description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata, referred to as the SP metadata.
@@ -125,51 +188,6 @@ version: v1
         /{principalType}:
           get:
             description: Get the metadata for the IdP proxy.
-    /samlSubjects:
-      description: |
-        <p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly
-        from the incoming assertion. This document will be removed once it has a new home.</b></p>
-        <p>A samlSubject is the primary key, assembled from information in the SAML assertion from the IdP, of the current logged in user.
-        The samlSubject is useful
-        when your app wants to get some more detail about the user such as their name, email, etc, by calling SCIM APIs
-        like /employees/{samlSubject}, etc. - these APIs require a samlSubject.</p>
-        <p>By "current logged in user", we mean someone logged into this app (if this app is an SSO-protected app) or another app
-        higher up the chain (if this app is an API server producing an OAuth API).</p>
-        <p>samlSubject is a string made up of values extracted from the SAML authentication assertion information that
-        was captured by TAS when this user logged in to an SSO-protected app, likely to include: 
-        <ul>
-        <li>Name ID</li>
-        <li>Name Qualifier</li>
-        <li>Entity ID of the issuing IdP</li>
-        </ul>
-        <p>The actual SAML items above are not yet confirmed, nor do we have a any standard approach to requesting them in SAML assertions
-        or extracting them from SAML assertions. But in any case the set will uniquely identify the user, even across
-        multiple possible authenticating IdPs. For example, "candidates" may be held across a number of IdPs, including corporate IdP
-        (internal candidates), Facebook pseudo-IdP, etc.</p>
-        <p>samlSubjects are identical across all SP's (i.e., all TAS SSO-protected apps), so that apps can
-        correlate the user's identity (i.e. they each have the same understanding of who a user is). This means that transient SAML
-        identifiers for example cannot be used.
-        </p>
-        <p>API servers can extract the samlSubject from the sub field of the incoming OAuth access token.</p>
-        <p>Because access tokens are generated and signed by TAS, the user's identity can be passed securely down through a chain of
-        OAuth API calls, while preventing malicious apps from acting on behalf of a user who has not logged in.</p>
-        <p>Each producing app in the chain gets their chance to enforce their own business rules and make further
-        tenant API calls on behalf of the logged in user.</p>     
-      /viaSamlAssertion:
-        post:
-          description: |
-            <p><b>All APIs to obtain samlSubjects are deprecated. We now expect apps to be able to parse the samlSubject directly
-            from the incoming assertion. This document will be removed once it has a new home.</b></p>
-            If your app is an SSO-protected web site, then it can exchange the SAML authentication assertion that it received at
-            login time for the samlSubject by using this endpoint and passing the assertion as the request body.
-          body:
-            application/xml:
-          responses:
-            200:
-              body:
-                application/json:
-                  schema: !include ../schemas/samlSubject.json
-                  example: !include ../examples/samlSubject-simple.json
     /OAuthFlushes:
       post:
         description: |
@@ -245,68 +263,6 @@ version: v1
                   schema: !include ../schemas/rebootStatus.json
                   example: !include ../examples/rebootStatus-juggleApps.json
 
-/routes:
-  description: |
-    Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.
-    Your app needs to first fetch a route in order to consume an API. The route will tell your app about
-    the actual endpoint (where the producer's server sits on the internet).
-    Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
-    that the consumer is allowed to call.
-  /{CT}:
-    description: |
-      Consuming tenant: the tenant with the app installed that is consuming the API
-    /{CA}:
-      description: |
-        Consuming app: the app consuming the API
-      /{ADEV}:
-        description: |
-           Developer who defined the API
-        /{URI}:
-          description: |
-            API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
-          /{SOT}:
-            description: |
-              True if the consuming app is consuming this as SoT (source of truth), otherwise false
-            get:
-              description: | 
-                Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
-                  
-                The core will check that:
-                - the app making the core API call is the consuming app (i.e., matches {CA})
-                - the consuming app is installed at {CT}
-                - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
-              responses:
-                200:
-                  body:
-                    application/json:
-                      schema: !include ../schemas/routes.json
-                      example: !include ../examples/routes-simple.json
-          /{PT}:
-            description: |
-              Producing tenant: the tenant with the app installed that is producing the API
-            /{PA}:
-              description: |
-                Producing app: the app producing the API
-              get:
-                description: |
-
-                  Used by tenant API producers to verify that the consumer is allowed to consume this API.
-
-                  The core will check that:
-                  - the app making the core API call is the producing app (i.e., matches {PA})
-                  - the producing app is installed at {PT}
-                  - the consuming app has declared that it consumes the given API
-                  - the producing app has declared that it produces the given API
-                  - the consuming app has declared that it consumes the given API in the same way that the producer has declared that it produces it (SoT or not).
-                 
-                  Since both consuming and producing apps are specified, there can only be one or zero routes in the response.
-
-                responses:
-                  200:
-                    body:
-                      application/json:
-                        schema: !include ../schemas/route.json
-                        example: !include ../examples/route-simple.json
                             
 /token:
   description: |
@@ -349,7 +305,8 @@ version: v1
                One of:
                - client_credentials
                - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
-               - urn:talentappstore.com:oauth2:tas-inherited
+               - urn:talentappstore.com:oauth:saml2-bearer-ref
+               - urn:talentappstore.com:oauth:tas-inherited
                - refresh_token
             type: string
             example: refresh_token
@@ -374,7 +331,13 @@ version: v1
           assertion:
             description: |
               The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
-              MUST NOT be present for other grant types.
+              MUST NOT be present for other grant types. MUST contain an unexpired SAML assertion that matches exactly one as captured
+              and stored by the TAS SAML proxy during login.
+          assertion_ref:
+            description: |
+              A reference to the incoming SAML assertion. MUST be present for grant_type of urn:talentappstore.com:oauth:saml2-bearer-ref.
+              MUST NOT be present for other grant types. MUST contain a valid reference to an unexpired SAML assertion as captured
+              and stored by the TAS SAML proxy during login.
     responses:
       200:
         body:
@@ -382,15 +345,3 @@ version: v1
             schema: !include ../schemas/tokenJwt.json
             example: !include ../examples/tokenJwt-simple.json
 
-/patchSets:
-  post:
-    description: |
-      This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches
-      to an existing tenant.
-  /{launchKey}:
-    post:
-      description: |
-        This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet,
-        e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.
-
-                  

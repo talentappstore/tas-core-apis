@@ -1,6 +1,7 @@
 {
     "sub": {
         "pt": "candidate",
+        "samlKey": "uyytg875GHui56Fe87JfgOL",
         "entityID": "ibmidpuswest-10",
         "nameID": "frank@ibm.com"
     },
@@ -17,3 +18,4 @@
     "iat": "31 Dec 2014",
     "exp": "31 Dec 2014"
 }
+

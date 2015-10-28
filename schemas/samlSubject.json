@@ -5,6 +5,7 @@
     "additionalProperties": false,
     "required": [
         "pt",
+        "samlKey",
         "nameID",
         "entityID"
     ],
@@ -12,6 +13,10 @@
         "pt": {
             "type": "string",
             "description": "principal type"
+        },
+        "samlKey": {
+            "type": "string",
+            "description": "key of the SAML assertion with the the TAS core SAML database"
         },
         "nameID": {
             "type": "string"

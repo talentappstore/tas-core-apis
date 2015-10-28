@@ -1,5 +1,6 @@
 {
-      "pt": "candidate",  
+      "pt": "candidate",
+      "samlKey": "uyytg875GHui56Fe87JfgOL",
 	  "nameID": "frank@ibm.com",
 	  "entityID": "some other SAML info"
 }
