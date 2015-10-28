@@ -12,8 +12,12 @@ traits: !include traits.yml
   /{app}:
     get:
       description: |
-        Get details of the app. Can only be called by the app itself. This useful when some piece of software (like a proxy)
-        is acting on behalf of the app, but has only been given its shortCode and secret key.
+        Get details of the app. This is useful when some piece of software (like a proxy) is acting on behalf of the app,
+        but has only been given its shortCode and secret key.
+        
+        The core asserts that:
+        - the call is being made by the app itself
+        
       responses:
         200:
           body:
@@ -22,7 +26,7 @@ traits: !include traits.yml
               example: !include ../examples/app-simple.json
 
 /OAuthKey:
-  description: The public key used to verify that OAuth tokens were correctly signed by TAS.
+  description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.
   get:
     description: Get the current public key used by TASA to sign OAuth tokens.
     responses:
@@ -36,12 +40,18 @@ traits: !include traits.yml
     description: |
       This endpoint behaves exactly as per /tenants/{tenant}/patchSets, except that it creates a tenant rather than applying patches
       to an existing tenant.
+      
+      The core asserts that:
+      - the app is marked as "storeFront"
+      
   /{launchKey}:
     post:
       description: |
         This endpoint behaves exactly as per /tenants/{tenant}/patchSets/{launchKey}, except that it works against a tenant-creating patchSet,
-        e.g. initial tenant creation, or copy, rather than a patchSet that is modifying an existing tenant.
-
+        rather than a patchSet that is modifying an existing tenant.
+        
+        The core asserts that:
+        - the app is marked as "storeFront"
                   
 /ping:
   description: A ping is the simplest call an app can make against the TAS core
@@ -49,16 +59,17 @@ traits: !include traits.yml
     description: Always return http 200. Useful for testing app is working OK (has correct secret key etc.).
     responses:
       200:
-      403:
-
 
 /routes:
   description: |
     Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.
-    Your app needs to first fetch a route in order to consume an API. The route will tell your app about
-    the actual endpoint (where the producer's server sits on the internet).
+    
+    Consuming apps must first fetch a route in order to consume an API. The route identifies the
+    actual endpoint (where the producer's server sits on the internet).
+    
     Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
     that the consumer is allowed to call.
+    
   /{CT}:
     description: |
       Consuming tenant: the tenant with the app installed that is consuming the API
@@ -70,7 +81,7 @@ traits: !include traits.yml
         description: | 
           Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
            
-          The core will check that:
+          The core checks that:
           - the app making the core API call is the consuming app (i.e., matches {CA})
           - the consuming app is installed at {CT}
           - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
@@ -98,7 +109,7 @@ traits: !include traits.yml
             description: |
               Used by tenant API producers to verify that the consumer is allowed to consume this API.
 
-              The core will check that:
+              The core will assert that:
               - the app making the core API call is the producing app (i.e., matches {PA})
               - the producing app is installed at {PT}
               - the consuming app has declared that it consumes the given API
@@ -117,30 +128,35 @@ traits: !include traits.yml
 /saml:
   /assertions:
     /{PT}:
+      description: The principal type of the SAML assertion.
       /{key}:
         get:
-          description: Fetch a SAML assertion via its database key.
+          description: |
+            Fetch a SAML assertion via its database key.
+            
+            The core asserts that:
+            - either the app is linked to the given principal type; or
+            - the app produces (as SoT or not) at least one on-behalf API which is linked to the given principal type   
+            - if found, the assertion has not expired (based on the stored assertion detail)
+            
           responses:
             200:
               body:
                 application/xml:
-              
   /keyLookups:
     /{PT}:
       description: the principal type the assertion is for
       post:
         description: |
-          Used by apps which include their own SAML SP layer (rather than sitting behind the proxy) to obtain the database key
-          of the incoming SAML assertion. TAS acts as a SAML proxy, and captures and stores assertions in an internal
-          database, partitioned by principal type, prior to handing them off to the app (SP).
+          Fetch the key of an incoming SAML assertion. Used by apps which include their own SAML SP layer (rather than sitting behind
+          the proxy). TAS acts as a SAML proxy, and captures and stores assertions in an internal database, partitioned by principal type,
+          prior to handing them off to the app (SP).
 
-          The assertion to search for is passed in the request body.
+          The request body contains the content of the assertion to search for.
            
-          The core will:
-          - check if the app making the call is linked to the stated principal type, and fail if not
-          - check whether the assertion has expired, and fail if so
-          - search its internal SAML assertions database for the assertion, and fail if not found
-          - pass back the assertion's reference
+          The core asserts that:
+          - the app making the call is linked to the given principal type
+          - the assertion has not expired (based on the passed in assertion detail)
         body:
           application/xml:
               
@@ -152,8 +168,8 @@ traits: !include traits.yml
       description: |
         Get details of the tenant.
         
-        The core will:
-        - check that the app is installed by the tenant, and fail if not. 
+        The core asserts that:
+        - the app is installed by the tenant
       responses:
         200:
           body:
@@ -166,8 +182,9 @@ traits: !include traits.yml
           Get the status of the tenant, including the current state and security generation. Normally apps would use this information
           when restarting to determine whether to flush cached OAuth tokens and routes.
           
-          The core will:
-          - check that the app is installed by the tenant, and fail if not. 
+          The core asserts that:
+          - the app is installed by the tenant
+           
         responses:
           200:
             body:
@@ -176,31 +193,47 @@ traits: !include traits.yml
                 example: !include ../examples/tenantStatus-simple.json
 
     /samlSPMetadata:
-      description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata, referred to as the SP metadata.
-      /{principalDeveloper}:
-        /{principalType}:
-          get:
-            description: Get the metadata for this app (the SP).
+      description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata
+      get:
+        description: |
+          Get the metadata for this app (the SP).
+          
+          The core asserts that:
+          - the app is linked to any principal type (i.e., it uses SSO)
+          
+        responses:
+          200:
+            body:
+              application/xml:
+
     /samlIdPMetadata:
       description: |
         Apps that are SSO-protected (i.e., SPs in SAML lingo) require the SAML metadata for the IdP proxy that front ends all of the
-        identity providers that the tenant has set up for the given principal type. 
-      /{principalDeveloper}:
-        /{principalType}:
-          get:
-            description: Get the metadata for the IdP proxy.
+        identity providers that the tenant has set up.
+      get:
+        description: |
+          description: Get the metadata for the IdP proxy.
+          
+          The core asserts that:
+          - the app is linked to any principal type (i.e., it uses SSO)
+          
+        responses:
+          200:
+            body:
+              application/xml:
+
     /OAuthFlushes:
       post:
         description: |
-          This endpoint is available only to apps tagged as "storeFront".
-          
-          Your app calls this endpoint to reboot the tenant and increment the security generation. This effectively
+          A storefront app calls this endpoint to reboot the tenant and increment the security generation. This effectively
           (since apps should always check for changed security generation) invalidates all OAuth tokens for
           APIs consumed or produced by this tenant. This is used to mitigate an attack where an app has an OAuth token
           stolen from it (tenant admin person clicks "Flush credentials" in the storefront).
           
-          The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/reboots/{launchKey}.
+          The response body is an unguessable unique "launch key" which is then used with POST /tenants/{tenant}/reboots/{launchKey}.
            
+          The core asserts that:
+          - the app is marked as "storeFront".
         body:
           application/json:
             schema: !include ../schemas/patchSetPreparer.json
@@ -214,13 +247,14 @@ traits: !include traits.yml
     /patchSets:
       post:
         description: |
-          This endpoint is available only to apps tagged as "storeFront".
-          
-          Your app calls this endpoint to validate and then prepare a patch document, e.g. to reflect the tenant clicking install on an app.
+          A storefront app calls this endpoint to validate and then prepare a patch document, e.g. to reflect the tenant clicking install on an app.
           
           The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/reboots/{launchKey}.
           
-          Pass true for "bumpSecurityGeneration" to force the security generation to be incremented. 
+          Pass true for "bumpSecurityGeneration" to force the security generation to be incremented.
+           
+          The core asserts that:
+          - the app is marked as "storeFront".
         body:
           application/json:
             schema: !include ../schemas/patchSetPreparer.json
@@ -235,8 +269,8 @@ traits: !include traits.yml
       /{launchKey}:
         post:
           description: |
-            Launch a previously prepared reboot (if not already launched), and get the latest events and the current summary
-            details.
+            A storefront app's web page uses this API to launch a previously prepared reboot (if not already launched),
+            and get the latest events and the current summary details.
             
             This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
             belongs to a storefront app which does not share the same domain as the tas core).
@@ -263,7 +297,6 @@ traits: !include traits.yml
                 application/json:
                   schema: !include ../schemas/rebootStatus.json
                   example: !include ../examples/rebootStatus-juggleApps.json
-
                             
 /token:
   description: |
@@ -279,7 +312,7 @@ traits: !include traits.yml
     Because access tokens are self-contained and signed, producers can rely on their content without any network
     traffic to the authorization server (i.e. TAS).
 
-    Before issuing a token, the core checks that:
+    The core asserts that:
     - the consuming app is installed at the consuming tenant
     - the producing app is installed at the producing tenant
     - there exists at least one route between the consumer and producer, for any API (this prevents apps probing for
