@@ -4,6 +4,8 @@ title: TAS core incoming (app -> TAS)
 baseUri: http://talentappstore.com/{version}
 version: v1
 
+traits: !include traits.yml
+
 
 /apps:
   description: An *app* is a microservice that can be installed by a tenant
@@ -63,55 +65,54 @@ version: v1
     /{CA}:
       description: |
         Consuming app: the app consuming the API
-      /{ADEV}:
-        description: |
-           Developer who defined the API
-        /{URI}:
-          description: |
-            API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed
-          /{SOT}:
+      get:
+        is: [ routeFetcher ] 
+        description: | 
+          Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
+           
+          The core will check that:
+          - the app making the core API call is the consuming app (i.e., matches {CA})
+          - the consuming app is installed at {CT}
+          - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
+        queryParameters:
+          sot:
+            type: boolean
             description: |
               True if the consuming app is consuming this as SoT (source of truth), otherwise false
-            get:
-              description: | 
-                Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
-                  
-                The core will check that:
-                - the app making the core API call is the consuming app (i.e., matches {CA})
-                - the consuming app is installed at {CT}
-                - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
-              responses:
-                200:
-                  body:
-                    application/json:
-                      schema: !include ../schemas/routes.json
-                      example: !include ../examples/routes-simple.json
-          /{PT}:
+            example: true
+            required: true
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/routes.json
+                example: !include ../examples/routes-simple.json
+      /{PT}:
+        description: |
+          Producing tenant: the tenant with the app installed that is producing the API
+        /{PA}:
+          description: |
+            Producing app: the app producing the API
+          get:
+            is: [ routeFetcher ] 
             description: |
-              Producing tenant: the tenant with the app installed that is producing the API
-            /{PA}:
-              description: |
-                Producing app: the app producing the API
-              get:
-                description: |
+              Used by tenant API producers to verify that the consumer is allowed to consume this API.
 
-                  Used by tenant API producers to verify that the consumer is allowed to consume this API.
-
-                  The core will check that:
-                  - the app making the core API call is the producing app (i.e., matches {PA})
-                  - the producing app is installed at {PT}
-                  - the consuming app has declared that it consumes the given API
-                  - the producing app has declared that it produces the given API
-                  - the consuming app has declared that it consumes the given API in the same way that the producer has declared that it produces it (SoT or not).
+              The core will check that:
+              - the app making the core API call is the producing app (i.e., matches {PA})
+              - the producing app is installed at {PT}
+              - the consuming app has declared that it consumes the given API
+              - the producing app has declared that it produces the given API
+              - the consuming app has declared that it consumes the given API in the same way that the producer has declared that it produces it (SoT or not).
                  
-                  Since both consuming and producing apps are specified, there can only be one or zero routes in the response.
+              Since both consuming and producing apps are specified, there can only be one or zero routes in the response.
 
-                responses:
-                  200:
-                    body:
-                      application/json:
-                        schema: !include ../schemas/route.json
-                        example: !include ../examples/route-simple.json
+            responses:
+              200:
+                body:
+                  application/json:
+                    schema: !include ../schemas/route.json
+                    example: !include ../examples/route-simple.json
 
 /saml:
   /assertions:
@@ -332,12 +333,12 @@ version: v1
             description: |
               The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
               MUST NOT be present for other grant types. MUST contain an unexpired SAML assertion that matches exactly one as captured
-              and stored by the TAS SAML proxy during login.
+              and stored by the TAS SAML proxy during login *to the same app making the core-in API call*.
           assertion_ref:
             description: |
               A reference to the incoming SAML assertion. MUST be present for grant_type of urn:talentappstore.com:oauth:saml2-bearer-ref.
               MUST NOT be present for other grant types. MUST contain a valid reference to an unexpired SAML assertion as captured
-              and stored by the TAS SAML proxy during login.
+              and stored by the TAS SAML proxy during login *to the same app making the core-in API call*.
     responses:
       200:
         body:

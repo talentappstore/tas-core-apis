@@ -1,0 +1,22 @@
+#%RAML 0.8
+
+- routeFetcher:
+    queryParameters:
+      apiDev:
+        type: string
+        description: |
+          Developer who defined the API
+        example: tas
+        required: true
+      api:
+        type: string
+        description: |
+          API URI Template: the URI template (as per https://tools.ietf.org/html/rfc6570) of the API being consumed. The URI
+          must be encoded as per http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4, for example in Java using the
+          URLEncoder class http://docs.oracle.com/javase/8/docs/api/java/net/URLEncoder.html.
+            
+          For example, if the API is /jobs/{job}, then you would pass %2fjobs%2f%7bjob%7d.
+        example: |
+          %2fjobs%2f%7bjob%7d
+        required: true
+
