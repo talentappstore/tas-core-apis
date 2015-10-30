@@ -10,7 +10,7 @@ documentation:
 
  - title: Welcome
    content: |
-    You're at the core API documentation for Talent App Store. If you'ld like a higher level view, go to the
+    You're at the core API documentation for Talent App Store. If you'd like a higher level view, go to the
     [developer site](http://developer.talentappstore.com).
 
  - title: HMAC
@@ -43,6 +43,22 @@ documentation:
     }
     ````
     
+    A correctly formed request will look like this (for a call to GET /routes)
+    
+    ````
+    POST https://core.talentappstore.com/api/v1/routes HTTP/1.1
+    Authorization: TAS4-HMAC-SHA256 Credential=jobboard/20150702/tas4_request, SignedHeaders=content-type;host;x-tas-date, Signature=ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c
+    Host: core.talentappstore.com
+    Content-type: application/json; charset=utf-8
+    x-tas-date: 20150702T233600Z
+
+    TODO: check the location of the URL - is above correct?
+    ````
+
+    Additional formatting rules;
+    - Header names must be lower cased when listed in SignedHeaders 
+    - The Credentials must contain the current date in UTC in "yyyyMMdd" format
+
 /apps:
   description: An *app* is a microservice that can be installed by a tenant
   /{app}:
@@ -61,7 +77,7 @@ documentation:
               schema: !include ../schemas/app.json
               example: !include ../examples/app-simple.json
 
-/OAuthKey:
+/OAuthPublicKey:
   description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.
   get:
     description: Get the current public key used by TASA to sign OAuth tokens.
@@ -507,6 +523,7 @@ documentation:
     To be secure, when an app receives an incoming tenant API call, it must:
     - Check that an incoming OAuth token was provided in the Authorization request header
     - Verify that the OAuth token was correctly signed by TAS core, and matches the public key from GET /OAuthKey.
+    - Check that the token has not expired (exp field)
     - Check that it is the correct audience (to prevent a malicious app using a token for your app which was intended for another app), i.e.;
       - the "pt" (producing tenant) field matches the current tenant (e.g. as extracted from the Host header)
       - the "pa" (producing app) field matches the shortCode hard-coded into the app's code
@@ -570,7 +587,7 @@ documentation:
                - **urn:ietf:params:oauth:client-assertion-type:saml2-bearer**: for an on-behalf OAuth token that includes the identity
                of the user/principal who is the subject of the passed in SAML assertion. This grant type can only be used by apps that
                are protected via SSO. The token's expiry time will be either in one hour, or at the time dictated by the original SAML
-                assertion's "on or before" field (TODO: be specific), whichever is sooner.
+                assertion's "SessionNotOnOrAfter" field, whichever is sooner.
                - **urn:talentappstore.com:oauth:saml2-bearer-key**: As for urn:ietf:params:oauth:client-assertion-type:saml2-bearer, except
                that the key is used rather than the assertion itself.
                - **urn:talentappstore.com:oauth:tas-inherited**: for an on-behalf token that re-uses the user's identity from an incoming
