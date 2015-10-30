@@ -1,0 +1,4 @@
+{
+   "installs": [ "oldjobboard" ],
+   "unInstalls": [ "newjobboard" ]
+}

@@ -14,6 +14,7 @@
     "route": { "$ref": "../schemas/route.json" },
     "routes": { "$ref": "../schemas/routes.json" },
     "samlSubject": { "$ref": "../schemas/samlSubject.json" },
+    "simplePatchSet": { "$ref": "../schemas/simplePatchSet.json" },
     "storeFrontMainPage": { "$ref": "../schemas/storeFrontMainPage.json" },
     "tenantExtended": { "$ref": "../schemas/tenantExtended.json" },
     "tenantInstallsAppStatus": { "$ref": "../schemas/tenantInstallsAppStatus.json" },

@@ -68,7 +68,7 @@ documentation:
       200:
         body:
           text/plain:
-            example: kuh9876guhgfyr76453dytrfUTYGuytfUrt
+            example: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBoCtyhZycRSAQ5aqYMESTSAFr0lwIDAQAB
 
 /patchSets:
   post:
@@ -282,49 +282,68 @@ documentation:
             body:
               application/xml:
 
-    /OAuthFlushes:
-      post:
-        description: |
-          A storefront app calls this endpoint to reboot the tenant and increment the security generation. This effectively
-          (since apps should always check for changed security generation) invalidates all OAuth tokens for
-          APIs consumed or produced by this tenant. This is used to mitigate an attack where an app has an OAuth token
-          stolen from it (tenant admin person clicks "Flush credentials" in the storefront).
-          
-          The response body is an unguessable unique "launch key" which is then used with POST /tenants/{tenant}/reboots/{launchKey}.
-           
-          The core asserts that:
-          - the app is marked as "storeFront".
-        body:
-          application/json:
-            schema: !include ../schemas/patchSetPreparer.json
-            example: !include ../examples/patchSetPreparer-installApp.json
-        responses:
-          200:
-            body:
-              application/json:
-                schema: !include ../schemas/patchSetLaunchKey.json
-                example: !include ../examples/patchSetLaunchKey-simple.json
-    /patchSets:
-      post:
-        description: |
-          A storefront app calls this endpoint to validate and then prepare a patch document, e.g. to reflect the tenant clicking install on an app.
-          
-          The response body is an unguessable unique "launch key" which can be used with POST /tenants/{tenant}/reboots/{launchKey}.
-          
-          Pass true for "bumpSecurityGeneration" to force the security generation to be incremented.
-           
-          The core asserts that:
-          - the app is marked as "storeFront".
-        body:
-          application/json:
-            schema: !include ../schemas/patchSetPreparer.json
-            example: !include ../examples/patchSetPreparer-installApp.json
-        responses:
-          200:
-            body:
-              application/json:
-                schema: !include ../schemas/patchSetLaunchKey.json
-                example: !include ../examples/patchSetLaunchKey-simple.json
+    /rebootPrepares:
+      description: |
+        A reboot is the process of TAS performing an orderly shutdown and startup of all of the installed
+        apps for a specific tenant whenever major changes are made to the tenant.
+
+        The first step is to prepare the reboot using one of the rebootPrepares endpoints, which happens
+        as a result of a tenant's actions in the storefront app's UI. Specifically;
+        - when a tenant clicks "install" or "uninstall" on an app, the storefront app calls POST /tenants/{tenant}/rebootPrepares/patchSet,
+        resulting in a reboot with [events like these](../examples/rebootStatus-juggleApps.json).
+        - when a tenant clicks "reboot" on their tenant, the storefront app calls POST /tenants/{tenant}/rebootPrepares/noop,
+        resulting in a reboot with [events like these](../examples/rebootStatus-simpleReboot.json).
+        - when a tenant clicks "flush OAuth tokens" on their tenant, the storefront app calls POST /tenants/{tenant}/rebootPrepares/OAuthFlush,
+        resulting in a reboot with [events like these](../examples/rebootStatus-bumpSecurityGeneration.json).
+
+        The response body from any of the /rebootPrepares endpoints is an unguessable unique "launch key" which is then
+        used with POST /tenants/{tenant}/reboots/{launchKey}.
+
+        When any of the /rebootPrepares endpoints are called, the core asserts that the app is marked as "storeFront".
+        
+      /OAuthFlush:
+        post:
+          description: |
+            A storefront app calls this endpoint to prepare a reboot that will increment the tenant's security generation.
+            
+            Called when a tenant admin person clicks "Flush tokens" in the storefront.
+
+            This effectively invalidates all OAuth tokens for APIs consumed or produced by this tenant (since apps should
+            always check for changed security generation). This is used by a tenant to mitigate an attack where the attacker
+            has obtained an OAuth token.
+            
+          responses:
+            200:
+            
+      /patchSet:
+        post:
+          description: |
+            A storefront app calls this endpoint to prepare a reboot that will change the installed apps, e.g. to reflect the
+            tenant clicking install on an app. The endpoint validates the attached patch document.
+
+            Called when a tenant admin person clicks to install or uninstall apps in the storefront.
+             
+          body:
+            application/json:
+              schema: !include ../schemas/simplePatchSet.json
+              example: !include ../examples/simplePatchSet-simple.json
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/patchSetLaunchKey.json
+                  example: !include ../examples/patchSetLaunchKey-simple.json
+      /noop:
+        post:
+          description: |
+            A storefront app calls this endpoint to prepare a reboot that does nothing else.
+            
+            This provides a way to retry on failures that have locked up the tenant, e.g. a bad response from one of the orchestration APIs.
+
+            Called when tenant admin person clicks "Reboot" in the storefront.
+          responses:
+            200:
+      
     /reboots:
       description: |
         About reboots
@@ -342,20 +361,10 @@ documentation:
         As a reboot happens, TAS maintains a set of history events that the storefront app can
         use to feed a progress dialogue. 
 
-        How the storefront prepares a reboot
-        -------------------------------------
-        A reboot is initiated as a result of a tenant's actions in the storefront app's UI, specifically;
-        - when a tenant clicks "install" or "uninstall" on an app, the storefront app calls POST /tenants/{}/patchSets,
-        resulting in a reboot with [events like these](../examples/rebootStatus-juggleApps.json).
-        - when a tenant clicks "reboot" on their tenant, the storefront app calls POST /tenants/{}/reboots,
-        resulting in a reboot with [events like these](../examples/rebootStatus-simpleReboot.json).
-        - when a tenant clicks "flush OAuth tokens" on their tenant, the storefront app calls POST /tenants/{}/OAuthFlushes,
-        resulting in a reboot with [events like these](../examples/rebootStatus-bumpSecurityGeneration.json).
-
         How the storefront launches a reboot
         ------------------------------------
-        When the storefront app calls the APIs above, the reboot does not start immediately. Instead, the APIs
-        return a launch key.
+        Once the storefront app has prepared a reboot by calling one of the POST /tenants/{tenant}/rebootPrepares endpoints,
+        the the reboot does not start immediately. Instead, the APIs return a launch key.
 
         To actually start a reboot, the storefront app (typically from within a web page's
         onClick handler of a "Continue" button) uses this launch key to launch the reboot.
@@ -386,9 +395,9 @@ documentation:
             - explicitly (if this reboot is in response to a call to POST /tenants/{}/OAuthFlushes, i.e. the tenant clicked "Flush OAuth tokens"); or
             - implicitly (if this reboot is in response to a call to POST /tenants/{}/patchSets and
             TAS finds that the patch set is making changes to the tenant's idps or assertion hooks)
-        - start all apps
+        - Start all apps
           - TAS sets the tenant's status to "preStarting"
-          - TAS calls /tenants/{}/inits on each installed app
+          - TAS calls /tenants/{}/preStarts on each installed app
           - When the last app returns 200, TAS sets the tenant's status to "preStarted"
           - TAS sets the tenant's status to "starting"
           - TAS calls /tenants/{}/starts on each installed app
