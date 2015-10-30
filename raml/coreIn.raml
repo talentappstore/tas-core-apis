@@ -6,7 +6,43 @@ version: v1
 
 traits: !include traits.yml
 
+documentation:
 
+ - title: Welcome
+   content: |
+    You're at the core API documentation for Talent App Store. If you'ld like a higher level view, go to the
+    [developer site](http://developer.talentappstore.com).
+
+ - title: HMAC
+   content: |
+    Most core API calls are secured using the same HMAC approach as
+    <a href='http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html'>Amazon Web Service's Signature Version 4 signing process</a>,
+     see also http://security.stackexchange.com/questions/77372/unusual-design-aspects-of-aws-hmac-based-authentication-v4),
+    except that whereas an AWS signature key
+    is generated like this (see http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html)...
+
+    ````
+    static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName) throws Exception  {
+         byte[] kSecret = ("AWS4" + key).getBytes("UTF8");
+         byte[] kDate    = HmacSHA256(dateStamp, kSecret);
+         byte[] kRegion  = HmacSHA256(regionName, kDate);
+         byte[] kService = HmacSHA256(serviceName, kRegion);
+         byte[] kSigning = HmacSHA256("aws4_request", kService);
+         return kSigning;
+    }
+    ````
+    
+    A TAS signature key for a core API call (in or out) is generated like this...
+    
+    ````
+    static byte[] getSignatureKey(String key, String dateStamp) throws Exception  {
+         byte[] kSecret = ("TAS4" + key).getBytes("UTF8");
+         byte[] kDate    = HmacSHA256(dateStamp, kSecret);
+         byte[] kSigning = HmacSHA256("tas4_request", kService);
+         return kSigning;
+    }
+    ````
+    
 /apps:
   description: An *app* is a microservice that can be installed by a tenant
   /{app}:
@@ -62,13 +98,38 @@ traits: !include traits.yml
 
 /routes:
   description: |
-    Routes are usages of a specific tenant API, on a specific producing app, by a specific consuming app.
+    About routes
+    ------------
+    Routes reflect a possible point to point API call between two apps on behalf of a tenant. They are usages:
+    - of a tenant API
+    - as produced in a specific way (source of truth or not)
+    - by a consuming app 
+    - installed at a tenant
+    - on a producing app  (currently, always the same as the consuming tenant) 
+    - installed at a tenant
+
+    To consume a tenant API, the consuming app must first fetch a route in order to locate the actual endpoint (where the producer's
+    server sits on the internet).
     
-    Consuming apps must first fetch a route in order to consume an API. The route identifies the
-    actual endpoint (where the producer's server sits on the internet).
-    
-    Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.)
-    that the consumer is allowed to call.
+    Routes are also useful to the producer of an API, e.g. to validate the methods (POST, GET, etc.) that the consumer is allowed to call.
+
+    Remote mounting
+    ---------------
+    Remote mounting is a possible future feature of TAS. It is not currently implemented.
+ 
+    With remote mounting, apps can produce APIs (SoT or non-SoT) by remote mounting a specified tenant's SoT production of the same API.
+
+    For example:
+    - tenant acme has installed a number of job board apps
+    - the tenant wants each job board app to produce (non-SoT) the /categories API
+    - so that acme's other apps can query each job board's unique category setup, build mappings, etc.
+    - the job board "green jobs" provides such a job board app
+    - that app produces (non-SoT) /categories
+    - however it does so by remote mounting the same API at the central green jobs tenant
+    - inside the green jobs tenant, the app "corestuff" produces (SoT) the /categories API
+    - therefore corestuff finishes up producing the API when consumed by some other app at the acme tenant 
+
+    TAS detects and disallows loops.
     
   /{CT}:
     description: |
@@ -265,7 +326,75 @@ traits: !include traits.yml
               application/json:
                 schema: !include ../schemas/patchSetLaunchKey.json
                 example: !include ../examples/patchSetLaunchKey-simple.json
-    /reboots:                
+    /reboots:
+      description: |
+        About reboots
+        -------------
+        A reboot is the process of TAS performing an orderly shutdown and startup of all of the installed
+        apps for a specific tenant whenever major changes are made to the tenant.
+
+        To play its part correctly when a reboot happens, your app's control server should produce the reboot APIs.
+        TAS then consumes the following APIs during the reboot.
+        - /tenants/{}/preHalts
+        - /tenants/{}/halts
+        - /tenants/{}/preStarts
+        - /tenants/{}/starts
+
+        As a reboot happens, TAS maintains a set of history events that the storefront app can
+        use to feed a progress dialogue. 
+
+        How the storefront prepares a reboot
+        -------------------------------------
+        A reboot is initiated as a result of a tenant's actions in the storefront app's UI, specifically;
+        - when a tenant clicks "install" or "uninstall" on an app, the storefront app calls POST /tenants/{}/patchSets,
+        resulting in a reboot with [events like these](../examples/rebootStatus-juggleApps.json).
+        - when a tenant clicks "reboot" on their tenant, the storefront app calls POST /tenants/{}/reboots,
+        resulting in a reboot with [events like these](../examples/rebootStatus-simpleReboot.json).
+        - when a tenant clicks "flush OAuth tokens" on their tenant, the storefront app calls POST /tenants/{}/OAuthFlushes,
+        resulting in a reboot with [events like these](../examples/rebootStatus-bumpSecurityGeneration.json).
+
+        How the storefront launches a reboot
+        ------------------------------------
+        When the storefront app calls the APIs above, the reboot does not start immediately. Instead, the APIs
+        return a launch key.
+
+        To actually start a reboot, the storefront app (typically from within a web page's
+        onClick handler of a "Continue" button) uses this launch key to launch the reboot.
+
+        As a reboot happens, TAS maintains the event history, and also a status for;
+        - the tenant as a whole (see [tenant statuses](../schemas/tenantStatus.json))
+        - each individual app
+
+        Order of events during reboot
+        -----------------------------
+        During a reboot, the order of events is:
+
+        - Halt all apps
+          - TAS sets the tenant's status to "preHalting"
+          - TAS calls /tenants/{}/preHalts on each installed app
+          - When the last app returns 200, TAS sets the tenant's status to "preHalted"
+          - TAS sets the tenant's status to "halting"
+          - TAS calls /tenants/{}/halts on each installed app
+          - When the last app returns 200, TAS sets the tenant's status to "halted"
+
+        - TAS increments tenant.incarnation
+        - TAS performs the actual operation, i.e.:
+          - do nothing (if this reboot is in response to a call to POST /tenants/{}/reboots)
+          - apply the patch set, e.g. to install an app (if this reboot is in response to a call to POST /tenants/{}/patchSets)
+            - apps are installed or uninstalled
+            - routes are adjusted
+          - increment tenant.securityGeneration
+            - explicitly (if this reboot is in response to a call to POST /tenants/{}/OAuthFlushes, i.e. the tenant clicked "Flush OAuth tokens"); or
+            - implicitly (if this reboot is in response to a call to POST /tenants/{}/patchSets and
+            TAS finds that the patch set is making changes to the tenant's idps or assertion hooks)
+        - start all apps
+          - TAS sets the tenant's status to "preStarting"
+          - TAS calls /tenants/{}/inits on each installed app
+          - When the last app returns 200, TAS sets the tenant's status to "preStarted"
+          - TAS sets the tenant's status to "starting"
+          - TAS calls /tenants/{}/starts on each installed app
+          - When the last app returns 200, TAS sets the tenant's status to "starting"
+                      
       /{launchKey}:
         post:
           description: |
@@ -283,6 +412,7 @@ traits: !include traits.yml
             If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically
             immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the
             last event has been fetched.
+            
           queryParameters:
             afterEvent:
               type: integer
@@ -300,36 +430,131 @@ traits: !include traits.yml
                             
 /token:
   description: |
-    Used by tenant API consumers to obtain an OAuth token, i.e. that an app installed at a tenant (the consuming app) can use to consume tenant
-    APIs on a specific app installed at a tenant (the producing app). Currently, producing and consuming tenants are always the same.
-    Tokens may further be personal, i.e. principal-aware, in which case they also identify the end user.
-    
-    The request body must be of content-type application/x-www-form-urlencoded, and contain values for grant_type
-    and optionally other parameters, encoded as per	https://tools.ietf.org/html/rfc6749#appendix-B.
-    See also https://tools.ietf.org/html/rfc7522#section-4.
+    About OAuth tokens
+    ------------------
+    API calls between apps (i.e. tenant API calls) are protected by OAuth. The consuming app must obtain an OAuth token from the TAS core,
+    and pass it in the Authorization header when making the API call. For more background on OAuth and tokens, see the
+    [OAuth 2 spec(http://tools.ietf.org/html/rfc6749') and also Google's
+    [OAuth documentation](https://developers.google.com/accounts/docs/OAuth2WebServer) for additional context.
 
+    In TAS, OAuth tokens are scoped by the consuming and producing app, i.e. a single token can be used by an app installed at a tenant
+    (the consuming app) can use to consume any tenant API on a specific app installed at a tenant (the producing app).
+    Currently, producing and consuming tenants are always the same.
+    
     OAuth access tokens in TAS are self-contained security tokens in the form of a JWT (json web token; see http://jwt.io/).
     Because access tokens are self-contained and signed, producers can rely on their content without any network
-    traffic to the authorization server (i.e. TAS).
+    traffic to the authorization server (i.e. TAS core).
 
-    The core asserts that:
-    - the consuming app is installed at the consuming tenant
-    - the producing app is installed at the producing tenant
-    - there exists at least one route between the consumer and producer, for any API (this prevents apps probing for
-    the presence of other apps)
+    On-behalf tokens
+    ----------------
+    Tokens may further be on-behalf, i.e. principal-aware, in which case they also identify some ultimate logged in end user
+    who the API call is on behalf of. 
+
+
+    Refresh tokens
+    --------------
+    Some apps need to continue making API calls on behalf of a user, even when the user is no longer logged in.
+    
+    Any app that is protected via TAS SSO and is marked as "offlineCapable" (TODO:
+    exact name) can use the urn:ietf:params:oauth:client-assertion-type:saml2-bearer
+    grant type (which requires a SAML assertion), and add the string "offline" to the scope
+    parameter to create an on-behalf OAuth token and an accompanying refresh token.
+    Your app should store the refresh token in its own long-term storage, and can use the access token immediately.
+    
+    The access token can be used immediately, and when it expires, the refresh token can be used to generate new
+    access tokens even when the user is no longer logged in.
+    
+    Note: you only need to use refresh tokens if the offline activity is on behalf of a specific user. Otherwise
+    your app can just use the client_credentials grant type to request a new OAuth token as soon as the existing one expires.
+
+    Example:
         
-    Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or
-    (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
-    assertion's SessionNotOnOrAfter value (if present), whichever is shorter.
+    ````
+    POST /oauth2/v1/token HTTP/1.1
+    Host: core.talentappstore.com
+    Content-Type: application/x-www-form-urlencoded
+
+    grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Asaml2-bearer
+    scope=/acme/jobboard/acme/ats%20offline
+    principal_type=candidate
+    assertion=kjh9786gJHGutvfUT765Kkjghf70978klhjhgIUYGkpoiygEciYnjOi...
+    Response:
+    {
+      "access_token":"iuhy76YT785L0GDF23JH7kjhd",
+      "expires_in":3600,
+      "token_type":"Bearer",
+      "refresh_token":"j089777bhkltyHTRFG78969KJH968d"
+    }
+    ````
     
-    If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
+    Internally, TAS stores a copy of refresh tokens that it has issued, so it can validate
+    requests for new access tokens. These refresh tokens are stored keyed by:
+    - principal type
+    - saml key (i.e. a key for the specific SAML assertion that was passed in the "assertion" parameter 
+    user identifier (/E/N)
+    - the SSO-protected app the user logged into (the API consuming app in this case)
+    - consuming app install
+    - producing app install
     
-    For efficiency consumers should cache the tokens returned by this endpoint until (a) the tenant's security generation
-    number changes, or (b) the cached token is too close to expiry to serve the needs of the consumer.
+    Your app should save refresh tokens in long-term storage and continue to use them as long as they
+    remain valid. If your app requests another refresh token for the same combination of
+    values above, a new refresh token will be issued and any previous refresh token will be revoked.
+    
+    There is currently no support for refresh token revocation as per https://tools.ietf.org/html/rfc7009.
+
+    Verifying incoming OAuth tokens
+    -------------------------------
+    To be secure, when an app receives an incoming tenant API call, it must:
+    - Check that an incoming OAuth token was provided in the Authorization request header
+    - Verify that the OAuth token was correctly signed by TAS core, and matches the public key from GET /OAuthKey.
+    - Check that it is the correct audience (to prevent a malicious app using a token for your app which was intended for another app), i.e.;
+      - the "pt" (producing tenant) field matches the current tenant (e.g. as extracted from the Host header)
+      - the "pa" (producing app) field matches the shortCode hard-coded into the app's code
+    - call GET /routes/{CT}/{CA}/{PT}/{PA} to verify that a route exists (to prevent a malicious app calling an API on your app which it has not declared that it calls)
+    - check that whatever method is being used (GET, POST, etc.) is one of the supported methods declare on the API itself 
+
+    Because performing the checks above involves making TAS core API calls, the producing app should attempt to cache the results whenever possible.
+
+    For intra-tenant calls (i.e., where the producer and the consumer are the same), the
+    producer can cache route verifications as long as the "sgen" (security generation) parameter
+    in the token matches the app's own stored value for sgen.
+
+    This works because sgen cannot be changed without bouncing the tenant, and every app is always
+    informed when the tenant is bounced, so the producer always knows it has the latest value for
+    sgen.
+
+    A typical cache implementation might:
+    - store verification outcomes for intra-tenant calls as booleans in a key value store
+    - key the outcomes by some synthesised string like /routes/acme/uberapply/acme/ats/tas/%2Fcategories/GET
+    - flush the cache whenever sgen changes
+
+    For inter-tenant calls (i.e. where the consumer is a remote app likely installed at another tenant),
+    the producer does not receive any notifications when the remote tenant is bounced. Therefore it
+    has no way to maintain an up to date copy of the remote tenant's sgen value. This means that the producer
+    must verify the route every time. This is not an issue until when/if TAS supports remote mounting.
 
   post:
     description: |
       Get a new access token, and optionally a refresh token.
+
+      The request body must be of content-type application/x-www-form-urlencoded, and contain values for grant_type
+      and optionally other parameters, encoded as per https://tools.ietf.org/html/rfc6749#appendix-B.
+      See also https://tools.ietf.org/html/rfc7522#section-4.
+
+      The core asserts that:
+      - the consuming app is installed at the consuming tenant
+      - the producing app is installed at the producing tenant
+      - there exists at least one route between the consumer and producer, for any API (this prevents malicious apps probing for
+      the presence of other apps)
+        
+      Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or
+      (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
+      assertion's SessionNotOnOrAfter value (if present), whichever is shorter.
+    
+      If SessionNotOnOrAfter is in the past then token creation fails, and the app must somehow force the user to reauthenticate.
+    
+      For efficiency consumers should cache the tokens returned by this endpoint until (a) the tenant's security generation
+      number changes, or (b) the cached token is too close to expiry to serve the needs of the consumer.
 
     body:
       application/x-www-form-urlencoded:
@@ -337,13 +562,26 @@ traits: !include traits.yml
           grant_type:
             description: |
                One of:
-               - client_credentials
-               - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
-               - urn:talentappstore.com:oauth:saml2-bearer-ref
-               - urn:talentappstore.com:oauth:tas-inherited
-               - refresh_token
+               - **client_credentials**: for an anonymous OAuth tokens that is not on behalf of any user/principal.
+               Anonymous tokens are easy to create, but can't be used to consume on-behalf APIs, which tend to be those
+               with principal-specific logic or security, e.g. only allowing users in the finance department to view
+               account details, logging who the user was who created a job, etc. Anonymous access tokens always expire
+               one hour after they are issued.
+               - **urn:ietf:params:oauth:client-assertion-type:saml2-bearer**: for an on-behalf OAuth token that includes the identity
+               of the user/principal who is the subject of the passed in SAML assertion. This grant type can only be used by apps that
+               are protected via SSO. The token's expiry time will be either in one hour, or at the time dictated by the original SAML
+                assertion's "on or before" field (TODO: be specific), whichever is sooner.
+               - **urn:talentappstore.com:oauth:saml2-bearer-key**: As for urn:ietf:params:oauth:client-assertion-type:saml2-bearer, except
+               that the key is used rather than the assertion itself.
+               - **urn:talentappstore.com:oauth:tas-inherited**: for an on-behalf token that re-uses the user's identity from an incoming
+               on-behalf token. Used by apps that both produce and consume on-behalf APIs; i.e. apps that are intermediate links in a chain
+               of on-behalf API calls. The new access token inherits details of the principal (if any) and the expiry time 
+               from the parent access token. This means all access tokens created as part of a nested set
+               of API calls will expire simultaneously.
+               - **refresh_token**: for an on-behalf token derived from a refresh token obtained previously via a call to the
+               token endpoint with scope of "offline". The access token has a life of one hour. 
             type: string
-            example: refresh_token
+            example: urn:talentappstore.com:oauth:saml2-bearer-key
           scope:
             description: |
               A space separated set of values for the OAuth scope of this token, which may include: 
@@ -352,6 +590,13 @@ traits: !include traits.yml
               - the keyword "offline" (MAY be present only when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer)
             type: string
             example: /acme/jobboard/acme/ats offline 
+          principal_type:
+            description: |
+              The principal type the on-behalf token is being created for. MUST be present when grant_type is
+              urn:ietf:params:oauth:client-assertion-type:saml2-bearer or
+              urn:talentappstore.com:oauth:saml2-bearer-key. MUST NOT be present for other grant types.
+            type: string
+            example: candidate 
           refresh_token:
             description: |
               A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is
@@ -366,16 +611,16 @@ traits: !include traits.yml
             description: |
               The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
               MUST NOT be present for other grant types. MUST contain an unexpired SAML assertion that matches exactly one as captured
-              and stored by the TAS SAML proxy during login *to the same app making the core-in API call*.
-          assertion_ref:
+              and stored by the TAS SAML proxy during login to *this app*.
+          samlKey:
             description: |
               A reference to the incoming SAML assertion. MUST be present for grant_type of urn:talentappstore.com:oauth:saml2-bearer-ref.
               MUST NOT be present for other grant types. MUST contain a valid reference to an unexpired SAML assertion as captured
-              and stored by the TAS SAML proxy during login *to the same app making the core-in API call*.
+              and stored by the TAS SAML proxy during login *to this app*.
     responses:
       200:
         body:
           application/json:
-            schema: !include ../schemas/tokenJwt.json
-            example: !include ../examples/tokenJwt-simple.json
+            schema: !include ../schemas/tokenResponse.json
+            example: !include ../examples/tokenResponse-simple.json
 

@@ -21,6 +21,7 @@
     "tenant": { "$ref": "../schemas/tenant.json" },
     "tenantStatus": { "$ref": "../schemas/tenantStatus.json" },
     "tokenJwt": { "$ref": "../schemas/tokenJwt.json" },
+    "tokenResponse": { "$ref": "../schemas/tokenResponse.json" },
     "wellKnownSamlAttributes": { "$ref": "../schemas/wellKnownSamlAttributes.json" }
 
   }
