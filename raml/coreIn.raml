@@ -59,23 +59,6 @@ documentation:
     - Header names must be lower cased when listed in SignedHeaders 
     - The Credentials must contain the current date in UTC in "yyyyMMdd" format
 
-/apps:
-  description: An *app* is a microservice that can be installed by a tenant
-  /{app}:
-    get:
-      description: |
-        Get details of the app. This is useful when some piece of software (like a proxy) is acting on behalf of the app,
-        but has only been given its shortCode and secret key.
-        
-        The core asserts that:
-        - the call is being made by the app itself
-        
-      responses:
-        200:
-          body:
-            application/json:
-              schema: !include ../schemas/app.json
-              example: !include ../examples/app-simple.json
 
 /OAuthPublicKey:
   description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.
