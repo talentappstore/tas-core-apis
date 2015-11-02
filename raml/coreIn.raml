@@ -470,23 +470,33 @@ documentation:
   description: |
     About OAuth tokens
     ------------------
-    API calls between apps (i.e. tenant API calls) are protected by OAuth. The consuming app must obtain an OAuth token from the TAS core,
-    and pass it in the Authorization header when making the API call. For more background on OAuth and tokens, see the
-    [OAuth 2 spec(http://tools.ietf.org/html/rfc6749') and also Google's
+    API calls between apps (i.e. tenant API calls) are protected by OAuth access tokens, with TAS acting as the authorization server.
+
+    An OAuth token in TAS has [this structure](../schemas/tokenJwt.json). An example token is [shown here](../examples/tokenJwt-simple.json).
+
+    A single OAuth token is scoped by the combination of consumer and producer app, and can be used to consume any allowable method on
+    any allowable API between the two. Currently, the consumer and producer will always be at the same tenant.
+
+    The flow for consuming a tenant API is as follows;
+    - The app consuming the API (the consumer) calls GET /routes to locate the actual endpoint (the producer)
+    - The consumer checks its cache to see if it already has an OAuth token for the combination of consumer and producer
+    - If not, it calls POST /token to obtain an OAuth token from the TAS core
+    - The consumer makes the API call, passing the token in the Authorization header
+    - The producer checks that the token is valid and being used correctly
+    - For on-behalf tokens, the producer extracts the logs in user's identity
+    - The producer produces the API
+
+    Rather than being passed as raw json, OAuth tokens are passed as a JWT (json web token; see http://jwt.io/). Because JWTs are self-contained
+    and signed, producers can rely on their content without any network traffic to the authorization server (i.e. TAS core).
+    
+    For more background on OAuth and tokens, see the [OAuth 2 spec(http://tools.ietf.org/html/rfc6749') and also Google's
     [OAuth documentation](https://developers.google.com/accounts/docs/OAuth2WebServer) for additional context.
 
-    In TAS, OAuth tokens are scoped by the consuming and producing app, i.e. a single token can be used by an app installed at a tenant
-    (the consuming app) can use to consume any tenant API on a specific app installed at a tenant (the producing app).
-    Currently, producing and consuming tenants are always the same.
     
-    OAuth access tokens in TAS are self-contained security tokens in the form of a JWT (json web token; see http://jwt.io/).
-    Because access tokens are self-contained and signed, producers can rely on their content without any network
-    traffic to the authorization server (i.e. TAS core).
-
     On-behalf tokens
     ----------------
-    Tokens may further be on-behalf, i.e. principal-aware, in which case they also identify some ultimate logged in end user
-    who the API call is on behalf of. 
+    OAuth tokens may further be on-behalf, i.e. principal-aware, in which case they also identify some ultimate logged in end user
+    who the API call is on behalf of, in the "sub" field. 
 
 
     Refresh tokens
@@ -496,7 +506,7 @@ documentation:
     Any app that is protected via TAS SSO and is marked as "offlineCapable" (TODO:
     exact name) can use the urn:ietf:params:oauth:client-assertion-type:saml2-bearer
     grant type (which requires a SAML assertion), and add the string "offline" to the scope
-    parameter to create an on-behalf OAuth token and an accompanying refresh token.
+    parameter in the call to POST /token to create both an on-behalf OAuth access token and an accompanying refresh token.
     Your app should store the refresh token in its own long-term storage, and can use the access token immediately.
     
     The access token can be used immediately, and when it expires, the refresh token can be used to generate new
