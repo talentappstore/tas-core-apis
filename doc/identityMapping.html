@@ -269,6 +269,25 @@ For example:
 </div>
 </p>
 
+<h3>Auto-provisioning considerations for assertion decorators</h3>
+
+<p>Auto-provisioning refers to creating users "on the fly", i.e. at the time when they first log in to the app.
+</p>
+
+<p>To decide whether, and how, to auto-provisioning a new logging in user, an app may look at the
+well known attributes in the SAML assertion, such as email or roles.</p>
+
+<p>It is possible for an app to be both auto-provisioning and also an assertionDecorator.</p>
+
+<p>In a situation where an assertionDecorator app is asked to decorate the assertion for a user that does not exist in the app, but would due
+to auto-provisioning were they to log in to the app, then the app should normally decorate the assertion just as if the user had been
+auto-provisioned.</p>
+
+<p>This sort of situation would arise, for example with a legacy ATS app designed to auto-provision new users and grant them access to a
+separate candidate search app. In this case, if the user logs in to the search app first, having never visisted the legacy ATS app, then
+the legacy ATS app (acting as an assertionDecorator) should inject roles (possibly including the right to access the search app)
+as if the user had instead logged into the ATS first and therefore been auto-provisioned and gained the default permissions.</p>
+
 
 
 <script>

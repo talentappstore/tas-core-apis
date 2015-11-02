@@ -17,7 +17,10 @@ version: v1
         The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but
         should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
           
-        See [Reboots](../doc/overview.html#Reboots) for more details.
+        See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
+
+        
+        
       body:
         application/json:
           schema: !include ../schemas/tenant.json
@@ -32,7 +35,7 @@ version: v1
         cleanup is long-running, you should handle a case where the tenant immediately reinstalls your app, and ensure the
         cleanup from the earlier install(s) can continue.
 
-        See [Reboots](../doc/overview.html#Reboots) for more details. 
+        See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
     /preHalts:
       post:
         description: |
@@ -47,7 +50,7 @@ version: v1
           After this, your app should continue producing tenant APIs, and, in response to incoming tenant APIs, consuming
           tenant APIs on other apps - it just should not initiate new tenant API activity.
           
-          See [Reboots](../doc/overview.html#Reboots) for more details. 
+          See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
         responses:
           200:
           
@@ -65,7 +68,7 @@ version: v1
           
           - GET /tenants/{tenant}/status
           
-          See [Reboots](../doc/overview.html#Reboots) for more details. 
+          See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
         responses:
           200:
           
@@ -83,7 +86,7 @@ version: v1
           After returning 200, your app should start producing tenant API calls immediately. However it should not consume any tenant APIs,
           except in response to an incoming tenant API call (i.e. your app may take part in, but should not initiate, chains of tenant API calls).
 
-          See [Reboots](../doc/overview.html#Reboots) for more details. 
+          See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
           
     /starts:
       post:         
@@ -94,7 +97,7 @@ version: v1
           
           After returning 200, your app can start consuming tenant API calls as normal.
 
-          See [Reboots](../doc/overview.html#Reboots) for more details. 
+          See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
           
     /storeFrontMainPage:
       get:
@@ -139,13 +142,14 @@ version: v1
                 wait until all assertionDecorators have responded with 200 before it passes the login through to the web app.
                 
                 See [Injecting role attributes](../doc/identityMapping.html#Injecting_role_attributes_-_assertion_decorator_apps) for more details.
+                
               body:
                 application/xml:
               responses:
                 403:
-                  description: this code indicates that login should fail 
+                  description: respond with this to indicate that login should fail 
                 200:
-                  description: this code indicates that login should proceed, and any roles passed in the response should be merged into the SAML assertion 
+                  description: respond with this to indicate that login should proceed, and any roles passed in the response should be merged into the SAML assertion 
                   body:
                     application/json:
                       schema: !include ../schemas/injectedRoles.json
