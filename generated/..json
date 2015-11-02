@@ -19,6 +19,7 @@
     "tenantExtended": { "$ref": "../schemas/tenantExtended.json" },
     "tenantInstallsAppStatus": { "$ref": "../schemas/tenantInstallsAppStatus.json" },
     "tenant": { "$ref": "../schemas/tenant.json" },
+    "tenantList": { "$ref": "../schemas/tenantList.json" },
     "tenantStatus": { "$ref": "../schemas/tenantStatus.json" },
     "tokenJwt": { "$ref": "../schemas/tokenJwt.json" },
     "tokenResponse": { "$ref": "../schemas/tokenResponse.json" },

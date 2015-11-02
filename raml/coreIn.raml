@@ -215,10 +215,36 @@ documentation:
                     schema: !include ../schemas/route.json
                     example: !include ../examples/route-simple.json
 
+/samlIdPMetadata:
+  description: |
+    Apps that are SSO-protected (i.e., SPs in SAML lingo) require the SAML metadata for the TAS core proxy that acts as a facade in front of
+    all of the identity providers that all of the tenants has set up. In other words there is a single unit of IdP metadata that can be used by all
+    apps at all tenants.
+     
+  get:
+    description: |
+      description: Get the metadata for the IdP proxy.
+
+      The core asserts that:
+      - the app is linked to any principal type (i.e., it uses SSO)
+          
+    responses:
+      200:
+        body:
+          application/xml:
               
 /tenants:  
   description: |
     A *tenant* is a customer within the multi-tenanted environment of Talent App Store.
+  get:
+    description: |
+      Get a list of shortCodes of every tenant that has this app installed.
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include ../schemas/tenantList.json
+            example: !include ../examples/tenantList-simple.json
   /{tenant}:
     get:
       description: |
@@ -287,23 +313,7 @@ documentation:
       description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata
       get:
         description: |
-          Get the metadata for this app (the SP).
-          
-          The core asserts that:
-          - the app is linked to any principal type (i.e., it uses SSO)
-          
-        responses:
-          200:
-            body:
-              application/xml:
-
-    /samlIdPMetadata:
-      description: |
-        Apps that are SSO-protected (i.e., SPs in SAML lingo) require the SAML metadata for the IdP proxy that front ends all of the
-        identity providers that the tenant has set up.
-      get:
-        description: |
-          description: Get the metadata for the IdP proxy.
+          Get the metadata for this app (the SP) as installed at this tenant.
           
           The core asserts that:
           - the app is linked to any principal type (i.e., it uses SSO)
