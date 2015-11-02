@@ -61,34 +61,6 @@ Social sharing app->ATS app:tenant API call, e.g. GET /openJobs/{id}
 
 
 
-<h3>Revoking a refresh token</h3>
-
-<p>To programmatically revoke a refresh token, your app makes a request to the revoke endpoint that
-includes the refresh token as a parameter:
-
-<div class='codeBlock'>
-https://core.talentappstore.com/oauth2/v1/revoke?token={token}
-</div>
-</p>
-
-
-<p>TODO: add to corein.raml</p>
-
-<p>Revoking a refresh token does not revoke any associated access tokens (TAS does not store access tokens).
-</p>
-
-<h3>Incrementing the security generation</h3>
-
-<p>In the event of a security breach, a tenant may want to perform a bulk revocation of SAML
-assertions, TAS sessions and refresh and access tokens.
-</p>
-
-<p>This has the effect of forcing all principals at the tenant to log in again. Apps that perform
-background or batch operations will need to obtain new refresh tokens.
-</p>
-
-
-
 
 
 
@@ -98,38 +70,6 @@ background or batch operations will need to obtain new refresh tokens.
 
 
   
-<h1>Core APIs</h1>
-
-
-<h2>Tenant API versioning</h2>
-
-<p>The developer who owns a tenant API is in control of that API's definition.</p>
-
-<p>Any changes to an API definition should be made in a non-breaking style, (thanks
-<a href='https://wiki.openstack.org/wiki/APIChangeGuidelines'>openstack</a>):</p>
-
-<h4>Generally acceptable</h4>
-<ul>
-<li>Adding a new response header
-<li>Adding a property to a resource representation
-<li>The change is the only way to fix a security bug
-<li>Fixing a bug so that a request which resulted in an error response before is now successful
-<li>Changing an error response code to be more accurate
-<li>Adding an optional property to a resource representation which may be supplied by clients,
-assuming the API previously would ignore this property
-</ul>
-<h4>Generally not acceptable</h4>
-<ul>
-<li>A change such that a request which was successful before now results in an
-error response (unless the success reported previously was hiding an existing error condition)
-<li>Changing or removing a property in a resource representation
-<li>Changing the semantics of a property in a resource representation which may be supplied by clients
-<li>Changing or removing a response header
-<li>Changing which response code is returned on success
-</ul>
-
-<p>If you need to make a breaking change, you should define a new tenant API instead.</p>
-
 
 
 

@@ -59,6 +59,36 @@ documentation:
     - Header names must be lower cased when listed in SignedHeaders 
     - The Credentials must contain the current date in UTC in "yyyyMMdd" format
 
+ - title: Tenant API versioning
+   content: |
+    [TODO]: Move to other documentation.
+    
+    The developer who owns a tenant API is in control of that API's definition.
+
+    Any changes to an API definition should be made in a non-breaking style, (as per
+    <a href='https://wiki.openstack.org/wiki/APIChangeGuidelines'>openstack</a>):
+
+    Generally acceptable
+    --------------------
+    - Adding a new response header
+    - Adding a property to a resource representation
+    - The change is the only way to fix a security bug
+    - Fixing a bug so that a request which resulted in an error response before is now successful
+    - Changing an error response code to be more accurate
+    - Adding an optional property to a resource representation which may be supplied by clients,
+    assuming the API previously would ignore this property
+
+    Generally not acceptable
+    ------------------------
+    - A change such that a request which was successful before now results in an
+    error response (unless the success reported previously was hiding an existing error condition)
+    - Changing or removing a property in a resource representation
+    - Changing the semantics of a property in a resource representation which may be supplied by clients
+    - Changing or removing a response header
+    - Changing which response code is returned on success
+
+    If you need to make a breaking change, you should define a new tenant API instead.
+
 
 /OAuthPublicKey:
   description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.
