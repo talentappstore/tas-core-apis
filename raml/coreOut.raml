@@ -5,20 +5,20 @@ baseUri: http://talentappstore.com/{version}
 version: v1
 
 /tenants:
+  post:
+    description: |
+      Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant has
+      status of "halted".
+      
+      The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but
+      should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
+        
+      See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
+
   /{tenant}:
     description: |
       A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls
       that your app makes to TAS are within the context of a single tenant.
-    post:
-      description: |
-        Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant has
-        status of "halted".
-        
-        The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but
-        should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
-          
-        See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
-
         
         
       body:
