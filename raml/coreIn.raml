@@ -10,85 +10,28 @@ documentation:
 
  - title: Welcome
    content: |
-    You're at the core API documentation for Talent App Store. If you'd like a higher level view, go to the
-    [developer site](http://developer.talentappstore.com).
-
- - title: HMAC
+    You're at the documentation for the Talent App Store (TAS) **core-in APIs**. See also the [core-out APIs](coreOut.raml.html)
+    and the [index](../index.html) of all core API documentation, including RAML files, json schemas and API examples. 
+    
+    For a higher level view of TAS, and writing apps, go to the [developer site](http://developer.talentappstore.com).
+    
+ - title: About TAS APIs
    content: |
-    Most core API calls are secured using the same HMAC approach as
-    <a href='http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html'>Amazon Web Service's Signature Version 4 signing process</a>,
-     see also http://security.stackexchange.com/questions/77372/unusual-design-aspects-of-aws-hmac-based-authentication-v4),
-    except that whereas an AWS signature key
-    is generated like this (see http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html)...
-
-    ````
-    static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName) throws Exception  {
-         byte[] kSecret = ("AWS4" + key).getBytes("UTF8");
-         byte[] kDate    = HmacSHA256(dateStamp, kSecret);
-         byte[] kRegion  = HmacSHA256(regionName, kDate);
-         byte[] kService = HmacSHA256(serviceName, kRegion);
-         byte[] kSigning = HmacSHA256("aws4_request", kService);
-         return kSigning;
-    }
-    ````
+    TAS deals in two types of APIs.
     
-    A TAS signature key for a core API call (in or out) is generated like this...
+    Core APIs are used by apps to talk to the core (i.e., core-in APIs) or vice versa (core-out APIs). The TAS core APIs are
+    mainly used by apps to:
+    - handle provisioning (when tenants install or uninstall your app) 
+    - provide single sign on (SSO)
+    - produce and consume tenant APIs (on other apps)
     
-    ````
-    static byte[] getSignatureKey(String key, String dateStamp) throws Exception  {
-         byte[] kSecret = ("TAS4" + key).getBytes("UTF8");
-         byte[] kDate    = HmacSHA256(dateStamp, kSecret);
-         byte[] kSigning = HmacSHA256("tas4_request", kService);
-         return kSigning;
-    }
-    ````
+    Almost all core API calls are secured using [HMAC](../doc/HMAC.html).
+
+    Tenant APIs are used by apps to talk to other apps on behalf of a tenant - for example, a job board fetching a list of 
+    open jobs from an applicant tracking system (ATS) app.
     
-    A correctly formed request will look like this (for a call to GET /routes)
-    
-    ````
-    POST https://core.talentappstore.com/api/v1/routes HTTP/1.1
-    Authorization: TAS4-HMAC-SHA256 Credential=jobboard/20150702/tas4_request, SignedHeaders=content-type;host;x-tas-date, Signature=ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c
-    Host: core.talentappstore.com
-    Content-type: application/json; charset=utf-8
-    x-tas-date: 20150702T233600Z
-
-    TODO: check the location of the URL - is above correct?
-    ````
-
-    Additional formatting rules;
-    - Header names must be lower cased when listed in SignedHeaders 
-    - The Credentials must contain the current date in UTC in "yyyyMMdd" format
-
- - title: Tenant API versioning
-   content: |
-    [TODO]: Move to other documentation.
-    
-    The developer who owns a tenant API is in control of that API's definition.
-
-    Any changes to an API definition should be made in a non-breaking style, (as per
-    <a href='https://wiki.openstack.org/wiki/APIChangeGuidelines'>openstack</a>):
-
-    Generally acceptable
-    --------------------
-    - Adding a new response header
-    - Adding a property to a resource representation
-    - The change is the only way to fix a security bug
-    - Fixing a bug so that a request which resulted in an error response before is now successful
-    - Changing an error response code to be more accurate
-    - Adding an optional property to a resource representation which may be supplied by clients,
-    assuming the API previously would ignore this property
-
-    Generally not acceptable
-    ------------------------
-    - A change such that a request which was successful before now results in an
-    error response (unless the success reported previously was hiding an existing error condition)
-    - Changing or removing a property in a resource representation
-    - Changing the semantics of a property in a resource representation which may be supplied by clients
-    - Changing or removing a response header
-    - Changing which response code is returned on success
-
-    If you need to make a breaking change, you should define a new tenant API instead.
-
+    Tenant APIs are defined by developers, and not controlled in any way by TAS. However we do provide some best practice suggestion
+    on how developers should [version tenant APIs](../doc/versioning.html).
 
 /OAuthPublicKey:
   description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.

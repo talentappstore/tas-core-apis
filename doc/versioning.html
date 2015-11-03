@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- always required -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- needed for sequence diagrams -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/raphael-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/underscore-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-wrapper.js'></script>
+
+<!-- needed for includes -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/clientInclude.js'></script>
+
+<!-- needed for table of contents -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/tocify.js'></script>
+
+<link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
+<!-- always required -->
+<link rel='stylesheet' href='http://talentappstore.github.io/tas-des-static/css/des.css' type='text/css' media='all' />
+
+<title>Talent App Store - Versioning</title>
+</head>
+<body>
+
+<h1>Versioning</h1>
+
+<p>The developer who owns a tenant API is in control of that API's definition.
+</p>
+
+<p>Any changes to an API definition should be made in a non-breaking style, (as per
+<a href='https://wiki.openstack.org/wiki/APIChangeGuidelines'>openstack</a>)
+
+<h2>Generally acceptable</h2>
+<ul>
+<li>Adding a new response header
+<li>Adding a property to a resource representation
+<li>The change is the only way to fix a security bug
+<li>Fixing a bug so that a request which resulted in an error response before is now successful
+<li>Changing an error response code to be more accurate
+<li>Adding an optional property to a resource representation which may be supplied by clients,
+assuming the API previously would ignore this property
+</ul>
+
+<h2>Generally not acceptable</h2>
+
+<ul>
+<li>A change such that a request which was successful before now results in an
+error response (unless the success reported previously was hiding an existing error condition)
+<li>Changing or removing a property in a resource representation
+<li>Changing the semantics of a property in a resource representation which may be supplied by clients
+<li>Changing or removing a response header
+<li>Changing which response code is returned on success
+</ul>
+</p>
+
+<p>If you need to make a breaking change, you should define a new tenant API instead.
+</p>
+
+
+<script>
+$(document).ready(function() {
+
+	renderSequenceDiagrams();
+	renderClientIncludes();
+	renderTOC();
+});
+</script>
+
+
+</body>
+</html>
