@@ -298,6 +298,10 @@ documentation:
             
           responses:
             200:
+              body:
+                application/json:
+                  schema: !include ../schemas/rebootLaunchKey.json
+                  example: !include ../examples/rebootLaunchKey-simple.json
             
       /patchSet:
         post:
@@ -315,8 +319,8 @@ documentation:
             200:
               body:
                 application/json:
-                  schema: !include ../schemas/patchSetLaunchKey.json
-                  example: !include ../examples/patchSetLaunchKey-simple.json
+                  schema: !include ../schemas/rebootLaunchKey.json
+                  example: !include ../examples/rebootLaunchKey-simple.json
       /noop:
         post:
           description: |
@@ -327,6 +331,10 @@ documentation:
             Called when tenant admin person clicks "Reboot" in the storefront.
           responses:
             200:
+              body:
+                application/json:
+                  schema: !include ../schemas/rebootLaunchKey.json
+                  example: !include ../examples/rebootLaunchKey-simple.json
       
     /reboots:
       description: |

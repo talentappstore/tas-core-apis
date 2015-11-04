@@ -15,16 +15,16 @@ version: v1
         
       See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
 
+    body:
+      application/json:
+        schema: !include ../schemas/tenant.json
+        example: !include ../examples/tenant-simple.json
+
   /{tenant}:
     description: |
       A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls
       that your app makes to TAS are within the context of a single tenant.
         
-        
-      body:
-        application/json:
-          schema: !include ../schemas/tenant.json
-          example: !include ../examples/tenant-simple.json
     delete:
       description: |
         Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on your app). Your app can
