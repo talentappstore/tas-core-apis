@@ -400,7 +400,7 @@ documentation:
           description: |
             A storefront app's web page uses this API to launch a previously prepared reboot (if not already launched),
             and get the latest events and the current summary details.
-            
+
             This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
             belongs to a storefront app which does not share the same domain as the tas core).
             
@@ -412,7 +412,10 @@ documentation:
             If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically
             immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the
             last event has been fetched.
-            
+
+            The core verifies:
+            - that no reboot is currently underway for the tenant
+                        
           queryParameters:
             afterEvent:
               type: integer
@@ -557,6 +560,7 @@ documentation:
       - the producing app is installed at the producing tenant
       - there exists at least one route between the consumer and producer, for any API (this prevents malicious apps probing for
       the presence of other apps)
+      - when a SAML assertion is passed directly or by key, that the assertion was issued to this application
         
       Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or
       (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
