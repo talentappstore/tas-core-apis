@@ -56,8 +56,18 @@
                 },
                 "methods": {
                     "$ref": "#/definitions/methods"
+                },
+                "principalType": {
+                     "type": "string",
+                     "description": "the principal type of this API (not present if this is not an on-behalf API)"
                 }
-            }
+            },
+            "required": [
+              "apiDeveloper",
+              "apiUriTemplate",
+              "consumedAsSourceOfTruth",
+              "methods"
+            ]
         }
     }
 }

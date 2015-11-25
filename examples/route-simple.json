@@ -16,7 +16,8 @@
             "GET",
             "POST",
             "DELETE"
-        ]
+        ],
+        "principalType": "candidate"
     },
     "producingAppInstall": {
         "tenant": "seek",
