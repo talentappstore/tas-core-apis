@@ -53,6 +53,18 @@
                 "sgen"
             ]
         },
+        "dev": {
+          "type": "string",
+          "description": "the API's developer" 
+        },
+        "api": {
+          "type": "string",
+          "description": "the URI template of the API" 
+        },
+        "sot": {
+            "type": "boolean",
+            "description": "whether the API is being consumed as SoT (if true) or not"
+        },
         "iat": {
             "type": "string",
             "description": "time the token was issued, as per the spec."
@@ -65,6 +77,8 @@
     "required": [
         "cons",
         "aud",
+        "dev",
+        "api",
         "iat",
         "exp"
     ]

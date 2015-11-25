@@ -439,12 +439,12 @@ documentation:
 
     An OAuth token in TAS has [this structure](../schemas/tokenJwt.json). An example token is [shown here](../examples/tokenJwt-simple.json).
 
-    A single OAuth token is scoped by the combination of consumer and producer app, and can be used to consume any allowable method on
-    any allowable API between the two. Currently, the consumer and producer will always be at the same tenant.
+    A single OAuth token is scoped by the combination of consumer, producer, API and SoT, and can be used to consume any allowable method on
+    the API. Currently, the consumer and producer will always be at the same tenant.
 
     The flow for consuming a tenant API is as follows;
     - The app consuming the API (the consumer) calls GET /routes to locate the actual endpoint (the producer)
-    - The consumer checks its cache to see if it already has an OAuth token for the combination of consumer and producer
+    - The consumer checks its cache to see if it already has an OAuth token for the combination of consumer and producer and API and SoT
     - If not, it calls POST /token to obtain an OAuth token from the TAS core
     - The consumer makes the API call, passing the token in the Authorization header
     - The producer checks that the token is valid and being used correctly
@@ -456,13 +456,11 @@ documentation:
     
     For more background on OAuth and tokens, see the [OAuth 2 spec(http://tools.ietf.org/html/rfc6749') and also Google's
     [OAuth documentation](https://developers.google.com/accounts/docs/OAuth2WebServer) for additional context.
-
     
     On-behalf tokens
     ----------------
     OAuth tokens may further be on-behalf, i.e. principal-aware, in which case they also identify some ultimate logged in end user
     who the API call is on behalf of, in the "sub" field. 
-
 
     Refresh tokens
     --------------
@@ -470,7 +468,7 @@ documentation:
     
     Any app that is protected via TAS SSO and is marked as "offlineCapable" (TODO:
     exact name) can use the urn:ietf:params:oauth:client-assertion-type:saml2-bearer
-    grant type (which requires a SAML assertion), and add the string "offline" to the scope
+    grant type (which requires a SAML assertion), and add " offline" to the scope
     parameter in the call to POST /token to create both an on-behalf OAuth access token and an accompanying refresh token.
     Your app should store the refresh token in its own long-term storage, and can use the access token immediately.
     
@@ -488,7 +486,7 @@ documentation:
     Content-Type: application/x-www-form-urlencoded
 
     grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Asaml2-bearer
-    scope=/acme/jobboard/acme/ats%20offline
+    scope=acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline
     principal_type=candidate
     assertion=kjh9786gJHGutvfUT765Kkjghf70978klhjhgIUYGkpoiygEciYnjOi...
     Response:
@@ -524,13 +522,18 @@ documentation:
     - Check that it is the correct audience (to prevent a malicious app using a token for your app which was intended for another app), i.e.;
       - the "pt" (producing tenant) field matches the current tenant (e.g. as extracted from the Host header)
       - the "pa" (producing app) field matches the shortCode hard-coded into the app's code
-    - call GET /routes/{CT}/{CA}/{PT}/{PA} to verify that a route exists (to prevent a malicious app calling an API on your app which it has not declared that it calls)
-    - check that whatever method is being used (GET, POST, etc.) is one of the supported methods declare on the API itself 
+    - Check, using "dev" and "api" fields, that the token is for this API (to prevent a malicious app calling an API on your
+    app which it has not declared that it calls) 
+    - call GET /routes/{CT}/{CA}/{PT}/{PA} and verify that:
+      - the API is being consumed (as per "sot" in the token) in a way (SoT or not) that the consumer has declared
+      - whatever method is being used (GET, POST, etc.) is one of the subset of supported methods
+    that the consumer declares that it consumes as Sot or not as appropriate (to prevent a malicious app declaring that it only
+    uses GET but then performing a DELETE). 
 
     Because performing the checks above involves making TAS core API calls, the producing app should attempt to cache the results whenever possible.
 
     For intra-tenant calls (i.e., where the producer and the consumer are the same), the
-    producer can cache route verifications as long as the "sgen" (security generation) parameter
+    producer can cache verifications as long as the "sgen" (security generation) parameter
     in the token matches the app's own stored value for sgen.
 
     This works because sgen cannot be changed without bouncing the tenant, and every app is always
@@ -558,9 +561,16 @@ documentation:
       The core asserts that:
       - the consuming app is installed at the consuming tenant
       - the producing app is installed at the producing tenant
-      - there exists at least one route between the consumer and producer, for any API (this prevents malicious apps probing for
-      the presence of other apps)
-      - when a SAML assertion is passed directly or by key, that the assertion was issued to this application
+      - there exists a route between the consumer and producer, for this API, consumed as SoT or not as relevant (this
+      prevents malicious apps probing for the presence of other apps)
+      - when a SAML assertion is passed directly or by key, that the assertion was issued to this application and not any other
+      - if the API is on-behalf (is linked to a principal type) that one of the following grant types is being used:
+        - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
+        - urn:talentappstore.com:oauth:saml2-bearer-key
+        - urn:talentappstore.com:oauth:tas-inherited
+        - refresh_token
+      - if the API is not on-behalf (is linked to a principal type) that one of the following grant types is being used:
+        - client_credentials
         
       Every call to this endpoint results in a new access token being issued, with an expiry time set to one hour, or
       (as per http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html) to the time specified in the SAML
@@ -600,11 +610,24 @@ documentation:
           scope:
             description: |
               A space separated set of values for the OAuth scope of this token, which may include: 
-              - A string starting with "/" that denotes a consuming app installed at a specific tenant
-              and a producing app installed at a specific tenant (MUST be present for all grant types other than refresh_token)
+              - A space separated string denoting a consuming app installed at a specific tenant,
+              a producing app installed at a specific tenant, the URI template of the API (as per https://tools.ietf.org/html/rfc6570)
+              being consumed; for example "acme jobboard acme ats /jobs/{job}", and whether the API is being consumed as SoT or not.
+              (MUST be present for all grant types other than refresh_token)
               - the keyword "offline" (MAY be present only when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer)
+              
+              The scope string is then encoded as per section 17.13.4 of http://www.w3.org/TR/html401/interact/forms.html - specifically "space characters
+              are replaced by '+', and then reserved characters are escaped as described in [RFC1738].".
+              
+              So:
+              
+              "acme jobboard acme ats /jobs/{job} true offline"
+              
+              becomes
+              
+              "acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline"
             type: string
-            example: /acme/jobboard/acme/ats offline 
+            example: acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline 
           principal_type:
             description: |
               The principal type the on-behalf token is being created for. MUST be present when grant_type is
