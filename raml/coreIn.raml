@@ -316,7 +316,12 @@ documentation:
             tenant clicking install on an app. The endpoint validates the attached patch document.
 
             Called when a tenant admin person clicks to install or uninstall apps in the storefront.
-             
+
+            The core asserts that:
+            - the lists of apps do not contain any app that does not exist
+            - the list of apps to uninstall does not contain any app not installed
+            - the list of apps to install does not contain any app already installed
+            
           body:
             application/json:
               schema: !include ../schemas/simplePatchSet.json
