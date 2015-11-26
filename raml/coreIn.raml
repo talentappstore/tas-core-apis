@@ -229,37 +229,33 @@ documentation:
         - the assertion was issued to this application, as installed at this tenant
         
       /assertions:
-        /{PT}:
-          description: The principal type of the SAML assertion.
-          /{key}:
-            get:
-              description: |
-                Fetch a SAML assertion via its database key.
-              responses:
-                404:
-                  description: when the SAML assertion was not found or has expired
-                200:
-                  body:
-                    application/xml:
-      /keyLookups:
-        /{PT}:
-          description: the principal type the assertion is for
-          post:
+        /{key}:
+          get:
             description: |
-              Fetch the key of an incoming SAML assertion. Used by apps which include their own SAML SP layer (rather than sitting behind
-              the proxy).
-
-              The request body contains the content of the assertion to search for.
-            body:
-              application/xml:
+              Fetch a SAML assertion via its database key.
             responses:
               404:
                 description: when the SAML assertion was not found or has expired
               200:
                 body:
-                  application/json:
-                    schema: !include ../schemas/samlKey.json
-                    example: !include ../examples/samlKey-simple.json
+                  application/xml:
+      /keyLookups:
+        post:
+          description: |
+            Fetch the key of an incoming SAML assertion. Used by apps which include their own SAML SP layer (rather than sitting behind
+            the proxy).
+
+            The request body contains the content of the assertion to search for.
+          body:
+            application/xml:
+          responses:
+            404:
+              description: when the SAML assertion was not found or has expired
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/samlKey.json
+                  example: !include ../examples/samlKey-simple.json
 
     /samlSPMetadata:
       description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata
