@@ -192,12 +192,13 @@ documentation:
             schema: !include ../schemas/tenantList.json
             example: !include ../examples/tenantList-simple.json
   /{tenant}:
+    description: |
+      APIs concerned with a specific tenant. For all these APIs, the core asserts that:
+      - the calling app is installed at the tenant
+    
     get:
       description: |
         Get details of the tenant.
-        
-        The core asserts that:
-        - the app is installed by the tenant
       responses:
         200:
           body:
@@ -209,10 +210,6 @@ documentation:
         description: |
           Get the status of the tenant, including the current state and security generation. Normally apps would use this information
           when restarting to determine whether to flush cached OAuth tokens and routes.
-          
-          The core asserts that:
-          - the app is installed by the tenant
-           
         responses:
           200:
             body:
@@ -286,7 +283,8 @@ documentation:
         The response body from any of the /rebootPrepares endpoints is an unguessable unique "launch key" which is then
         used with POST /tenants/{tenant}/reboots/{launchKey}.
 
-        When any of the /rebootPrepares endpoints are called, the core asserts that the app is marked as "storeFront".
+        For all of these endpoints, the core asserts that:
+        -  the app is marked as "storeFront".
         
       /OAuthFlush:
         post:
@@ -416,7 +414,7 @@ documentation:
             immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the
             last event has been fetched.
 
-            The core verifies:
+            The core asserts:
             - that no reboot is currently underway for the tenant
                         
           queryParameters:
