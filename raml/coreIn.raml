@@ -145,6 +145,7 @@ documentation:
               The core will assert that:
               - the app making the core API call is the producing app (i.e., matches {PA})
               - the producing app is installed at {PT}
+              - the consuming app is installed at {CT}
               - the consuming app has declared that it consumes the given API
               - the producing app has declared that it produces the given API
               - the consuming app has declared that it consumes the given API in the same way that the producer has declared that it produces it (SoT or not).
@@ -152,6 +153,8 @@ documentation:
               Since both consuming and producing apps are specified, there can only be one or zero routes in the response.
 
             responses:
+              400:
+                description: returned on any failure of the assertions described above 
               200:
                 body:
                   application/json:
