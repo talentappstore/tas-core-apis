@@ -1,7 +1,6 @@
 {
  "shortCode": "acme-sandbox-1",
  "name": "Acme sandbox testing site",
- "description": "not for sharing",
  "type": "SANDBOX",
  "logoUrl": "https://s3-aws.com/786745987969"  
 }

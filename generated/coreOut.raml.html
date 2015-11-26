@@ -153,10 +153,6 @@
             "type": "string",
             "description": "a short, lower case identifier for the tenant, e.g. acme"
         },
-        "description": {
-            "type": "string",
-            "description": "description for this tenant"
-        },
         "type": {
             "enum": [
                 "PRODUCTION",
@@ -169,11 +165,10 @@
             "description": "url for the tenant&#39;s logo"
         }
     },
-    "required": ["name","shortCode","description","type"]
+    "required": ["name","shortCode","type"]
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
  "shortCode": "acme-sandbox-1",
  "name": "Acme sandbox testing site",
- "description": "not for sharing",
  "type": "SANDBOX",
  "logoUrl": "https://s3-aws.com/786745987969"  
 }
