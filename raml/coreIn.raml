@@ -405,6 +405,9 @@ documentation:
           - TAS sets the tenant's status to "starting"
           - TAS calls /tenants/{}/starts on each installed app
           - When the last app returns 200, TAS sets the tenant's status to "starting"
+
+        For all of these endpoints, the core asserts that:
+        -  the app is marked as "storeFront".
                       
       /{launchKey}:
         post:
@@ -426,6 +429,7 @@ documentation:
 
             The core asserts:
             - that no reboot is currently underway for the tenant
+            - that the launch key has been previously created via a rebootPrepare call
                         
           queryParameters:
             afterEvent:
@@ -570,6 +574,7 @@ documentation:
       See also https://tools.ietf.org/html/rfc7522#section-4.
 
       The core asserts that:
+      - the calling app (as per the HMAC header) is the same as the consuming app (as per the scope parameter)
       - the consuming app is installed at the consuming tenant
       - the producing app is installed at the producing tenant
       - there exists a route between the consumer and producer, for this API, consumed as SoT or not as relevant (this
@@ -577,7 +582,6 @@ documentation:
       - when a SAML assertion is passed directly or by key, that the assertion was issued to this application and not any other
       - if the API is on-behalf (is linked to a principal type) that one of the following grant types is being used:
         - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
-        - urn:talentappstore.com:oauth:saml2-bearer-key
         - urn:talentappstore.com:oauth:tas-inherited
         - refresh_token
       - if the API is not on-behalf (is linked to a principal type) that one of the following grant types is being used:
@@ -607,8 +611,6 @@ documentation:
                of the user/principal who is the subject of the passed in SAML assertion. This grant type can only be used by apps that
                are protected via SSO. The token's expiry time will be either in one hour, or at the time dictated by the original SAML
                 assertion's "SessionNotOnOrAfter" field, whichever is sooner.
-               - **urn:talentappstore.com:oauth:saml2-bearer-key**: As for urn:ietf:params:oauth:client-assertion-type:saml2-bearer, except
-               that the key is used rather than the assertion itself.
                - **urn:talentappstore.com:oauth:tas-inherited**: for an on-behalf token that re-uses the user's identity from an incoming
                on-behalf token. Used by apps that both produce and consume on-behalf APIs; i.e. apps that are intermediate links in a chain
                of on-behalf API calls. The new access token inherits details of the principal (if any) and the expiry time 
@@ -617,7 +619,7 @@ documentation:
                - **refresh_token**: for an on-behalf token derived from a refresh token obtained previously via a call to the
                token endpoint with scope of "offline". The access token has a life of one hour. 
             type: string
-            example: urn:talentappstore.com:oauth:saml2-bearer-key
+            example: urn:talentappstore.com:oauth:tas-inherited
           scope:
             description: |
               A space separated set of values for the OAuth scope of this token, which may include: 
