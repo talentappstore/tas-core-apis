@@ -580,7 +580,7 @@ documentation:
       - there exists a route between the consumer and producer, for this API, consumed as SoT or not as relevant (this
       prevents malicious apps probing for the presence of other apps)
       - when a SAML assertion is passed directly or by key, that the assertion was issued to this application and not any other
-      - if the API is on-behalf (is linked to a principal type) that one of the following grant types is being used:
+      - if the API (as per the scope parameter) is on-behalf (is linked to a principal type) that one of the following grant types is being used:
         - urn:ietf:params:oauth:client-assertion-type:saml2-bearer
         - urn:talentappstore.com:oauth:tas-inherited
         - refresh_token
@@ -641,13 +641,6 @@ documentation:
               "acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline"
             type: string
             example: acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline 
-          principal_type:
-            description: |
-              The principal type the on-behalf token is being created for. MUST be present when grant_type is
-              urn:ietf:params:oauth:client-assertion-type:saml2-bearer or
-              urn:talentappstore.com:oauth:saml2-bearer-key. MUST NOT be present for other grant types.
-            type: string
-            example: candidate 
           refresh_token:
             description: |
               A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is
