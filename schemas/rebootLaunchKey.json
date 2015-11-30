@@ -3,7 +3,7 @@
 	"type":"object",
 	"additionalProperties":false,
 	"properties":{
-		"launchKey": { "type": "integer", "description": "an unguessable key used to get information about a previously launched patchSet"}
+		"launchKey": { "type": "string", "description": "an unguessable key used to get information about a previously launched patchSet"}
 	},
 	"required":[
 		"launchKey"

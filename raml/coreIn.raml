@@ -415,6 +415,8 @@ documentation:
             A storefront app's web page uses this API to launch a previously prepared reboot (if not already launched),
             and get the latest events and the current summary details.
 
+            IGNORE THE FOLLOWING (it will be removed shortly - for now the endpoint is a normal core API endpoint secured by HMAC,
+            and typically the storefront app will proxy it so the access is same-domain and CORS is not needed).
             This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it
             belongs to a storefront app which does not share the same domain as the tas core).
             
@@ -501,7 +503,7 @@ documentation:
     Content-Type: application/x-www-form-urlencoded
 
     grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Asaml2-bearer
-    scope=acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline
+    scope=acme+jobboard+acme+ats+tas+%2fjobs%2f%7bjob%7d+true+offline
     principal_type=candidate
     assertion=kjh9786gJHGutvfUT765Kkjghf70978klhjhgIUYGkpoiygEciYnjOi...
     Response:
@@ -624,8 +626,8 @@ documentation:
             description: |
               A space separated set of values for the OAuth scope of this token, which may include: 
               - A space separated string denoting a consuming app installed at a specific tenant,
-              a producing app installed at a specific tenant, the URI template of the API (as per https://tools.ietf.org/html/rfc6570)
-              being consumed; for example "acme jobboard acme ats /jobs/{job}", and whether the API is being consumed as SoT or not.
+              a producing app installed at a specific tenant, the developer and URI template (as per https://tools.ietf.org/html/rfc6570) of the API
+              being consumed; for example "acme jobboard acme ats tas /jobs/{job}", and whether the API is being consumed as SoT or not.
               (MUST be present for all grant types other than refresh_token)
               - the keyword "offline" (MAY be present only when grant_type is urn:ietf:params:oauth:client-assertion-type:saml2-bearer)
               
@@ -634,13 +636,13 @@ documentation:
               
               So:
               
-              "acme jobboard acme ats /jobs/{job} true offline"
+              "acme jobboard acme ats tas /jobs/{job} true offline"
               
               becomes
               
-              "acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline"
+              "acme+jobboard+acme+ats+tas+%2fjobs%2f%7bjob%7d+true+offline"
             type: string
-            example: acme+jobboard+acme+ats+%2fjobs%2f%7bjob%7d+true+offline 
+            example: acme+jobboard+acme+ats+tas+%2fjobs%2f%7bjob%7d+true+offline 
           refresh_token:
             description: |
               A refresh token obtained via a previous call to this endpoint with scope of offline. MUST be present when grant_type is
@@ -656,11 +658,6 @@ documentation:
               The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
               MUST NOT be present for other grant types. MUST contain an unexpired SAML assertion that matches exactly one as captured
               and stored by the TAS SAML proxy during login to *this app*.
-          samlKey:
-            description: |
-              A reference to the incoming SAML assertion. MUST be present for grant_type of urn:talentappstore.com:oauth:saml2-bearer-ref.
-              MUST NOT be present for other grant types. MUST contain a valid reference to an unexpired SAML assertion as captured
-              and stored by the TAS SAML proxy during login *to this app*.
     responses:
       200:
         body:
