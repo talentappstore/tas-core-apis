@@ -3,15 +3,15 @@
     "type": "object",
     "properties": {
         "consumingAppInstall": {
-            "$ref": "./routeBase.json#/definitions/installDetail"
+            "$ref": "routeBase.json#/definitions/installDetail"
         },
         "consumedApi": {
-            "$ref": "./routeBase.json#/definitions/consumedApi"
+            "$ref": "routeBase.json#/definitions/consumedApi"
         },
         "producingAppInstalls": {
             "type": "array",
             "items": {
-                "$ref": "./routeBase.json#/definitions/installDetail"
+                "$ref": "routeBase.json#/definitions/installDetail"
             }
         }
     }

@@ -243,11 +243,8 @@
         "identitySourceSet": {
             "type": "object",
             "properties": {
-                "principalDeveloper": {
-                    "type": "string"
-                },
                 "principalType": {
-                    "type": "string"
+                     "$ref": "samlSubject.json#/definitions/principalType"
                 },
                 "identitySources": {
                     "$ref": "#/definitions/identitySources"
@@ -255,7 +252,6 @@
             },
             "additionalProperties": false,
             "required": [
-                "principalDeveloper",
                 "principalType",
                 "identitySources"
             ]
@@ -355,7 +351,7 @@
                     "$ref": "#/definitions/servers"
                 },
                 "status": {
-                    "$ref": "./tenantInstallsAppStatus.json"
+                    "$ref": "tenantInstallsAppStatus.json"
                 }
             }
         },

@@ -58,7 +58,7 @@
                     "$ref": "#/definitions/methods"
                 },
                 "principalType": {
-                     "type": "string",
+                     "$ref": "samlSubject.json#/definitions/principalType",
                      "description": "the principal type of this API (not present if this is not an on-behalf API)"
                 }
             },

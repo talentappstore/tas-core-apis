@@ -17,7 +17,6 @@
         ],
         "identitySourceSets": [
             {
-                "principalDeveloper": "tas",
                 "principalType": "user",
                 "identitySources": [
                     {

@@ -3,9 +3,9 @@
   "type": "object",
   "javaType": "com.tas.api....",
   "properties": {
+    "app": { "$ref": "../schemas/app.json" },
     "assertionHooks": { "$ref": "../schemas/assertionHooks.json" },
     "attributeMappings": { "$ref": "../schemas/attributeMappings.json" },
-    "injectedRoles": { "$ref": "../schemas/injectedRoles.json" },
     "patchSet": { "$ref": "../schemas/patchSet.json" },
     "patchSetPreparer": { "$ref": "../schemas/patchSetPreparer.json" },
     "rebootLaunchKey": { "$ref": "../schemas/rebootLaunchKey.json" },

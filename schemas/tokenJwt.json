@@ -5,7 +5,7 @@
     "description": "reference to http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html",
     "properties": {
         "sub": {
-            "$ref": "./samlSubject.json"
+            "$ref": "samlSubject.json"
         },
         "cons": {
             "description": "details of the app consuming the API",

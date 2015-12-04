@@ -33,6 +33,60 @@ documentation:
     Tenant APIs are defined by developers, and not controlled in any way by TAS. However we do provide some best practice suggestion
     on how developers should [version tenant APIs](../doc/versioning.html).
 
+/apps:
+  description: |
+    APIs that provide details about an app.
+    
+  /{app}:
+    description: |
+      The specific app's shortcode.
+      
+      For all these APIs, the core asserts that:
+      - this parameter is the same as the consuming app's shortcode.
+      
+    get:
+      description: |
+        Get details about an app, e.g. its SSO setup. Normally an app would have this information at its fingertips, but this is useful for proxies
+        and helpers that work on behalf of an app, but were not coded by the app developer.
+      responses:
+        200:
+          body:
+            application/json:
+              schema: !include ../schemas/app.json
+              example: !include ../examples/app-simple.json
+    
+    /tenants:
+      get:
+        description: |
+          Get a list of shortCodes of every tenant that has this app installed.
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/tenantList.json
+                example: !include ../examples/tenantList-simple.json
+
+      /{tenant}:
+        description: |
+          A tenant's shortcode.
+          
+          For all APIs beneath here, the core asserts that:
+          - the app has been installed by the tenant
+         
+        /samlSPMetadata:
+          description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata
+          get:
+            description: |
+              Get the metadata for this app (the SP) as installed at this tenant.
+          
+              The core asserts that:
+              - the app is linked to any principal type (i.e., it uses SSO)
+            responses:
+              200:
+                body:
+                  application/xml:
+
+  
 /OAuthPublicKey:
   description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.
   get:
@@ -182,15 +236,7 @@ documentation:
 /tenants:  
   description: |
     A *tenant* is a customer within the multi-tenanted environment of Talent App Store.
-  get:
-    description: |
-      Get a list of shortCodes of every tenant that has this app installed.
-    responses:
-      200:
-        body:
-          application/json:
-            schema: !include ../schemas/tenantList.json
-            example: !include ../examples/tenantList-simple.json
+    
   /{tenant}:
     description: |
       APIs concerned with a specific tenant. For all these APIs, the core asserts that:
@@ -219,26 +265,52 @@ documentation:
 
     /saml:
       description: |
-        APIs that deal with a SAML assertion issued to this application.
+        APIs that deal with SAML assertions issued to this app or to an app directly or indirectly consuming an on-behalf API
+        at this app.
         
-         TAS acts as a SAML proxy, and captures and stores assertions in an internal database, partitioned by principal type,
-         prior to handing them off to the app (SP). Since apps are linked to a principal type the APIs don't need the pt passed in to them.. 
-        
-        For these APIs, the core asserts that:
-        - the app is linked to a principal type
-        - the assertion was issued to this application, as installed at this tenant
+        TAS acts as a SAML proxy, and captures and stores assertions in an internal database, partitioned by principal type,
+        prior to handing them off to the app (SP).
         
       /assertions:
-        /{key}:
+        /byKey:
+          /{key}:
+            get:
+              description: |
+                Fetch a SAML assertion via its database key.
+
+                The core asserts that:
+                - the app is linked to a principal type
+                - the assertion was issued to this application, as installed at this tenant
+
+              responses:
+                404:
+                  description: when the SAML assertion was not found or has expired
+                200:
+                  body:
+                    application/xml:
+
+        /byToken:
           get:
             description: |
-              Fetch a SAML assertion via its database key.
+              Fetch a SAML assertion via its database key as contained in an on-behalf OAuth token. This can be used by apps
+              that produce on-behalf APIs to learn more about the principal that the call is on behalf of.
+
+              The core asserts that:
+              - the token is correctly signed and has not expired
+              - the token has this app as its consuming app
+            queryParameters:
+              token:
+                type: string
+                description: |
+                  An on-behalf OAuth token (i.e. JWT with a sub field) as passed into the consuming app in the Authorization header.
+                required: true
             responses:
               404:
                 description: when the SAML assertion was not found or has expired
               200:
                 body:
                   application/xml:
+                    
       /keyLookups:
         post:
           description: |
@@ -246,6 +318,11 @@ documentation:
             the proxy).
 
             The request body contains the content of the assertion to search for.
+
+            The core asserts that:
+            - the app is linked to a principal type
+            - the assertion was issued to this application, as installed at this tenant
+            
           body:
             application/xml:
           responses:
@@ -256,20 +333,6 @@ documentation:
                 application/json:
                   schema: !include ../schemas/samlKey.json
                   example: !include ../examples/samlKey-simple.json
-
-    /samlSPMetadata:
-      description: Apps that are SSO-protected (i.e., SPs in SAML lingo) require their own SAML metadata
-      get:
-        description: |
-          Get the metadata for this app (the SP) as installed at this tenant.
-          
-          The core asserts that:
-          - the app is linked to any principal type (i.e., it uses SSO)
-          
-        responses:
-          200:
-            body:
-              application/xml:
 
     /rebootPrepares:
       description: |
