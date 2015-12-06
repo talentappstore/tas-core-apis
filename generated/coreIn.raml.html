@@ -412,154 +412,164 @@
 </code></pre><p><strong>Example</strong>:</p><pre><code>{
 	"launchKey": "40864894563934"
 }</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__reboots"><span class="parent">/tenants/{tenant}</span>/reboots</a> <span class="methods"></span></h4></div><div id="panel_tenants__tenant__reboots" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><h2 id="about-reboots">About reboots</h2><p>A reboot is the process of TAS performing an orderly shutdown and startup of all of the installed apps for a specific tenant whenever major changes are made to the tenant.</p><p>To play its part correctly when a reboot happens, your app&#39;s control server should produce the reboot APIs. TAS then consumes the following APIs during the reboot.</p><ul><li>/tenants/{}/preHalts</li><li>/tenants/{}/halts</li><li>/tenants/{}/preStarts</li><li>/tenants/{}/starts</li></ul><p>As a reboot happens, TAS maintains a set of history events that the storefront app can use to feed a progress dialogue.</p><h2 id="how-the-storefront-launches-a-reboot">How the storefront launches a reboot</h2><p>Once the storefront app has prepared a reboot by calling one of the POST /tenants/{tenant}/rebootPrepares endpoints, the the reboot does not start immediately. Instead, the APIs return a launch key.</p><p>To actually start a reboot, the storefront app (typically from within a web page&#39;s onClick handler of a "Continue" button) uses this launch key to launch the reboot.</p><p>As a reboot happens, TAS maintains the event history, and also a status for;</p><ul><li>the tenant as a whole (see <a href="../schemas/tenantStatus.json">tenant statuses</a>)</li><li>each individual app</li></ul><h2 id="order-of-events-during-reboot">Order of events during reboot</h2><p>During a reboot, the order of events is:</p><ul><li><p>Halt all apps</p><ul><li>TAS sets the tenant&#39;s status to "preHalting"</li><li>TAS calls /tenants/{}/preHalts on each installed app</li><li>When the last app returns 200, TAS sets the tenant&#39;s status to "preHalted"</li><li>TAS sets the tenant&#39;s status to "halting"</li><li>TAS calls /tenants/{}/halts on each installed app</li><li>When the last app returns 200, TAS sets the tenant&#39;s status to "halted"</li></ul></li><li><p>TAS increments tenant.incarnation</p></li><li>TAS performs the actual operation, i.e.:<ul><li>do nothing (if this reboot is in response to a call to POST /tenants/{}/reboots)</li><li>apply the patch set, e.g. to install an app (if this reboot is in response to a call to POST /tenants/{}/patchSets)<ul><li>apps are installed or uninstalled</li><li>routes are adjusted</li></ul></li><li>increment tenant.securityGeneration<ul><li>explicitly (if this reboot is in response to a call to POST /tenants/{}/OAuthFlushes, i.e. the tenant clicked "Flush OAuth tokens"); or</li><li>implicitly (if this reboot is in response to a call to POST /tenants/{}/patchSets and TAS finds that the patch set is making changes to the tenant&#39;s idps or assertion hooks)</li></ul></li></ul></li><li>Start all apps<ul><li>TAS sets the tenant&#39;s status to "preStarting"</li><li>TAS calls /tenants/{}/preStarts on each installed app</li><li>When the last app returns 200, TAS sets the tenant&#39;s status to "preStarted"</li><li>TAS sets the tenant&#39;s status to "starting"</li><li>TAS calls /tenants/{}/starts on each installed app</li><li>When the last app returns 200, TAS sets the tenant&#39;s status to "starting"</li></ul></li></ul><p>For all of these endpoints, the core asserts that:</p><ul><li>the app is marked as "storeFront".</li></ul></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__reboots__launchKey_"><span class="parent">/tenants/{tenant}/reboots</span>/{launchKey}</a> <span class="methods"><a href="#tenants__tenant__reboots__launchKey__post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__reboots__launchKey_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__reboots__launchKey__post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>A storefront app&#39;s web page uses this API to launch a previously prepared reboot (if not already launched), and get the latest events and the current summary details.</p><p>IGNORE THE FOLLOWING (it will be removed shortly - for now the endpoint is a normal core API endpoint secured by HMAC, and typically the storefront app will proxy it so the access is same-domain and CORS is not needed). This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to a storefront app which does not share the same domain as the tas core).</p><p>If the apply is already "complete" then this call will return immediately, with any events that match the filter, up to the maximum events per call (100).</p><p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is available that matches the filter, or the apply becomes complete (which would always be accompanied by an event). If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the last event has been fetched.</p><p>The core asserts:</p><ul><li>that no reboot is currently underway for the tenant</li><li>that the launch key has been previously created via a rebootPrepare call</li></ul></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__reboots__launchKey__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/reboots</span>/{launchKey}</h4></div><div class="modal-body"><div class="alert alert-info"><p>A storefront app&#39;s web page uses this API to launch a previously prepared reboot (if not already launched), and get the latest events and the current summary details.</p><p>IGNORE THE FOLLOWING (it will be removed shortly - for now the endpoint is a normal core API endpoint secured by HMAC, and typically the storefront app will proxy it so the access is same-domain and CORS is not needed). This endpoint is unauthenticated and has CORS headers that allow access from any domain (since the javascript calling it belongs to a storefront app which does not share the same domain as the tas core).</p><p>If the apply is already "complete" then this call will return immediately, with any events that match the filter, up to the maximum events per call (100).</p><p>Otherwise, the call blocks for .5 seconds to avoid thrashing, then returns as soon as at least one event is available that matches the filter, or the apply becomes complete (which would always be accompanied by an event). If no events are available after 60 seconds, the call returns indicating a timeout - the client will typically immediately make another call in a typical long-polling pattern, until the apply is marked as complete and the last event has been fetched.</p><p>The core asserts:</p><ul><li>that no reboot is currently underway for the tenant</li><li>that the launch key has been previously created via a rebootPrepare call</li></ul></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__reboots__launchKey__post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__reboots__launchKey__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__reboots__launchKey__post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>launchKey</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>afterEvent</strong>: <em>(integer)</em><p>The sequence of an existing event - this call should return events immediately <em>after</em> this event. Omitting this parameter returns the first events.</p><p><strong>Example</strong>:</p><pre><code>12</code></pre></li></ul></div><div class="tab-pane" id="tenants__tenant__reboots__launchKey__post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "definitions": {
-        "app": {
-            "type": "string"
-        },
-        "elapsedTime": {
-            "description": "elapsed time of the operation in milliseconds",
-            "type": "integer"
-        },
-        "tenantEvent": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "patchSetApplyRebootStart",
-                        "bumpSecurityGenerationRebootStart",
-                        "simpleRebootStart",
-                        "tenantPreHaltStart",
-                        "tenantPreHaltComplete",
-                        "tenantHaltStart",
-                        "tenantHaltComplete",
-                        "appPatchesApplyStart",
-                        "appPatchesApplyComplete",
-                        "bumpSecurityGenerationComplete",
-                        "tenantPreStartStart",
-                        "tenantPreStartComplete",
-                        "tenantStartStart",
-                        "tenantStartComplete",
-                        "patchSetApplyRebootComplete",
-                        "bumpSecurityGenerationRebootComplete",
-                        "simpleRebootComplete"
-                    ]
-                }
-            }
-        },
-        "appEvent": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "app"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "appPreHaltStart",
-                        "appPreHaltComplete",
-                        "appHaltStart",
-                        "appHaltComplete",
-                        "appPreStartStart",
-                        "appPreStartComplete",
-                        "appStartStart",
-                        "appStartComplete",
-                        "appInstallComplete",
-                        "appUninstallComplete",
-                        "appEditComplete"
-                    ]
-                },
-                "app": {
-                    "$ref": "#/definitions/app"
-                }
-            }
-        },
-        "tenantStatusEvent": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "kind",
-                "incarnation",
-                "securityGeneration"
-            ],
-            "properties": {
-                "kind": {
-                    "enum": [
-                        "tenantStatusEvent"
-                    ]
-                },
-                "incarnation": {
-                    "type": "integer"
-                },
-                "securityGeneration": {
-                    "type": "integer"
-                }
-            }
-        },
-        "orderedEvent": {
-            "type": "object",
-            "properties": {
-                "seq": {
-                    "type": "integer"
-                },
-                "time": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "event": {
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/tenantEvent"
-                        },
-                        {
-                            "$ref": "#/definitions/appEvent"
-                        },
-                        {
-                            "$ref": "#/definitions/tenantStatusEvent"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "seq",
-                "time",
-                "event"
-            ],
-            "additionalProperties": false
-        }
-    },
-    "type": "object",
-    "additionalProperties": false,
-    "required": [
-        "status"
-    ],
-    "properties": {
-        "status": {
-            "enum": [
-                "notLaunched",
-                "inProcess",
-                "complete"
-            ]
-        },
-        "latestEvent": {
-            "type": "integer"
-        },
-        "continuePage": {
-            "type": "string",
-            "description": "the URI that the browser should redirect the user to once this reboot is complete, possibly at a new storefront if a patch set apply swapped out the current one"
-        },
-        "events": {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/orderedEvent"
-            }
-        }
-    }
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"definitions": {
+		"app": {
+			"type": "string"
+		},
+		"elapsedTime": {
+			"description": "elapsed time of the operation in milliseconds",
+			"type": "integer"
+		},
+		"tenantEvent": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"kind"
+			],
+			"properties": {
+				"kind": {
+					"enum": [
+						"patchSetApplyRebootStart",
+						"bumpSecurityGenerationRebootStart",
+						"simpleRebootStart",
+						"tenantPreHaltStart",
+						"tenantPreHaltComplete",
+						"tenantHaltStart",
+						"tenantHaltComplete",
+						"appPatchesApplyStart",
+						"appPatchesApplyComplete",
+						"bumpSecurityGenerationComplete",
+						"tenantPreStartStart",
+						"tenantPreStartComplete",
+						"tenantStartStart",
+						"tenantStartComplete",
+						"patchSetApplyRebootComplete",
+						"bumpSecurityGenerationRebootComplete",
+						"simpleRebootComplete"
+					]
+				}
+			}
+		},
+		"appEvent": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"kind",
+				"app"
+			],
+			"properties": {
+				"kind": {
+					"enum": [
+						"appPreHaltStart",
+						"appPreHaltError",
+						"appPreHaltTimeout",
+						"appPreHaltComplete",
+						"appHaltStart",
+						"appHaltError",
+						"appHaltTimeout",
+						"appHaltComplete",
+						"appPreStartStart",
+						"appPreStartError",
+						"appPreStartTimeout",
+						"appPreStartComplete",
+						"appStartStart",
+						"appStartError",
+						"appStartTimeout",
+						"appStartComplete",
+						"appInstallStart",
+						"appInstallError",
+						"appInstallTimeout",
+						"appInstallComplete",
+						"appUninstallStart",
+						"appUninstallError",
+						"appUninstallTimeout",
+						"appUninstallComplete",
+						"appEditComplete"
+					]
+				},
+				"app": {
+					"$ref": "#/definitions/app"
+				}
+			}
+		},
+		"tenantStatusEvent": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"kind",
+				"incarnation",
+				"securityGeneration"
+			],
+			"properties": {
+				"kind": {
+					"enum": [
+						"tenantStatusEvent"
+					]
+				},
+				"incarnation": {
+					"type": "integer"
+				},
+				"securityGeneration": {
+					"type": "integer"
+				}
+			}
+		},
+		"orderedEvent": {
+			"type": "object",
+			"properties": {
+				"seq": {
+					"type": "integer"
+				},
+				"time": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"event": {
+					"oneOf": [{
+						"$ref": "#/definitions/tenantEvent"
+					}, {
+						"$ref": "#/definitions/appEvent"
+					}, {
+						"$ref": "#/definitions/tenantStatusEvent"
+					}]
+				}
+			},
+			"required": [
+				"seq",
+				"time",
+				"event"
+			],
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"status"
+	],
+	"properties": {
+		"status": {
+			"enum": [
+				"notLaunched",
+				"inProcess",
+				"complete"
+			]
+		},
+		"latestEvent": {
+			"type": "integer"
+		},
+		"continuePage": {
+			"type": "string",
+			"description": "the URI that the browser should redirect the user to once this reboot is complete, possibly at a new storefront if a patch set apply swapped out the current one"
+		},
+		"events": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/orderedEvent"
+			}
+		}
+	}
 }</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "status": "complete",
   "latestEvent": 52,
