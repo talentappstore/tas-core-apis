@@ -14,6 +14,10 @@ version: v1
       should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
         
       See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
+    responses:
+      200:
+      403:
+        description: the app has refused to be installed at this tenant
 
     body:
       application/json:
