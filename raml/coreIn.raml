@@ -86,6 +86,25 @@ documentation:
                 body:
                   application/xml:
 
+
+/devs:
+  description: |
+    APIs that provide details about a developer or their objects.
+  /{developer}:
+    description: |
+      A specific developer
+    /apis:    
+      description: |
+        APIs that provide details about a developer's APIs.
+      get:
+        description: |
+          Get a list of URI templates for every API this develoepr has defined.
+        responses:
+          200:
+            body:
+              application/json:
+                schema: !include ../schemas/apiList.json
+                example: !include ../examples/apiList-simple.json
   
 /OAuthPublicKey:
   description: The *OAuth public key* is used by apps to verify that incoming OAuth tokens were indeed issued by TAS.
