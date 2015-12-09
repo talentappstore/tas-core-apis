@@ -90,6 +90,9 @@ documentation:
 /devs:
   description: |
     APIs that provide details about a developer or their objects.
+    
+    Any app can call these APIs.
+    
   /{developer}:
     description: |
       A specific developer
@@ -98,7 +101,7 @@ documentation:
         APIs that provide details about a developer's APIs.
       get:
         description: |
-          Get a list of URI templates for every API this develoepr has defined.
+          Get a list of URI templates for every API this developer has defined.
         responses:
           200:
             body:
