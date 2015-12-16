@@ -190,10 +190,12 @@ documentation:
         description: | 
           Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
            
-          The core checks that:
+          The core returns 403 (Forbidden) if:
           - the app making the core API call is the consuming app (i.e., matches {CA})
           - the consuming app is installed at {CT}
           - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
+          
+          The core returns 200, with an empty array for producingAppInstalls, if there are no routes.
         queryParameters:
           sot:
             type: boolean
@@ -207,6 +209,9 @@ documentation:
               application/json:
                 schema: !include ../schemas/routes.json
                 example: !include ../examples/routes-simple.json
+          403:
+            description: one of the checks described for this API has failed
+                
       /{PT}:
         description: |
           Producing tenant: the tenant with the app installed that is producing the API
