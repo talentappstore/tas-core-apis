@@ -7,6 +7,10 @@
         "principalType": {
             "type": "string",
             "description": "the app's principal type. Not present if the app does not use SSO"
+        },
+        "principalCookieSecretKey": {
+            "type": "string",
+            "description": "the secret key used by the proxy to encrypt the principal cookie. Not present if the app does not use SSO"
         }
     }
 }
