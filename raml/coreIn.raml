@@ -745,7 +745,9 @@ documentation:
             type: string
           assertion:
             description: |
-              The incoming SAML assertion. MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
+              The incoming SAML assertion, encoded as per https://tools.ietf.org/html/rfc7522#section-2.1.
+              
+              MUST be present for grant_type of urn:ietf:params:oauth:client-assertion-type:saml2-bearer.
               MUST NOT be present for other grant types. MUST contain an unexpired SAML assertion that matches exactly one as captured
               and stored by the TAS SAML proxy during login to *this app*.
     responses:
