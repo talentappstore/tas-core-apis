@@ -3,6 +3,7 @@
   "type": "object",
   "javaType": "com.tas.api....",
   "properties": {
+    "api": { "$ref": "../schemas/api.json" },
     "apiList": { "$ref": "../schemas/apiList.json" },
     "app": { "$ref": "../schemas/app.json" },
     "assertionHooks": { "$ref": "../schemas/assertionHooks.json" },
