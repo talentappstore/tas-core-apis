@@ -7,6 +7,11 @@
 			"type": "string",
 			"description": "name of the tenant"
 		},
+		"contactEmail": {
+			"type": "string",
+			"format": "email",
+			"description": "contact address for the person in charge of this tenant"
+		},
 		"shortCode": {
 			"type": "string",
 			"description": "a short, lower case identifier for the tenant, e.g. acme"
@@ -16,7 +21,7 @@
 				"PRODUCTION",
 				"SANDBOX"
 			],
-			"description": "The type of tenant, i.e. sandbox or not. Apps behave differently when installed in a sandbox."
+			"description": "The type of tenant, i.e. sandbox or not. Apps may behave differently when installed in a sandbox, e.g. not send email."
 		},
 		"country": {
 			"description": "tenant's default country, in ISO 3166-1 alpha-2 form",
@@ -276,5 +281,5 @@
 			"description": "url for the tenant's logo"
 		}
 	},
-	"required": ["name", "shortCode", "type"]
+	"required": ["name", "shortCode", "type", "contactEmail"]
 }

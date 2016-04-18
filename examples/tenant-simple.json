@@ -1,6 +1,7 @@
 {
  "shortCode": "acme-sandbox-1",
  "name": "Acme sandbox testing site",
+ "contactEmail": "fred@gmail.com",
  "type": "SANDBOX",
  "logoUrl": "https://s3-aws.com/786745987969"  
 }
