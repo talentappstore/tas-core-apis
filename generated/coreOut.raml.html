@@ -530,4 +530,96 @@
     "tas.roles": [
         "internal", "learner"
     ]
-}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>Respond with this to indicate that login should proceed, with no changes made to the SAML assertion</p><h2>HTTP status code <a href="http://httpstatus.es/403" target="_blank">403</a></h2><p>Respond with this to indicate that login should fail</p></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#tenants">/tenants</a></li></ul></div></div></div></div></body></html>
+}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>Respond with this to indicate that login should proceed, with no changes made to the SAML assertion</p><h2>HTTP status code <a href="http://httpstatus.es/403" target="_blank">403</a></h2><p>Respond with this to indicate that login should fail</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager"><span class="parent">/tenants/{tenant}</span>/passwordManager</a> <span class="methods"></span></h4></div><div id="panel_tenants__tenant__passwordManager" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Some tenants may have legacy apps installed (e.g. an ATS) that have their own tables holding user login details (email, password) and hence can act as a "password manager". The TAS core SSO system can then delegate account activities (like validating their password) to the app.</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT_"><span class="parent">/tenants/{tenant}/passwordManager</span>/{PT}</a> <span class="methods"></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>the principal type</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__login"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/login</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__login_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__login" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__login_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager to verify the principal&#39;s email/password combination (e.g. is this a valid login)</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__login_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/login</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager to verify the principal&#39;s email/password combination (e.g. is this a valid login)</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__login_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__login_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__login_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "email": {
+      "$ref": "#/definitions/email"
+    },
+    "password": {
+      "$ref": "#/definitions/password"
+    }
+  },
+  "required": [
+    "email",
+    "password"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "email": "fred@hotmail.com",
+    "password": "s3cret"
+}</code></pre></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__login_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Verification succeeded</p><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Verification failed</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__create"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/create</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__create_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__create" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__create_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager to create a new account with the given email and password</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__create_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/create</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager to create a new account with the given email and password</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__create_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__create_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__create_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "email": {
+      "$ref": "#/definitions/email"
+    },
+    "password": {
+      "$ref": "#/definitions/password"
+    }
+  },
+  "required": [
+    "email",
+    "password"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "email": "fred@hotmail.com",
+    "password": "s3cret"
+}</code></pre></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__create_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><p>Create succeeded</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.</p><h3>Body</h3><p><strong>Type: application/problem+json</strong></p><h2>HTTP status code <a href="http://httpstatus.es/409" target="_blank">409</a></h2><p>Conflict - account exists with that email</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__resetPassword"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/resetPassword</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__resetPassword_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__resetPassword" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__resetPassword_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager to replace the principal&#39;s existing password with the provided value</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__resetPassword_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/resetPassword</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager to replace the principal&#39;s existing password with the provided value</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__resetPassword_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__resetPassword_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__resetPassword_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "email": {
+      "$ref": "#/definitions/email"
+    },
+    "password": {
+      "$ref": "#/definitions/password"
+    }
+  },
+  "required": [
+    "email",
+    "password"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "email": "fred@hotmail.com",
+    "password": "s3cret"
+}</code></pre></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__resetPassword_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Reset succeeded</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.</p><h3>Body</h3><p><strong>Type: application/problem+json</strong></p><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Not found - no account with that email</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__capabilities"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/capabilities</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__capabilities_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__capabilities" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__capabilities_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager whether it allows account creation</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__capabilities_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/capabilities</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager whether it allows account creation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__capabilities_get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__capabilities_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__capabilities_get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__capabilities_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Reset succeeded</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "canCreateAccounts": {
+      "type": "boolean",
+      "description": "true of this account manager can create accounts - in which case TAS SSO will display a sign up button"
+      }
+  }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "canCreateAccounts": true
+}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.</p><h3>Body</h3><p><strong>Type: application/problem+json</strong></p><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Not found - no account with that email</p></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#tenants">/tenants</a></li></ul></div></div></div></div></body></html>

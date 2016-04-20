@@ -171,4 +171,77 @@ version: v1
                   description: Respond with this to indicate that login should proceed, with no changes made to the SAML assertion
                 403:
                   description: Respond with this to indicate that login should fail 
+
+    /passwordManager:
+      description: |
+        Some tenants may have legacy apps installed (e.g. an ATS) that have their own tables holding user login details (email, password) and hence can
+        act as a "password manager". The TAS core SSO system can then delegate account activities (like validating their password) to the app. 
+      /{PT}:
+        description: the principal type
+        /login:
+          post:
+            description: |
+              TAS core calls this to ask the tenant's installed password manager to verify the principal's email/password combination (e.g. is
+              this a valid login)
+            body:
+              application/json:
+                schema: !include ../schemas/passwordManagerAccount.json
+                example: !include ../examples/passwordManagerAccount-simple.json
+            responses:
+              200:
+                description: Verification succeeded
+              401:
+                description: Verification failed
+        /create:
+          post:
+            description: |
+              TAS core calls this to ask the tenant's installed password manager to create a new account with the given email and password
+            body:
+              application/json:
+                schema: !include ../schemas/passwordManagerAccount.json
+                example: !include ../examples/passwordManagerAccount-simple.json
+            responses:
+              201:
+                description: Create succeeded
+              409:
+                description: Conflict - account exists with that email
+              400:
+                description: Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.
+                body:
+                  application/problem+json:
+        /resetPassword:
+          post:
+            description: |
+              TAS core calls this to ask the tenant's installed password manager to replace the principal's existing password with the provided value
+            body:
+              application/json:
+                schema: !include ../schemas/passwordManagerAccount.json
+                example: !include ../examples/passwordManagerAccount-simple.json
+            responses:
+              200:
+                description: Reset succeeded
+              404:
+                description: Not found - no account with that email
+              400:
+                description: Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.
+                body:
+                  application/problem+json:
+        /capabilities:
+          get:
+            description: |
+              TAS core calls this to ask the tenant's installed password manager whether it allows account creation
+            responses:
+              200:
+                description: Reset succeeded
+                body:
+                  application/json:
+                    schema: !include ../schemas/passwordManagerCapabilities.json
+                    example: !include ../examples/passwordManagerCapabilities-simple.json
+              404:
+                description: Not found - no account with that email
+              400:
+                description: Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.
+                body:
+                  application/problem+json:
+
   
