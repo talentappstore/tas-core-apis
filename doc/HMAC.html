@@ -33,8 +33,7 @@
 <p>Most core API calls are secured using the same HMAC approach as
 <a href='http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html'>Amazon Web Service's Signature Version 4 signing process</a>,
 see also http://security.stackexchange.com/questions/77372/unusual-design-aspects-of-aws-hmac-based-authentication-v4),
-except that whereas an AWS signature key
-is generated like this (see http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html)...
+except that whereas an AWS signature key is generated like this (see http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html)...
 <div class='codeBlock'>
     static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName) throws Exception  {
          byte[] kSecret = ("AWS4" + key).getBytes("UTF8");
