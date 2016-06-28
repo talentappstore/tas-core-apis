@@ -229,19 +229,15 @@ version: v1
         /capabilities:
           get:
             description: |
-              TAS core calls this to ask the tenant's installed password manager whether it allows account creation
+              TAS core calls this to ask the tenant's installed password manager whether it allows account creation, and if so,
+              whether there are any t&c's that the user must agree to first.
             responses:
               200:
-                description: Reset succeeded
                 body:
                   application/json:
                     schema: !include ../schemas/passwordManagerCapabilities.json
                     example: !include ../examples/passwordManagerCapabilities-simple.json
               404:
-                description: Not found - no account with that email
-              400:
-                description: Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.
-                body:
-                  application/problem+json:
+                description: when the password manager does not deal with this principal type
 
   
