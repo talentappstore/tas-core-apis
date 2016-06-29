@@ -600,7 +600,86 @@
  "type": "SANDBOX",
  "logoUrl": "https://s3-aws.com/786745987969"  
 }
-</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__status"><span class="parent">/tenants/{tenant}</span>/status</a> <span class="methods"><a href="#tenants__tenant__status_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__status" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__status_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get the status of the tenant, including the current state and security generation. Normally apps would use this information when restarting to determine whether to flush cached OAuth tokens and routes.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__status_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}</span>/status</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get the status of the tenant, including the current state and security generation. Normally apps would use this information when restarting to determine whether to flush cached OAuth tokens and routes.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__status_get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__status_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__status_get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__status_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__apps"><span class="parent">/tenants/{tenant}</span>/apps</a> <span class="methods"></span></h4></div><div id="panel_tenants__tenant__apps" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>For all APIs beneath here, the core asserts that:</p><ul><li>the app is marked as "inspector"</li></ul></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__apps_byKey__app_"><span class="parent">/tenants/{tenant}/apps/byKey</span>/{app}</a> <span class="methods"><a href="#tenants__tenant__apps_byKey__app__get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__apps_byKey__app_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__apps_byKey__app__get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get details about a specific app installed at the tenant, such as its name and developer. Typically used by apps that control or enable other apps.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__apps_byKey__app__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}/apps/byKey</span>/{app}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get details about a specific app installed at the tenant, such as its name and developer. Typically used by apps that control or enable other apps.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__apps_byKey__app__get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__apps_byKey__app__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__apps_byKey__app__get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>app</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__apps_byKey__app__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "developer": {
+      "type": "object",
+      "properties": {
+        "shortCode": {
+          "type": "string",
+          "description": "the developer&#39;s shortcode"
+        },
+        "name": {
+          "type": "string",
+          "description": "the developer&#39;s name"
+        },
+        "blurb": {
+          "type": "string",
+          "description": "the developer&#39;s blurb"
+        },
+        "description": {
+          "type": "string",
+          "description": "the developer&#39;s description"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "shortCode",
+        "name",
+        "blurb"
+      ]
+    }
+  },
+  "type": "object",
+  "description": "details about a specific app",
+  "additionalProperties": false,
+  "properties": {
+    "shortCode": {
+      "type": "string",
+      "description": "the app&#39;s shortcode"
+    },
+    "name": {
+      "type": "string",
+      "description": "the app&#39;s name"
+    },
+    "blurb": {
+      "type": "string",
+      "description": "the app&#39;s blurb"
+    },
+    "description": {
+      "type": "string",
+      "description": "the app&#39;s description"
+    },
+    "learnMoreUrl": {
+      "type": "string",
+      "description": "the app&#39;s learnMoreUrl"
+    },
+    "principalType": {
+      "type": "string",
+      "description": "the app&#39;s principal type (if it is SSO)"
+    },
+    "developer": {
+      "$ref": "#/definitions/developer"
+    }
+  },
+  "required": [
+    "shortCode",
+    "name",
+    "blurb",
+    "developer"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  "shortCode": "bazzapp",
+  "name": "Barry&#39;s app",
+  "blurb": "First out of the blocks",
+  "description": "This app is superlative.",
+  "developer": {
+    "shortCode": "bazza",
+    "name": "Barry&#39;s Software House",
+    "blurb": "Bleeding edge tech"
+  }
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__status"><span class="parent">/tenants/{tenant}</span>/status</a> <span class="methods"><a href="#tenants__tenant__status_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__status" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__status_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get the status of the tenant, including the current state and security generation. Normally apps would use this information when restarting to determine whether to flush cached OAuth tokens and routes.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__status_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}</span>/status</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get the status of the tenant, including the current state and security generation. Normally apps would use this information when restarting to determine whether to flush cached OAuth tokens and routes.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__status_get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__status_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__status_get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__status_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "additionalProperties": false,

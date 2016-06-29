@@ -1,0 +1,11 @@
+{
+  "shortCode": "bazzapp",
+  "name": "Barry's app",
+  "blurb": "First out of the blocks",
+  "description": "This app is superlative.",
+  "developer": {
+    "shortCode": "bazza",
+    "name": "Barry's Software House",
+    "blurb": "Bleeding edge tech"
+  }
+}

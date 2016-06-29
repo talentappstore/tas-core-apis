@@ -6,6 +6,7 @@
     "api": { "$ref": "../schemas/api.json" },
     "apiList": { "$ref": "../schemas/apiList.json" },
     "app": { "$ref": "../schemas/app.json" },
+    "appPublic": { "$ref": "../schemas/appPublic.json" },
     "assertionHooks": { "$ref": "../schemas/assertionHooks.json" },
     "attributeMappings": { "$ref": "../schemas/attributeMappings.json" },
     "passwordManagerAccount": { "$ref": "../schemas/passwordManagerAccount.json" },
