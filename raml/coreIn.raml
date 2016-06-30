@@ -343,7 +343,17 @@ documentation:
                 200:
                   body:
                     application/xml:
-
+            /json:
+              get:
+                responses:
+                  200:
+                    description: |
+                      Obtain a json-ified version of the SAML assertion.
+                    body:
+                      application/json:
+                        schema: !include ../schemas/wellKnownSamlAttributes.json
+                        example: !include ../examples/wellKnownSamlAttributes-roleInject.json
+                     
         /byToken:
           get:
             description: |
