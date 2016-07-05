@@ -320,8 +320,8 @@ documentation:
 
     /saml:
       description: |
-        APIs that deal with SAML assertions issued to this app or to an app directly or indirectly consuming an on-behalf API
-        at this app.
+        The APIs deal with SAML assertions that were issued to the consuming app, or to an app that directly or indirectly consumes an on-behalf API
+        at this app (i.e., an upstream app, perhaps a web site that the user logs into).
         
         TAS acts as a SAML proxy, and captures and stores assertions in an internal database, partitioned by principal type,
         prior to handing them off to the app (SP).
@@ -329,13 +329,14 @@ documentation:
       /assertions:
         /byKey:
           /{key}:
+            description: |
+              For all APIs below here, the core asserts that:
+              - the app is linked to a principal type
+              - the assertion was issued to this application, as installed at this tenant
+            
             get:
               description: |
-                Fetch a SAML assertion via its database key.
-
-                The core asserts that:
-                - the app is linked to a principal type
-                - the assertion was issued to this application, as installed at this tenant
+                Fetch a complete SAML assertion via its database key.
 
               responses:
                 404:
@@ -355,19 +356,24 @@ documentation:
                         example: !include ../examples/wellKnownSamlAttributes-roleInject.json
                      
         /byToken:
+          description: |
+            The APIs below here fetch a SAML assertion via an on-behalf OAuth token. Such a token contains the database key of
+            the user logged in upstream. This can be used by apps that produce on-behalf APIs to learn more about the principal
+            that the call is on behalf of.
+              
+            For all APIs below here, the core asserts that:
+            - the app is linked to a principal type
+            - the token is correctly signed and has not expired
+            - the token has this app as its consuming app
+            
           get:
             description: |
-              Fetch a SAML assertion via its database key as contained in an on-behalf OAuth token. This can be used by apps
-              that produce on-behalf APIs to learn more about the principal that the call is on behalf of.
-
-              The core asserts that:
-              - the token is correctly signed and has not expired
-              - the token has this app as its consuming app
+              Fetch a SAML assertion via an on-behalf OAuth token.
             queryParameters:
               token:
                 type: string
                 description: |
-                  An on-behalf OAuth token (i.e. JWT with a sub field) as passed into the consuming app in the Authorization header.
+                  An on-behalf OAuth token (i.e. a JWT with a sub field) as passed into the consuming app in the Authorization header.
                 required: true
             responses:
               404:
@@ -375,6 +381,16 @@ documentation:
               200:
                 body:
                   application/xml:
+          /json:
+            get:
+              responses:
+                200:
+                  description: |
+                    Fetch a json-ified version of the SAML assertion via an on-behalf OAuth token.
+                  body:
+                    application/json:
+                      schema: !include ../schemas/wellKnownSamlAttributes.json
+                      example: !include ../examples/wellKnownSamlAttributes-roleInject.json
                     
       /keyLookups:
         post:
