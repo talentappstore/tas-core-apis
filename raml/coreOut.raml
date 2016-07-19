@@ -186,6 +186,22 @@ version: v1
         act as a "password manager". The TAS core SSO system can then delegate account activities (like validating their password) to the app. 
       /{PT}:
         description: the principal type
+        get:
+          description: |
+            TAS core calls this to ask the tenant's installed password manager whether the principal's email exists.
+          queryParameters:
+            email:
+              type: string
+              description: |
+                Email of the principal
+              example: frodo@baggins.net
+              required: true
+          responses:
+            200:
+              description: Email exists
+            404:
+              description: Email does not exist
+        
         /login:
           post:
             description: |
