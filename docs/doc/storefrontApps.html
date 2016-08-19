@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- always required -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- needed for sequence diagrams -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/raphael-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/underscore-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-wrapper.js'></script>
+
+<!-- needed for includes -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/clientInclude.js'></script>
+
+<!-- needed for table of contents -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/tocify.js'></script>
+
+<link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
+<!-- always required -->
+<link rel='stylesheet' href='http://talentappstore.github.io/tas-des-static/css/des.css' type='text/css' media='all' />
+
+<title>Talent App Store - storefront apps</title>
+</head>
+<body>
+
+<h1>Storefront apps</h1>
+
+<p>See us on <a href='https://github.com/talentappstore/tas-core-apis'>Github</a>.
+</p>
+
+<p>We love feedback. Please get in touch at abraae@aotal.com.</p> 
+
+<div id="toc"></div>
+
+<h1>Overview</h1>
+
+<p>Storefront apps are specially privileged apps that perform actions on TAS itself, like installing apps, adding identity sources, etc.<p>
+
+<p>Storefront apps need to be tagged as "storeFront" by TAS support. Please contact TAS if you want to build a storefront app.</p>
+
+<p>In theory multiple storefront apps can coexist within the same tenant (like an Android phone can run multiple launchers at once).<p>
+
+
+<h1>Patching a tenant</h1>
+
+<p>All changes to a store's configuration - i.e. installs, edits or uninstalls of the apps and identity sources making up the store - 
+are made via patch documents (documents that conform to the HTTP PATCH semantics described in https://tools.ietf.org/html/rfc6902).</p>
+
+<p>As per the RFC, all changes in the patch set are made with a single atomic transaction.</p>
+
+<h2>Additional patch semantics</h2>
+
+<p>TAS supports an additional id-based path style inspired by SCIM (https://tools.ietf.org/html/draft-ietf-scim-api-12), except that EMCA script is used, e.g.:</p>
+
+<p>This path points to the installed app "tas-legacyats".</p>
+
+<div class='codeBlock'>
+"path": "installs[app=='tas-legacyats']"
+</div>
+
+<h2>Patch examples</h2>
+
+<p>This example updates the baseUri on the "main" server of the installed app "tas-legacyats".</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+{ "op": "replace", "path": "installs[app=='tas-legacyats'].servers[name=='main'].baseUri", "value": "https://newlocation.com/api"
+]
+</div>
+
+
+<p>This example installs the app "zongo" from the developer "zwarg", after first checking that the store is still at incarnation 23.</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+  { "op": "test", "path": "status.incarnation", "value": 23 },
+  { "op": "add", "path": "status.installs.-", "value": {"app": "zwarg-zongo"} }
+]
+</div>
+
+<p>This example installs an app with a server override (i.e., a non-multi tenanted app such as a legacy ATS).</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+  { "op": "test", "path": "/incarnation", "value": 23 },
+  { "op": "add", "path": "/installs/-", "value": {"app": "tas-legacyats", "servers": [{"name": "ats0", "basicAuthCredentials": {"user": "fred", "password": "secret1"}}]} }
+]
+</div>
+
+<p>This example changes the password for the previously installed app:</p>
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+  { "op": "test", "path": "/incarnation", "value": 23 },
+  { "op": "add", "path": "/installs/6/servers/0/basicAuthCredentials/password", "value": "secret2" }
+]
+</div>
+
+<p>This example sets up a new tenant:
+<ol>
+<li>creates the store for a new tenant "acme"
+<li>installs the storefront app
+<li>installs a single identity source for the bootstrap IdP
+<li>hardcodes all people in the bootstrap IdP as "hrStoreAppAdmin" and "hrStoreIdentityAdmin", so that they can manage the store.
+</ol>
+</p>
+
+
+<div class='codeBlock'>
+PATCH /{tenant}
+[
+{
+    "op": "add",
+    "path": "/",
+    "value": {
+        "details": {
+            "organizationName": "ACME Corporation",
+            "shortCode": "acme",
+            "description": "A test site while we see if this stuff works",
+            "country": "US",
+            "industry": "Manufacturing"
+        },
+        "installs": [
+            {
+                "app": "tas-storefront"
+            }
+        ],
+        "identitySourceSets": [
+            {
+                "principalDeveloper": "tas",
+                "principalType": "user",
+                "identitySources": [
+                    {
+                        "kind": "bootstrapIdentitySource",
+                        "description": "The store owner automatically gets access to manage the store",
+                        "attributeOverrides": [
+                            {
+                                "filter": "*",
+                                "ifMatched": [
+                                    {
+                                        "name": "tas-user-roles",
+                                        "values": [
+                                            "hrStoreIdentityAdmin",
+                                            "hrStoreAppsAdmin",
+                                            "hrStoreViewer"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+]
+</div>
+
+<h1>Applying a patch</h1>
+
+<p>To apply a patch document to a tenant, your storefront app makes a series of API calls, as shown in the example below:<p>
+
+<ol>
+<li>The user (an HR admin person) is at the app details page within your storefront web site.</li>
+<li>They click install on the app, submitting a web form</li>
+<li>Your app's server code composes a patch document based on the user's input.</li>
+<li>Your app's server code POSTS to /{tenant}/patchSets, with:
+<ol>
+<li>the patch document
+<li>the continue page, i.e. where the storefront would like the user to end up on completion
+</ol>
+..and checks for errors.</li>
+<li>The response from TAS contains a signed JWT, which embeds the original patch document and the continue page.</li>
+<li>Your server code inserts the JWT into the onClick handler of a new "confirm" button on the app details page.</li>
+<li>The user is now back at the app details page. They click confirm.</li>
+<li>The browser opens a progress dialog.</li>
+<li>The browser submits the JWT, including the original patch document, via an ajax call to PATCH /{tenant}.</li>
+<li>The call returns immediately with a launch key and the first few items of the patch log.</li>  
+<li>The browser writes the patch log to the progress dialog.</li>
+<li>The browser immediately makes another ajax call to GET /{tenant}/patchLaunches/{launchKey}
+<li>This is a long polling method, which returns as soon as any new patch log items are available.</li>
+<li>The browser loops, making repeated ajax calls to GET /{tenant}/patchLaunches/{launchKey} and adding new log messages to the progress dialog, until the operation is complete.</li>
+<li>The final response from GET /{tenant}/patchLaunches/{launchKey} includes the URI of the continue page.
+<li>The browser displays a "patch complete" message to the user, and a "Continue" button.
+<li>On pressing Continue, the user is redirected to the continue page.
+<li>We're done.  
+</ol> 
+
+<p>The complexity of the interactions, and the use of JWTs, is necessary:
+<ul>
+<li>to allow the progress dialog to continue throughout, even when
+<ul>
+<li>the storefront app itself is stopped and started like all other apps as the patch set is applied</li>
+<li>the storefront app is swapped out for another one as part of the changes</li>
+</ul>
+<li>to reflect the insecure nature of making ajax calls from the browser
+</ul>
+
+<h1>How TAS applies patch sets</h1>
+
+<p>To apply a patch set, TAS does the following:
+<ol>
+<li>requests each already installed app to shut down</li>
+<li>applies the set</li>
+<li>resets all volatile credentials for the tenant:
+<ul>
+<li>The tenant's own private/public key pair (as obtained via GET /{tenant})
+<li>All HMAC signing keys (as held on routes)
+</ul>
+<li>Increments the tenant's incarnation (thus invalidating all existing OAuth tokens)
+<li>detects whether the delta set includes uninstalling the app that created tha launcher, and if
+so calls GET /m/storeFrontMainPage to get a new continue page. Note this prevents an about-to-be-uninstalled storefront
+from specifying any continue page, not just a page on itself.
+<li>sends startup requests to each installed app</li>
+</ol>
+</p>
+
+<p>In parallel to the above, TAS causes any outstanding long polling calls to GET /{tenant}/patchSetLaunches to return
+each time there is a new available event. A maximum of 100 events are returned per call.</p>
+
+
+<h1>Bootstrap patch set</h1>
+
+<p>As well as patching existing tenants, storefront apps can also create new tenants, for example:
+
+<ul>
+<li>when a new tenant creates their store
+<li>when an existing tenant copies their store (e.g. to create a testing/sandbox site)
+</ul>
+</p>
+ 
+<p>POST /tenantBootstraps/{tenant}</p>
+
+<p>Once this launch is complete, the storefront app can take over the UI. TAS will call GET /storeFrontMain.</p>
+
+
+<script>
+$(document).ready(function() {
+
+	renderSequenceDiagrams();
+	renderClientIncludes();
+	renderTOC();
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+    "continuePage": "https://storefront.com/apps/zwango",
+    "patchSet": [
+        {
+            "op": "test",
+            "path": "status.incarnation",
+            "value": 23
+        },
+        {
+            "op": "add",
+            "path": "installs",
+            "value": {
+                "app": "hrsoft-zwango"
+            }
+        }
+    ],
+    "bumpSecurityGeneration": false
+}

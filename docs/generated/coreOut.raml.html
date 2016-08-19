@@ -1,0 +1,574 @@
+<!DOCTYPE HTML><html><head><title>TAS core outgoing (TAS -> app) API documentation</title><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="generator" content="https://github.com/kevinrenskers/raml2html 2.4.0"><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css"><script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script><script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script><script type="text/javascript">
+      $(document).ready(function() {
+        $('.page-header pre code, .top-resource-description pre code').each(function(i, block) {
+          hljs.highlightBlock(block);
+        });
+
+        $('[data-toggle]').click(function() {
+          var selector = $(this).data('target') + ' pre code';
+          $(selector).each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
+        });
+
+        // open modal on hashes like #_action_get
+        $(window).bind('hashchange', function(e) {
+          var anchor_id = document.location.hash.substr(1); //strip #
+          var element = $('#' + anchor_id);
+
+          // do we have such element + is it a modal?  --> show it
+          if (element.length && element.hasClass('modal')) {
+            element.modal('show');
+          }
+        });
+
+        // execute hashchange on first page load
+        $(window).trigger('hashchange');
+
+        // remove url fragment on modal hide
+        $('.modal').on('hidden.bs.modal', function() {
+          try {
+            if (history && history.replaceState) {
+                history.replaceState({}, '', '#');
+            }
+          } catch(e) {}
+        });
+      });
+    </script><style>
+      .hljs {
+        background: transparent;
+      }
+      .parent {
+        color: #999;
+      }
+      .list-group-item > .badge {
+        float: none;
+        margin-right: 6px;
+      }
+      .panel-title > .methods {
+        float: right;
+      }
+      .badge {
+        border-radius: 0;
+        text-transform: uppercase;
+        width: 70px;
+        font-weight: normal;
+        color: #f3f3f6;
+        line-height: normal;
+      }
+      .badge_get {
+        background-color: #63a8e2;
+      }
+      .badge_post {
+        background-color: #6cbd7d;
+      }
+      .badge_put {
+        background-color: #22bac4;
+      }
+      .badge_delete {
+        background-color: #d26460;
+      }
+      .badge_patch {
+        background-color: #ccc444;
+      }
+      .list-group, .panel-group {
+        margin-bottom: 0;
+      }
+      .panel-group .panel+.panel-white {
+        margin-top: 0;
+      }
+      .panel-group .panel-white {
+        border-bottom: 1px solid #F5F5F5;
+        border-radius: 0;
+      }
+      .panel-white:last-child {
+        border-bottom-color: white;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+      .panel-white .panel-heading {
+        background: white;
+      }
+      .tab-pane ul {
+        padding-left: 2em;
+      }
+      .tab-pane h2 {
+        font-size: 1.2em;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #ddd;
+      }
+      .tab-pane h3 {
+        font-size: 1.1em;
+      }
+      .tab-content {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+      }
+      #sidebar {
+        margin-top: 30px;
+        padding-right: 5px;
+        overflow: auto;
+        height: 90%;
+      }
+      .top-resource-description {
+        border-bottom: 1px solid #ddd;
+        background: #fcfcfc;
+        padding: 15px 15px 0 15px;
+        margin: -15px -15px 10px -15px;
+      }
+      .resource-description {
+        border-bottom: 1px solid #fcfcfc;
+        background: #fcfcfc;
+        padding: 15px 15px 0 15px;
+        margin: -15px -15px 10px -15px;
+      }
+      .resource-description p:last-child {
+        margin: 0;
+      }
+      .list-group .badge {
+        float: left;
+      }
+      .method_description {
+        margin-left: 85px;
+      }
+      .method_description p:last-child {
+        margin: 0;
+      }
+      .list-group-item {
+        cursor: pointer;
+      }
+      .list-group-item:hover {
+        background-color: #f5f5f5;
+      }
+    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>TAS core outgoing (TAS -> app) API documentation <small>version v1</small></h1><p>http://talentappstore.com/v1</p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="tenants" class="panel-title">/tenants</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants"><span class="parent"></span>/tenants</a> <span class="methods"><a href="#tenants_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant has status of "halted".</p><p>The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but should wait until the init and start events before producing or consuming APIs, accepting logins, etc.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent"></span>/tenants</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant has status of "halted".</p><p>The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but should wait until the init and start events before producing or consuming APIs, accepting logins, etc.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants_post_request"><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "name of the tenant"
+		},
+		"contactEmail": {
+			"type": "string",
+			"format": "email",
+			"description": "contact address for the person in charge of this tenant"
+		},
+		"shortCode": {
+			"type": "string",
+			"description": "a short, lower case identifier for the tenant, e.g. acme"
+		},
+		"type": {
+			"enum": [
+				"PRODUCTION",
+				"SANDBOX"
+			],
+			"description": "The type of tenant, i.e. sandbox or not. Apps may behave differently when installed in a sandbox, e.g. not send email."
+		},
+		"country": {
+			"description": "tenant&#39;s default country, in ISO 3166-1 alpha-2 form",
+			"enum": [
+				"AC",
+				"AD",
+				"AE",
+				"AF",
+				"AG",
+				"AI",
+				"AL",
+				"AM",
+				"AN",
+				"AO",
+				"AQ",
+				"AR",
+				"AS",
+				"AT",
+				"AU",
+				"AW",
+				"AX",
+				"AZ",
+				"BA",
+				"BB",
+				"BD",
+				"BE",
+				"BF",
+				"BG",
+				"BH",
+				"BI",
+				"BJ",
+				"BM",
+				"BN",
+				"BO",
+				"BR",
+				"BS",
+				"BT",
+				"BV",
+				"BW",
+				"BY",
+				"BZ",
+				"CA",
+				"CC",
+				"CD",
+				"CF",
+				"CG",
+				"CH",
+				"CI",
+				"CK",
+				"CL",
+				"CM",
+				"CN",
+				"CO",
+				"CR",
+				"CU",
+				"CV",
+				"CX",
+				"CY",
+				"CZ",
+				"DE",
+				"DJ",
+				"DK",
+				"DM",
+				"DO",
+				"DZ",
+				"EC",
+				"EE",
+				"EG",
+				"ER",
+				"ES",
+				"ET",
+				"FI",
+				"FJ",
+				"FK",
+				"FM",
+				"FO",
+				"FR",
+				"GA",
+				"GB",
+				"GD",
+				"GE",
+				"GF",
+				"GG",
+				"GH",
+				"GI",
+				"GL",
+				"GM",
+				"GN",
+				"GP",
+				"GQ",
+				"GR",
+				"GS",
+				"GT",
+				"GU",
+				"GW",
+				"GY",
+				"HK",
+				"HM",
+				"HN",
+				"HR",
+				"HT",
+				"HU",
+				"ID",
+				"IE",
+				"IL",
+				"IM",
+				"IN",
+				"IO",
+				"IQ",
+				"IR",
+				"IS",
+				"IT",
+				"JE",
+				"JM",
+				"JO",
+				"JP",
+				"KE",
+				"KG",
+				"KH",
+				"KI",
+				"KM",
+				"KN",
+				"KP",
+				"KR",
+				"KW",
+				"KY",
+				"KZ",
+				"LA",
+				"LB",
+				"LC",
+				"LI",
+				"LK",
+				"LR",
+				"LS",
+				"LT",
+				"LU",
+				"LV",
+				"LY",
+				"MA",
+				"MC",
+				"MD",
+				"ME",
+				"MG",
+				"MH",
+				"MK",
+				"ML",
+				"MM",
+				"MN",
+				"MO",
+				"MP",
+				"MQ",
+				"MR",
+				"MS",
+				"MT",
+				"MU",
+				"MV",
+				"MW",
+				"MX",
+				"MY",
+				"MZ",
+				"NA",
+				"NC",
+				"NE",
+				"NF",
+				"NG",
+				"NI",
+				"NL",
+				"NO",
+				"NP",
+				"NR",
+				"NU",
+				"NZ",
+				"OM",
+				"PA",
+				"PE",
+				"PF",
+				"PG",
+				"PH",
+				"PK",
+				"PL",
+				"PM",
+				"PN",
+				"PR",
+				"PT",
+				"PW",
+				"PY",
+				"QA",
+				"RE",
+				"RO",
+				"RS",
+				"RU",
+				"RW",
+				"SA",
+				"SB",
+				"SC",
+				"SD",
+				"SE",
+				"SG",
+				"SH",
+				"SI",
+				"SJ",
+				"SK",
+				"SL",
+				"SM",
+				"SN",
+				"SO",
+				"SR",
+				"ST",
+				"SV",
+				"SY",
+				"SZ",
+				"TA",
+				"TC",
+				"TD",
+				"TF",
+				"TG",
+				"TH",
+				"TJ",
+				"TK",
+				"TL",
+				"TM",
+				"TN",
+				"TO",
+				"TR",
+				"TT",
+				"TV",
+				"TW",
+				"TZ",
+				"UA",
+				"UG",
+				"UM",
+				"US",
+				"UY",
+				"UZ",
+				"VA",
+				"VC",
+				"VE",
+				"VG",
+				"VI",
+				"VN",
+				"VU",
+				"WF",
+				"WS",
+				"YE",
+				"YT",
+				"ZA",
+				"ZM",
+				"ZW"
+			]
+		},
+		"timeZone": {
+			"type": "string",
+			"description": "the default timezone for the tenant&#39;s principals, as per https://en.wikipedia.org/wiki/Tz_database"
+		},
+		"logoUrl": {
+			"type": "string",
+			"description": "url for the tenant&#39;s logo"
+		}
+	},
+	"required": ["name", "shortCode", "type", "contactEmail"]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+ "shortCode": "acme-sandbox-1",
+ "name": "Acme sandbox testing site",
+ "contactEmail": "fred@gmail.com",
+ "type": "SANDBOX",
+ "logoUrl": "https://s3-aws.com/786745987969"  
+}
+</code></pre></div><div class="tab-pane" id="tenants_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h2>HTTP status code <a href="http://httpstatus.es/403" target="_blank">403</a></h2><p>the app has refused to be installed at this tenant</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant_"><span class="parent">/tenants</span>/{tenant}</a> <span class="methods"><a href="#tenants__tenant__delete"><span class="badge badge_delete">delete</span></a></span></h4></div><div id="panel_tenants__tenant_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>A tenant is a customer within the multi-tenanted environment of Talent App Store. Currently all core API calls that your app makes to TAS are within the context of a single tenant.</p></div><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__delete'" class="list-group-item"><span class="badge badge_delete">delete</span><div class="method_description"><p>Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on your app). Your app can assume the tenant has status "halted".</p><p>Your app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data. If this cleanup is long-running, you should handle a case where the tenant immediately reinstalls your app, and ensure the cleanup from the earlier install(s) can continue.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete</span> <span class="parent">/tenants</span>/{tenant}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to inform your app that an existing tenant has been deleted (i.e. has clicked uninstall on your app). Your app can assume the tenant has status "halted".</p><p>Your app has now been permanently disconnected by the tenant, and should make no more tenant API calls or core API calls on behalf of the tenant, and should perform or schedule its own cleanup, e.g. deleting tenant data. If this cleanup is long-running, you should handle a case where the tenant immediately reinstalls your app, and ensure the cleanup from the earlier install(s) can continue.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__delete_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__delete_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__delete_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__preHalts"><span class="parent">/tenants/{tenant}</span>/preHalts</a> <span class="methods"><a href="#tenants__tenant__preHalts_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__preHalts" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__preHalts_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Called by TAS to request your app (for a specific tenant) to immediately stop any chains of tenant API calls that it "owns", i.e. has started.</p><p>For example if your app includes a daemon, it should shut down the daemon or at least stop it from consuming tenant APIs, and if it includes a UI, it should log out the user and not allow the UI to make any tenant API calls.</p><p>Your app should complete the stopping process and return 200 within a few seconds.</p><p>After this, your app should continue producing tenant APIs, and, in response to incoming tenant APIs, consuming tenant APIs on other apps - it just should not initiate new tenant API activity.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__preHalts_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}</span>/preHalts</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to request your app (for a specific tenant) to immediately stop any chains of tenant API calls that it "owns", i.e. has started.</p><p>For example if your app includes a daemon, it should shut down the daemon or at least stop it from consuming tenant APIs, and if it includes a UI, it should log out the user and not allow the UI to make any tenant API calls.</p><p>Your app should complete the stopping process and return 200 within a few seconds.</p><p>After this, your app should continue producing tenant APIs, and, in response to incoming tenant APIs, consuming tenant APIs on other apps - it just should not initiate new tenant API activity.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__preHalts_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__preHalts_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__preHalts_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__preHalts_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__halts"><span class="parent">/tenants/{tenant}</span>/halts</a> <span class="methods"><a href="#tenants__tenant__halts_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__halts" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__halts_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Called by TAS to request your app to (for a specific tenant)</p><ul><li>stop producing or consuming tenant APIs</li><li>stop consuming core APIs<ul><li>stop accepting logins</li></ul></li></ul><p>Your app should immediately (before responding) stop making tenant API calls, then respond with 200.</p><p>After this, until your app receives the init call, it should consume no tenant APIs, and only these core APIs:</p><ul><li>GET /tenants/{tenant}/status</li></ul><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__halts_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}</span>/halts</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to request your app to (for a specific tenant)</p><ul><li>stop producing or consuming tenant APIs</li><li>stop consuming core APIs<ul><li>stop accepting logins</li></ul></li></ul><p>Your app should immediately (before responding) stop making tenant API calls, then respond with 200.</p><p>After this, until your app receives the init call, it should consume no tenant APIs, and only these core APIs:</p><ul><li>GET /tenants/{tenant}/status</li></ul><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__halts_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__halts_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__halts_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__halts_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__preStarts"><span class="parent">/tenants/{tenant}</span>/preStarts</a> <span class="methods"><a href="#tenants__tenant__preStarts_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__preStarts" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__preStarts_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Called by TAS to notify your app that it is being started up as part of a reboot, and that it can now start making core API calls.</p><p>Your app should perform normal init processing (as below), and then return 200 as soon as possible.</p><ul><li>apps that consume APIs should discard any cached OAuth tokens where the consumer sgen does not match the tenant&#39;s new sgen</li><li>apps that produce APIs should discard any cached OAuth tokens (i.e. cached to avoid re-checking) where the producer sgen does not match the tenant&#39;s new sgen</li></ul><p>After returning 200, your app should start producing tenant API calls immediately. However it should not consume any tenant APIs, except in response to an incoming tenant API call (i.e. your app may take part in, but should not initiate, chains of tenant API calls).</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__preStarts_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}</span>/preStarts</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to notify your app that it is being started up as part of a reboot, and that it can now start making core API calls.</p><p>Your app should perform normal init processing (as below), and then return 200 as soon as possible.</p><ul><li>apps that consume APIs should discard any cached OAuth tokens where the consumer sgen does not match the tenant&#39;s new sgen</li><li>apps that produce APIs should discard any cached OAuth tokens (i.e. cached to avoid re-checking) where the producer sgen does not match the tenant&#39;s new sgen</li></ul><p>After returning 200, your app should start producing tenant API calls immediately. However it should not consume any tenant APIs, except in response to an incoming tenant API call (i.e. your app may take part in, but should not initiate, chains of tenant API calls).</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__preStarts_post_request" data-toggle="tab">Request</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__preStarts_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__starts"><span class="parent">/tenants/{tenant}</span>/starts</a> <span class="methods"><a href="#tenants__tenant__starts_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__starts" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__starts_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Called by TAS to notify your app that it is being started up as part of a reboot, and that it can now start making tenant API calls.</p><p>Your app should return 200 as soon as possible.</p><p>After returning 200, your app can start consuming tenant API calls as normal.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__starts_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}</span>/starts</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to notify your app that it is being started up as part of a reboot, and that it can now start making tenant API calls.</p><p>Your app should return 200 as soon as possible.</p><p>After returning 200, your app can start consuming tenant API calls as normal.</p><p>See <strong>reboots</strong> under <a href="coreIn.raml.html#tenants">/tenants</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__starts_post_request" data-toggle="tab">Request</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__starts_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__storeFrontMainPage"><span class="parent">/tenants/{tenant}</span>/storeFrontMainPage</a> <span class="methods"><a href="#tenants__tenant__storeFrontMainPage_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__storeFrontMainPage" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__storeFrontMainPage_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Only called on apps tagged with storeFront.</p><p>Called by TAS to ask for the main page of your storeFront app. TAS calls this on your app whenever the tenant clicks to uninstall a storeFront app, while using that same app.</p><p>When this happens, the browser needs to be redirected to one of the remaining (or new) storeFronts main pages. If there are multiple storeFronts remaining, TAS will pick one at random.</p><p>The main page is normally the first page a user sees after logging in, typically displaying the apps hero list.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__storeFrontMainPage_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}</span>/storeFrontMainPage</h4></div><div class="modal-body"><div class="alert alert-info"><p>Only called on apps tagged with storeFront.</p><p>Called by TAS to ask for the main page of your storeFront app. TAS calls this on your app whenever the tenant clicks to uninstall a storeFront app, while using that same app.</p><p>When this happens, the browser needs to be redirected to one of the remaining (or new) storeFronts main pages. If there are multiple storeFronts remaining, TAS will pick one at random.</p><p>The main page is normally the first page a user sees after logging in, typically displaying the apps hero list.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__storeFrontMainPage_get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__storeFrontMainPage_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__storeFrontMainPage_get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__storeFrontMainPage_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "description": "If your app is a storeFrontapp, you use this API to declare where you would prefer newly logged in users to be sent to. Sometime TAS will need to direct users to this page, e.g. when someone inside some other storeFront app clicks and unInstalls that same storeFront. That storeFront then becomes dead, and the user needs to be directed to one of the remaining storeFront apps, e.g. this one.", 
+    "required": [
+        "kind",
+        "uri"
+    ],
+    "properties": {
+        "kind": {
+            "enum": [
+                "storeFrontMainPage"
+            ],
+            "description": "always set to: storeFrontMainPage"
+        },
+        "uri": {
+            "type": "string",
+            "description": "your app&#39;s main uri - i.e. the default place to send users on login"
+        }
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+   "kind": "storeFrontMainPage",
+   "uri": "https://superstorefront.com/acme/main.html"
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__logins__PT_"><span class="parent">/tenants/{tenant}/logins</span>/{PT}</a> <span class="methods"><a href="#tenants__tenant__logins__PT__post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__logins__PT_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>the principal type that this login is for</p></div><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__logins__PT__post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Called by TAS to tell your assertionDecorator app about someone logging in. The request body contains the original SAML assertion. Your response contains an array of roles that should be added to the SAML assertion before it reaches the app, or a 403 error to prevent login altogether (TAS will wait until all assertionDecorators have responded with 200 before it passes the login through to the web app).</p><p>For example, if the response to the API is 200, with body of:</p><p>["internal", "grade2"]</p><p>..then the SAML assertion will have the following attributes added:</p><ul><li>tas.roles.internal</li><li>tas.roles.grade2</li></ul><p>The other way a role can be set in the SAML assertion is directly by the IdP - so assertion decoration is a way for an app to achieve the same effect.</p><p>TAS will only call this API on apps that have been marked in the developer site as being assertionDecorators for the given principal type.</p><p>The SAML assertion provided in the request is the original one - i.e. prior to any roles added to the assertion as a result of another session decorator returning 200.</p><p>A typical assertion decorator might be a legacy ATS system. Example: an alumni member arrives to log into the alumni portal, and authenticates via Facebook, thus proving their email address. During the login, the ATS&#39;s assertion decorator endpoint is called. The ATS looks up the person in its database, and injects the role of "alumni". Login continues, and the SAML assertion, now containing the alumni role, reaches the alumni portal. The portal (which has no users table of its own), can now examine the incoming SAML assertion to decide whether to allow access. It might also auto-provision a row in its own database at the same time.</p><p>Assertion decoration might seem like a place to do auto-provisioning, but it&#39;s not ideal. Firstly, every assertion decoration app gets called no matter which app the user is logging into. But there might be no reason for, say, the learning system to create a row for someone just because they logged into the performance management system. Second, if there multiple assertion decorators, then some other subsequent one might return 403 to cause the entire login to fail. Now the user is unable to log in, but a record has been created for them. Instead, auto-provisioning for an app should normally be done inside that app itself upon successful login.</p><p>See <a href="../doc/identityMapping.html#Injecting_role_attributes_-_assertion_decorator_apps">Injecting role attributes</a> for more details.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__logins__PT__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/logins</span>/{PT}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Called by TAS to tell your assertionDecorator app about someone logging in. The request body contains the original SAML assertion. Your response contains an array of roles that should be added to the SAML assertion before it reaches the app, or a 403 error to prevent login altogether (TAS will wait until all assertionDecorators have responded with 200 before it passes the login through to the web app).</p><p>For example, if the response to the API is 200, with body of:</p><p>["internal", "grade2"]</p><p>..then the SAML assertion will have the following attributes added:</p><ul><li>tas.roles.internal</li><li>tas.roles.grade2</li></ul><p>The other way a role can be set in the SAML assertion is directly by the IdP - so assertion decoration is a way for an app to achieve the same effect.</p><p>TAS will only call this API on apps that have been marked in the developer site as being assertionDecorators for the given principal type.</p><p>The SAML assertion provided in the request is the original one - i.e. prior to any roles added to the assertion as a result of another session decorator returning 200.</p><p>A typical assertion decorator might be a legacy ATS system. Example: an alumni member arrives to log into the alumni portal, and authenticates via Facebook, thus proving their email address. During the login, the ATS&#39;s assertion decorator endpoint is called. The ATS looks up the person in its database, and injects the role of "alumni". Login continues, and the SAML assertion, now containing the alumni role, reaches the alumni portal. The portal (which has no users table of its own), can now examine the incoming SAML assertion to decide whether to allow access. It might also auto-provision a row in its own database at the same time.</p><p>Assertion decoration might seem like a place to do auto-provisioning, but it&#39;s not ideal. Firstly, every assertion decoration app gets called no matter which app the user is logging into. But there might be no reason for, say, the learning system to create a row for someone just because they logged into the performance management system. Second, if there multiple assertion decorators, then some other subsequent one might return 403 to cause the entire login to fail. Now the user is unable to log in, but a record has been created for them. Instead, auto-provisioning for an app should normally be done inside that app itself upon successful login.</p><p>See <a href="../doc/identityMapping.html#Injecting_role_attributes_-_assertion_decorator_apps">Injecting role attributes</a> for more details.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__logins__PT__post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__logins__PT__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__logins__PT__post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/xml</strong></p><p><strong>Example</strong>:</p><pre><code>&lt;saml assertion&gt;</code></pre></div><div class="tab-pane" id="tenants__tenant__logins__PT__post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Indicates that login should proceed, and that any roles in the response should be added to the SAML assertion. Passing an empty body or a body with an empty array means no roles will be added.</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "role": {
+            "type": "string",
+            "description": "role held by a principal"
+        }
+    },
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/role"
+    }
+}</code></pre><p><strong>Example</strong>:</p><pre><code>[ "internal" ]</code></pre><h2>HTTP status code <a href="http://httpstatus.es/403" target="_blank">403</a></h2><p>Respond with this to indicate that login should fail.</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager"><span class="parent">/tenants/{tenant}</span>/passwordManager</a> <span class="methods"></span></h4></div><div id="panel_tenants__tenant__passwordManager" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Some tenants may have legacy apps installed (e.g. an ATS) that have their own tables holding user login details (email, password) and hence can act as a "password manager". The TAS core SSO system can then delegate account activities (like validating their password) to the app.</p></div><div class="list-group"></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT_"><span class="parent">/tenants/{tenant}/passwordManager</span>/{PT}</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>the principal type</p></div><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager whether the principal&#39;s email exists.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}/passwordManager</span>/{PT}</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager whether the principal&#39;s email exists.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>email</strong>: <em>required (string)</em><p>Email of the principal</p><p><strong>Example</strong>:</p><pre>frodo@baggins.net</pre></li></ul></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Email exists</p><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Email does not exist</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__login"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/login</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__login_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__login" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__login_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager to verify the principal&#39;s email/password combination (e.g. is this a valid login)</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__login_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/login</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager to verify the principal&#39;s email/password combination (e.g. is this a valid login)</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__login_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__login_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__login_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "email": {
+      "$ref": "#/definitions/email"
+    },
+    "password": {
+      "$ref": "#/definitions/password"
+    }
+  },
+  "required": [
+    "email",
+    "password"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "email": "fred@hotmail.com",
+    "password": "s3cret"
+}</code></pre></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__login_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Verification succeeded</p><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Verification failed</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__create"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/create</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__create_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__create" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__create_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager to create a new account with the given email and password</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__create_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/create</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager to create a new account with the given email and password</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__create_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__create_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__create_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "email": {
+      "$ref": "#/definitions/email"
+    },
+    "password": {
+      "$ref": "#/definitions/password"
+    }
+  },
+  "required": [
+    "email",
+    "password"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "email": "fred@hotmail.com",
+    "password": "s3cret"
+}</code></pre></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__create_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><p>Create succeeded</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.</p><h3>Body</h3><p><strong>Type: application/problem+json</strong></p><h2>HTTP status code <a href="http://httpstatus.es/409" target="_blank">409</a></h2><p>Conflict - account exists with that email</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__resetPassword"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/resetPassword</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__resetPassword_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__resetPassword" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__resetPassword_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager to replace the principal&#39;s existing password with the provided value</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__resetPassword_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/resetPassword</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager to replace the principal&#39;s existing password with the provided value</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__resetPassword_post_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__resetPassword_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__resetPassword_post_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "email": {
+      "$ref": "#/definitions/email"
+    },
+    "password": {
+      "$ref": "#/definitions/password"
+    }
+  },
+  "required": [
+    "email",
+    "password"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "email": "fred@hotmail.com",
+    "password": "s3cret"
+}</code></pre></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__resetPassword_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Reset succeeded</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>Error - e.g. password complexity requirements not met. See response in RFC 7807 format for more details.</p><h3>Body</h3><p><strong>Type: application/problem+json</strong></p><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Not found - no account with that email</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tenants__tenant__passwordManager__PT__capabilities"><span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/capabilities</a> <span class="methods"><a href="#tenants__tenant__passwordManager__PT__capabilities_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_tenants__tenant__passwordManager__PT__capabilities" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tenants__tenant__passwordManager__PT__capabilities_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>TAS core calls this to ask the tenant&#39;s installed password manager whether it allows account creation, and if so, whether there are any t&amp;c&#39;s that the user must agree to first.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tenants__tenant__passwordManager__PT__capabilities_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/tenants/{tenant}/passwordManager/{PT}</span>/capabilities</h4></div><div class="modal-body"><div class="alert alert-info"><p>TAS core calls this to ask the tenant&#39;s installed password manager whether it allows account creation, and if so, whether there are any t&amp;c&#39;s that the user must agree to first.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tenants__tenant__passwordManager__PT__capabilities_get_request" data-toggle="tab">Request</a></li><li><a href="#tenants__tenant__passwordManager__PT__capabilities_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tenants__tenant__passwordManager__PT__capabilities_get_request"><h3>URI Parameters</h3><ul><li><strong>tenant</strong>: <em>required (string)</em></li><li><strong>PT</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tenants__tenant__passwordManager__PT__capabilities_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "canCreateAccounts": {
+      "type": "boolean",
+      "description": "true if this account manager can create accounts - in which case TAS SSO will display a sign up button"
+    },
+    "createAccountTermsAndConditionsUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "A link to the terms and conditions that the user must agree to before creating an account. Only present if canCerateAccounts is true."
+    }
+  },
+  "required": [
+    "canCreateAccounts"
+  ],
+  "additionalProperties": false
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
+    "canCreateAccounts": true,
+    "createAccountTermsAndConditionsUrl": "https://example.com/tandc.html"
+}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>when the password manager does not deal with this principal type</p></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#tenants">/tenants</a></li></ul></div></div></div></div></body></html>

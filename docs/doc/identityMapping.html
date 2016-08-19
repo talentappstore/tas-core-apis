@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- always required -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- needed for sequence diagrams -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/raphael-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/underscore-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-wrapper.js'></script>
+
+<!-- needed for includes -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/clientInclude.js'></script>
+
+<!-- needed for table of contents -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/tocify.js'></script>
+
+<link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
+<!-- always required -->
+<link rel='stylesheet' href='http://talentappstore.github.io/tas-des-static/css/des.css' type='text/css' media='all' />
+
+<title>Talent App Store - Identity mapping guide</title>
+</head>
+<body>
+
+
+<h1>Overview</h1>
+
+<p>See us on <a href='https://github.com/talentappstore/tas-core-apis'>Github</a>.
+</p>
+
+<p>This document is aimed at Talent App Store tenants setting up their identity providers (IdPs).
+</p> 
+  
+<p>We love feedback. Please get in touch at abraae@aotal.com.</p> 
+
+<div id="toc"></div>
+
+
+<h1>Overview - principal types</h1>
+
+<p>In the world of HR software, we don't just have users - we also have candidates (and other classes of people as well).
+TAS calls these different classes of people <b>principal types</b>, and allows tenants to control the mappings of
+identity providers (IdPs) to individual principal types. 
+</p>
+
+<p>For example, as a tenant, you might map:
+<ul>
+<li>the principal type of "user" just to your corporate IdP (maybe Active Directory)
+<li>the principal type of "candidate" to Google, Facebook and LinkedIn, as well as your corporate IdP (for internal candidates)
+</ul>
+
+
+<h1>Well-known SAML attributes</h1>
+
+<p>Whenever a principal logs into an SSO-protected app, the app is passed a SAML assertion, containing a number of attributes.
+</p>
+
+<p>TAS defines two well known sets of attributes - personal detail and role - that apps can examine
+to be informed about the logged in user.
+</p>
+
+<p>Personal details attributes are useful apps to customise web pages (e.g., "Welcome, Fred Bloggs"),
+and/or to populate user records (e.g. when doing just-in-time provisioning of users when they first log in).
+</p>
+
+<p>Role attributes are useful for apps to do user-based authentication checks, e.g. is this person allowed to see
+this web page? And if so, what menu items should they see?
+</p>
+
+<p>As a tenant, you may need to manipulate these well-known attributes. Even for your own IdP, you may be unable to make changes to
+the attribute that first name is passed in (for example).
+</p>
+
+<h2>Personal details attributes</h2>
+
+<p>Personal detail attributes are named <b>"tas.personal.*"</b>, and hold the user's given (first) name, family (last) name, email and image.
+These attributes must be of type string.
+</p>
+
+<h2>Role attributes</h2>
+
+<p>Role attributes named <b>"tas.role.*"</b> hold the user's membership of a given role.
+These attributes must be of type boolean, with a value of true.
+</p>
+
+<h2>Example</h2>
+
+<p>The following example shows that the logged in candidate has the name Fred Bloggs, and holds the role "internal".  
+<div class='codeBlock'>
+...
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.personal.givenName"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;Fred&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.personal.familyName"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string"&gt;Bloggs&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+&lt;saml:Attribute NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" Name="tas.role.internal"&gt;
+	&lt;saml:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:boolean"&gt;true&lt;/saml:AttributeValue&gt;
+&lt;/saml:Attribute&gt;
+</div>
+</p>
+
+
+<h1>Injecting well-known attributes</h1>
+ 
+ <p>As for any other SAML attributes, the well-known attributes may be attached right back at source, by the IdP that principal logged in with.
+ This approach allows you the tenant to use your IdP as a single source of truth about your users, and the roles that they hold.
+ </p>
+ 
+ <p>However TAS also provides mechanisms for you to cause well-known attributes to be injected into the SAML assertion after it has
+ been produced by your IdP, but before it is passed to the SSO app.
+</p>
+
+<h3>Injecting personal detail attributes - mapping document</h3>
+
+<p>As a tenant you can set up per-idp <b>mapping documents</b> to convert arbitrarily named incoming SAML attributes to their
+well-known personal detail equivalents. This is useful when you have limited control over the naming of your SAML attributes.
+</p>
+
+<p>For example, perhaps tenant acme's idp always attaches first name in an attribute named "acme.first.name", and this can't be easily changed.
+To work around this, acme could set up a mapping document for that idp like this:
+
+<div class='codeBlock'>
+<div class='clientInclude' data-href='../examples/attributeMappings-simple.json'></div>
+</div>
+</p>
+
+
+<h3>Injecting role attributes - assertion hooks</h3>
+
+<p>Tenants can set up <b>assertion hooks</b> to check for patterns in named SAML assertions (email addresses are often used),
+and conditionally insert role attributes.
+</p>
+
+<p>As well as injecting roles, assertion hooks can also be used to deny login altogether.
+</p>
+
+<p>The assertion hooks below:
+<ul>
+<li>prevent any AOL user from logging in at all
+<li>grant the role of "recruiter" to anyone with the email fred@gmail.com
+<li>grant the role of "hrAppViewer to everyone
+</ul>
+</p>
+
+<p>
+<div class='codeBlock'>
+<div class='clientInclude' data-href='../examples/assertionHooks-simple.json'></div>
+</div>
+</p>
+
+
+<h3>Injecting role attributes - assertion decorator apps</h3>
+
+<p>Specially marked <b>assertion decorator</b> apps are called at login time to allow them to inject role attributes.
+</p>
+
+<p>As well as injecting roles, session decorator apps can also deny login altogether.
+</p>
+
+<p>As a tenant, you can choose to install this kind of app and thereby influence the roles any given user has.
+</p>
+
+<p>For example, TAS makes the following call to an assertion decorator app: 
+<div class='codeBlock'>
+POST /tenants/{tenant}/logins/{pt}/{entityID}/{nameID}
+
+Response:
+[ "alumni" ]
+</div>
+</p>
+
+<p>The response indicates to TAS that it should merge in a role attribute for the role "alumni".
+
+
+<h3>Order of operations</h3>
+
+<p>TAS performs the above actions in the following order:
+<ol>
+<li>Apply mapping document
+<li>Apply assertion hooks
+<li>Invoke assertion decorator apps (in alphabetical order of app name)
+</ol>
+</p>
+
+<p>
+For example: 
+<div class='codeBlock'>
+
+
++------------------+
+|external SAML IdP |
++------------------+
+   |
+   ...
+   | incoming SAML attributes:
+   | acme.first.name = Barry
+   | acme.last.name = Barry
+   | acme.email = bg@acme.com
+   |
++--------------------+
+| attribute mapping  |
++--------------------+
+   |
+   | tenant's mapping document:
+   | [
+   |     {
+   |         "tas.personal.givenName": "acme.first.name"
+   |     },
+   |     {
+   |         "tas.personal.familyName": "acme.last.name"
+   |     }
+   | ]   
+   |
+   | resulting SAML attributes:
+   | tas.personal.givenName = Barry
+   | tas.personal.familyName = Gibb
+   | tas.personal.email = bg@acme.com
+   |
++-----------------+
+| assertion hooks |
++-----------------+
+   |
+   | tenant's assertion hooks:
+   | [
+   |     {
+   |         "injectRoles": {
+   |             "condition": {
+   |                 "attribute": "tas.personal.email",
+   |                 "wildCard": "*.acme.com"
+   |             },
+   |             "roles": [
+   |                 "internal"
+   |             ]
+   |         }
+   |     }
+   | ]   
+   |
+   | resulting SAML attributes:
+   | tas.personal.givenName = Barry
+   | tas.personal.familyName = Gibb
+   | tas.personal.email = bg@acme.com
+   | tas.role.internal = true
+   |
++--------------------------+
+| assertion decorator apps |
++--------------------------+
+   |
+   | TAS calls POST /tenants/{tenant}/logins/{pd}/{pt}/{nameID}
+   | Response:
+   | 200
+   | [ "alumni" ]
+   |
+   | resulting SAML attributes:
+   | tas.personal.givenName = Barry
+   | tas.personal.familyName = Gibb
+   | tas.personal.email = bg@acme.com
+   | tas.role.internal = true
+   | tas.role.alumni = true
+   |
++------------------------------+
+|TAS session document creation |
++------------------------------+
+</div>
+</p>
+
+<h3>Auto-provisioning considerations for assertion decorators</h3>
+
+<p>Auto-provisioning refers to creating users "on the fly", i.e. at the time when they first log in to the app.
+</p>
+
+<p>To decide whether, and how, to auto-provisioning a new logging in user, an app may look at the
+well known attributes in the SAML assertion, such as email or roles.</p>
+
+<p>It is possible for an app to be both auto-provisioning and also an assertionDecorator.</p>
+
+<p>In a situation where an assertionDecorator app is asked to decorate the assertion for a user that does not exist in the app, but would due
+to auto-provisioning were they to log in to the app, then the app should normally decorate the assertion just as if the user had been
+auto-provisioned.</p>
+
+<p>This sort of situation would arise, for example with a legacy ATS app designed to auto-provision new users and grant them access to a
+separate candidate search app. In this case, if the user logs in to the search app first, having never visisted the legacy ATS app, then
+the legacy ATS app (acting as an assertionDecorator) should inject roles (possibly including the right to access the search app)
+as if the user had instead logged into the ATS first and therefore been auto-provisioned and gained the default permissions.</p>
+
+
+
+<script>
+$(document).ready(function() {
+
+	renderSequenceDiagrams();
+	renderClientIncludes();
+	renderTOC();
+});
+</script>
+
+
+</body>
+</html>

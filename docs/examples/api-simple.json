@@ -1,0 +1,6 @@
+{
+  "developer": "acme",
+  "uriTemplate": "/candidates/me/hairColor",
+  "principalType": "candidate",
+  "raml": "http://myapis.com/raml/api.raml"
+}

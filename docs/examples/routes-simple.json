@@ -1,0 +1,35 @@
+{
+    "consumingAppInstall": {
+        "tenant": "acme",
+        "app": "jobboardhub",
+        "methods": [
+            "GET",
+            "POST"
+        ],
+        "securityGeneration": 1409
+    },
+    "consumedApi": {
+        "apiDeveloper": "tas",
+        "apiUriTemplate": "/categories",
+        "consumedAsSourceOfTruth": false,
+        "methods": [
+            "GET",
+            "POST",
+            "DELETE"
+        ]
+    },
+    "producingAppInstalls": [
+        {
+            "tenant": "seek",
+            "app": "basecats",
+            "endPoint": "https://ref.seek.com:2109/api/v3.2",
+            "securityGeneration": 301
+        },
+        {
+            "tenant": "greenjobsite",
+            "app": "gjcore",
+            "endPoint": "https://api.greenjobs.co.nz/v1",
+            "securityGeneration": 80
+        }
+    ]
+}

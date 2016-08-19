@@ -1,0 +1,21 @@
+[
+  { "op": "test", "path": "/incarnation", "value": 23 },
+  { "op": "add", "path": "/installs/-", "value": { "app": "zwarg-zongo",
+  
+  
+            "servers": [
+                {
+                    "name": "ats0",
+                    "baseUri": "https://acme.atszero.com",
+                    "basicAuthCredentials": {
+                        "user": "fred",
+                        "password": "secret1"
+                    }
+                }
+            ]
+  
+  
+  
+  
+   } }
+]

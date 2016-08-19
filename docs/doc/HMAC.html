@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- always required -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- needed for sequence diagrams -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/raphael-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/underscore-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-min.js'></script>
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/sequence-diagram-wrapper.js'></script>
+
+<!-- needed for includes -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/clientInclude.js'></script>
+
+<!-- needed for table of contents -->
+<script type="text/javascript" src='http://talentappstore.github.io/tas-des-static/js/tocify.js'></script>
+
+<link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
+<!-- always required -->
+<link rel='stylesheet' href='http://talentappstore.github.io/tas-des-static/css/des.css' type='text/css' media='all' />
+
+<title>Talent App Store - HMAC</title>
+</head>
+<body>
+
+
+<h1>HMAC</h1>
+
+<p>Most core API calls are secured using the same HMAC approach as
+<a href='http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html'>Amazon Web Service's Signature Version 4 signing process</a>,
+see also http://security.stackexchange.com/questions/77372/unusual-design-aspects-of-aws-hmac-based-authentication-v4),
+except that whereas an AWS signature key is generated like this (see http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html)...
+<div class='codeBlock'>
+    static byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName) throws Exception  {
+         byte[] kSecret = ("AWS4" + key).getBytes("UTF8");
+         byte[] kDate    = HmacSHA256(dateStamp, kSecret);
+         byte[] kRegion  = HmacSHA256(regionName, kDate);
+         byte[] kService = HmacSHA256(serviceName, kRegion);
+         byte[] kSigning = HmacSHA256("aws4_request", kService);
+         return kSigning;
+    }
+</div>
+</p>
+    
+<p>A TAS signature key for a core API call (in or out) is generated like this...
+<div class='codeBlock'>
+    static byte[] getSignatureKey(String key, String dateStamp) throws Exception  {
+         byte[] kSecret = ("TAS4" + key).getBytes("UTF8");
+         byte[] kDate    = HmacSHA256(dateStamp, kSecret);
+         byte[] kSigning = HmacSHA256("tas4_request", kService);
+         return kSigning;
+    }
+</div>
+</p>
+
+<p>    
+A correctly formed request will look like this for example (in this case a call to GET /routes)
+<div class='codeBlock'>
+    POST https://core.talentappstore.com/api/v1/routes HTTP/1.1
+    Authorization: TAS4-HMAC-SHA256 Credential=jobboard/20150702/tas4_request, SignedHeaders=content-type;host;x-tas-date, Signature=ced6826de92d2bdeed8f846f0bf508e8559e98e4b0199114b84c54174deb456c
+    Host: core.talentappstore.com
+    Content-type: application/json; charset=utf-8
+    x-tas-date: 20150702T233600Z
+
+    TODO: check the location of the URL
+</div>
+</p>
+
+<p>
+Additional formatting rules:
+<ul>
+<li>Header names must be lower cased when listed in SignedHeaders 
+<li>The Credentials must contain the current date in UTC in "yyyyMMdd" format
+</ul>
+</p>
+
+
+<script>
+$(document).ready(function() {
+
+	renderSequenceDiagrams();
+	renderClientIncludes();
+	renderTOC();
+});
+</script>
+
+
+</body>
+</html>
