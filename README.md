@@ -32,7 +32,7 @@ The API platforms provided by most Integrated Talent Management (ITM) suites tod
 
 Your app acts as a small spoke, one of many clustered around a single large HR platform/ ITM suite that acts as the hub.
 
-![Hub and spoke API platform](graphics/hubspoke.png)
+![Hub and spoke API platform](http://talentappstore.github.io/tas-core-apis/graphics/hubspoke.png)
 
 In the hub and spoke model, the APIs themselves are the intellectual property of the hub. The hub is in charge. It defines the APIs that your app can use. The APIs are only designed for your app to communicate to the hub - not to any other app. And those API calls are typically inwards, where your app calls APIs on the hub, rather than the other way around (although some platforms provide limited webhooks allowing the hub to push events to your app).
 
@@ -43,7 +43,7 @@ The peer to peer API platform
 ============================
 Talent App Store is not hub and spoke based, but uses an open peer to peer model. In a peer to peer system, all apps are equal, and **any app can consume any API on any other app.** There is no single, large hub.  
 
-![Peer to peer API platform](graphics/peerpeer.png)
+![Peer to peer API platform](http://talentappstore.github.io/tas-core-apis/graphics/peerpeer.png)
 
 For developers, the peer to peer model promotes agile API development and lets your build your SaaS app once and have any customer instantly provision it.
 
