@@ -531,17 +531,19 @@ documentation:
           - TAS sets the tenant's status to "halting"
           - TAS calls /tenants/{}/halts on each installed app
           - When the last app returns 200, TAS sets the tenant's status to "halted"
-
-        - TAS increments tenant.incarnation
-        - TAS performs the actual operation, i.e.:
-          - do nothing (if this reboot is in response to a call to POST /tenants/{}/reboots)
-          - apply the patch set, e.g. to install an app (if this reboot is in response to a call to POST /tenants/{}/patchSets)
-            - apps are installed or uninstalled
+          
+        - TAS performs the actual operation, i.e. depending on which core-in API call the reboot is in response to:
+          - for POST /tenants/{}/reboots
+            - increment tenant.incarnation
+          - for POST /tenants/{}/patchSets
+            - uninstall all relevant apps (calling DELETE /tenants on each)
+            - increment tenant.incarnation
+            - increment tenant.securityGeneration (only if the patch set is making changes to the tenant's identity apps or assertion hooks)
+            - install all relevant apps (calling POST /tenants on each)
             - routes are adjusted
-          - increment tenant.securityGeneration
-            - explicitly (if this reboot is in response to a call to POST /tenants/{}/OAuthFlushes, i.e. the tenant clicked "Flush OAuth tokens"); or
-            - implicitly (if this reboot is in response to a call to POST /tenants/{}/patchSets and
-            TAS finds that the patch set is making changes to the tenant's idps or assertion hooks)
+          - for POST /tenants/{}/OAuthFlushes (i.e. the tenant clicked "Flush OAuth tokens")
+            - increment tenant.securityGeneration
+
         - Start all apps
           - TAS sets the tenant's status to "preStarting"
           - TAS calls /tenants/{}/preStarts on each installed app
