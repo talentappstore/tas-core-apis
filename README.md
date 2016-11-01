@@ -2,7 +2,7 @@ Talent App Store
 =======
 Talent App Store is an open iPaaS for integrating multi-tenanted HR microservices.
 
-The documentation lives [here](https://github.com/talentappstore/tas-core-apis/wiki).
+See the [wiki](https://github.com/talentappstore/tas-core-apis/wiki) for documentation.
 
 Contents
 ======
