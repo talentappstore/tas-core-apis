@@ -1,21 +1,8 @@
 Talent App Store
 =======
-Talent App Store is an open iPaaS for integrating multi-tenanted HR microservices.
+[Talent App Store](http://www.talentappstore.com) is an open platform for integrating multi-tenanted HR microservices.
 
 See the [wiki](https://github.com/talentappstore/tas-core-apis/wiki) for documentation.
-
-Contents
-======
-This repository contains:
-- a [master index](http://talentappstore.github.io/tas-core-apis/) of the core API documentation
-- browsable API definitions (for API calls [into](http://talentappstore.github.io/tas-core-apis/generated/coreIn.raml.html) and [out of](http://talentappstore.github.io/tas-core-apis/generated/coreOut.raml.html) the core) generated from the raml.
-
-The request and response bodies of virtually all of Aotal's APIs are in json schema format. There are comprehensive examples in json that match to the schemas.    
-
-There are also several walkthrough documents, which contain blow by blow descriptions of the sequence of API calls to complete some scenario.
-
-These APIs are provided under an open source license. We really welcome your feedback.
-
 
 Building the generated contents of this repository
 ----------------------------------------
