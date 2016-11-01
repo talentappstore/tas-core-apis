@@ -2,7 +2,8 @@ Talent App Store
 =======
 [Talent App Store](http://www.talentappstore.com) is an open platform for integrating multi-tenanted HR microservices.
 
-See the [wiki](https://github.com/talentappstore/tas-core-apis/wiki) for documentation.
+See the [wiki](https://github.com/talentappstore/tas-core-apis/wiki) for developer documentation.
+
 
 Building the generated contents of this repository
 ----------------------------------------
