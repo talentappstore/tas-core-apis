@@ -215,7 +215,9 @@ version: v1
               200:
                 description: Verification succeeded
               401:
-                description: Verification failed
+                description: Verification failed - more details may be available in the body, which if present, conforms to rfc7807
+                body:
+                  application/problem+json:
         /create:
           post:
             description: |
