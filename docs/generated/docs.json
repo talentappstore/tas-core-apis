@@ -11,6 +11,7 @@
     "attributeMappings": { "$ref": "../schemas/attributeMappings.json" },
     "passwordManagerAccount": { "$ref": "../schemas/passwordManagerAccount.json" },
     "passwordManagerCapabilities": { "$ref": "../schemas/passwordManagerCapabilities.json" },
+    "passwordManagerCreate": { "$ref": "../schemas/passwordManagerCreate.json" },
     "patchSet": { "$ref": "../schemas/patchSet.json" },
     "patchSetPreparer": { "$ref": "../schemas/patchSetPreparer.json" },
     "rebootLaunchKey": { "$ref": "../schemas/rebootLaunchKey.json" },
