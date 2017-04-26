@@ -1,5 +1,6 @@
 {
-    "consumingAppInstall": {
+    "consumingAppInstalls": [
+    {
         "tenant": "acme",
         "app": "jobboardhub",
         "methods": [
@@ -7,7 +8,8 @@
             "POST"
         ],
         "securityGeneration": 1409
-    },
+    }
+    ],
     "consumedApi": {
         "apiDeveloper": "tas",
         "apiUriTemplate": "/categories",
