@@ -18,6 +18,7 @@
     "rebootStatus": { "$ref": "../schemas/rebootStatus.json" },
     "rolesList": { "$ref": "../schemas/rolesList.json" },
     "routeBase": { "$ref": "../schemas/routeBase.json" },
+    "route": { "$ref": "../schemas/route.json" },
     "routes": { "$ref": "../schemas/routes.json" },
     "samlKey": { "$ref": "../schemas/samlKey.json" },
     "samlSubject": { "$ref": "../schemas/samlSubject.json" },

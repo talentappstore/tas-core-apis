@@ -8,11 +8,8 @@
         "consumedApi": {
             "$ref": "routeBase.json#/definitions/consumedApi"
         },
-        "producingAppInstalls": {
-            "type": "array",
-            "items": {
-                "$ref": "routeBase.json#/definitions/installDetail"
-            }
+        "producingAppInstall": {
+            "$ref": "routeBase.json#/definitions/installDetail"
         }
     }
 }

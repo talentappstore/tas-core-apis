@@ -19,12 +19,4 @@
         example: |
           %2fjobs%2f%7bjob%7d
         required: true
-      sot:
-        type: boolean
-        description: |
-          True if the consuming app is consuming this as SoT (source of truth), otherwise false
-        example: true
-        required: true
-        
-        
 

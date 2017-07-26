@@ -16,20 +16,13 @@
             "GET",
             "POST",
             "DELETE"
-        ]
+        ],
+        "principalType": "candidate"
     },
-    "producingAppInstalls": [
-        {
-            "tenant": "seek",
-            "app": "basecats",
-            "endPoint": "https://ref.seek.com:2109/api/v3.2",
-            "securityGeneration": 301
-        },
-        {
-            "tenant": "greenjobsite",
-            "app": "gjcore",
-            "endPoint": "https://api.greenjobs.co.nz/v1",
-            "securityGeneration": 80
-        }
-    ]
+    "producingAppInstall": {
+        "tenant": "seek",
+        "app": "basecats",
+        "endPoint": "https://ref.seek.com:2109/api/v3.2",
+        "securityGeneration": 301
+    }
 }
