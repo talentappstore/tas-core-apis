@@ -603,10 +603,16 @@
     },
     "logoUrl": {
       "type": "string",
+      "format": "uri",
       "description": "url for the tenant&#39;s logo"
     },
     "internalIPs": {
       "$ref": "#/definitions/internalIPs"
+    },
+    "privacyPolicyUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "url for the tenant&#39;s privacy policy"
     }
   },
   "required": [
@@ -673,6 +679,11 @@
       "type": "string",
       "description": "the app&#39;s description"
     },
+    "logoUrl": {
+      "type": "string",
+      "format": "url",
+      "description": "the app&#39;s logo"
+    },
     "learnMoreUrl": {
       "type": "string",
       "description": "the app&#39;s learnMoreUrl"
@@ -696,6 +707,7 @@
   "name": "Barry&#39;s app",
   "blurb": "First out of the blocks",
   "description": "This app is superlative.",
+  "logoUrl": "http://example.com/sample.png",  
   "developer": {
     "shortCode": "bazza",
     "name": "Barry&#39;s Software House",

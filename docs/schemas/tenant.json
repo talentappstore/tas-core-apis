@@ -290,10 +290,16 @@
     },
     "logoUrl": {
       "type": "string",
+      "format": "uri",
       "description": "url for the tenant's logo"
     },
     "internalIPs": {
       "$ref": "#/definitions/internalIPs"
+    },
+    "privacyPolicyUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "url for the tenant's privacy policy"
     }
   },
   "required": [

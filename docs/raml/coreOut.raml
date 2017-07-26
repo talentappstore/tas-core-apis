@@ -226,6 +226,14 @@ version: v1
               application/json:
                 schema: !include ../schemas/passwordManagerAccount.json
                 example: !include ../examples/passwordManagerAccount-simple.json
+            queryParameters:
+              dryRun:
+                type: boolean
+                description: |
+                  True if the create is just a dry run - i.e. don't actually do the create, just check that the email is not
+                  in use and the password is a valid one (length etc.). Defaults to false.
+                example: true
+                required: false                
             responses:
               201:
                 description: Create succeeded

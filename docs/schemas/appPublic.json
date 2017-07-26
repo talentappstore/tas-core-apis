@@ -49,6 +49,11 @@
       "type": "string",
       "description": "the app's description"
     },
+    "logoUrl": {
+      "type": "string",
+      "format": "url",
+      "description": "the app's logo"
+    },
     "learnMoreUrl": {
       "type": "string",
       "description": "the app's learnMoreUrl"
