@@ -188,7 +188,7 @@ version: v1
         description: the principal type
         get:
           description: |
-            TAS core calls this to ask the tenant's installed password manager whether the principal's email exists
+            TAS core calls this to ask the tenant's installed password manager whether the principal's email exists.
           queryParameters:
             email:
               type: string
@@ -221,19 +221,11 @@ version: v1
         /create:
           post:
             description: |
-              TAS core calls this to ask the tenant's installed password manager to create a new account with the given email and password.
+              TAS core calls this to ask the tenant's installed password manager to create a new account with the given email and password
             body:
               application/json:
                 schema: !include ../schemas/passwordManagerAccount.json
                 example: !include ../examples/passwordManagerAccount-simple.json
-            queryParameters:
-              dryRun:
-                type: boolean
-                description: |
-                  True if the create is just a dry run - i.e. don't actually do the create, just check that the email is not
-                  in use and the password is a valid one (length etc.). Defaults to false.
-                example: true
-                required: false
             responses:
               201:
                 description: Create succeeded
