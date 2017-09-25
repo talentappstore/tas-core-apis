@@ -190,6 +190,71 @@ documentation:
     - therefore corestuff finishes up producing the API when consumed by some other app at the acme tenant 
 
     TAS detects and disallows loops.
+  /producers:
+    /{CT}:
+       description: |
+          Consuming tenant: the tenant with the app installed that is consuming the API
+      /{CA}:
+        description: |
+          Consuming app: the app consuming the API
+        get:
+          is: [ routeFetcher ]
+          description: |
+            Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
+
+            The core returns 403 (Forbidden) if:
+            - the app making the core API call is the consuming app (i.e., matches {CA})
+            - the consuming app is installed at {CT}
+            - the consuming app has declared that it consumes the given API, in the given way (SoT or not).
+
+            The core returns 200, with an empty array for producingAppInstalls, if there are no routes.
+          queryParameters:
+            sot:
+              type: boolean
+              description: |
+                True if the consuming app is consuming this as SoT (source of truth), otherwise false
+              example: true
+              required: true
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/routes.json
+                  example: !include ../examples/routes-simple.json
+            403:
+              description: one of the checks described for this API has failed
+  /consumers:
+    /{PT}:
+      description: |
+        Producing tenant: the tenant with the app installed that is producing the API
+      /{PA}:
+        description: |
+          Consuming app: the app consuming the API
+        get:
+          is: [ routeFetcher ]
+          description: |
+            Used by tenant API consumers to fetch the route(s) from each consumer to the producer of a specific API.
+
+            The core returns 403 (Forbidden) if:
+            - the producing app is installed at {PT}
+            - the producing app has declared that it produces the given API, in the given way (SoT or not).
+
+            The core returns 200, with an empty array for consumingAppInstalls, if there are no routes.
+          queryParameters:
+            sot:
+              type: boolean
+              description: |
+                True if the consuming apps are consuming this as SoT (source of truth), otherwise false
+              example: true
+              required: true
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: !include ../schemas/routes-consumers.json
+                  example: !include ../examples/routes-consumers-simple.json
+            403:
+              description: one of the checks described for this API has failed
     
   /{CT}:
     description: |
@@ -199,7 +264,9 @@ documentation:
         Consuming app: the app consuming the API
       get:
         is: [ routeFetcher ] 
-        description: | 
+        description: |
+          DEPRECATED: use /producers/{CT}/{CA} instead.
+
           Used by tenant API consumers to fetch the route(s) from the consumer to each producer of a specific API.
            
           The core returns 403 (Forbidden) if:
