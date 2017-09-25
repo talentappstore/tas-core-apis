@@ -190,13 +190,14 @@ documentation:
     - therefore corestuff finishes up producing the API when consumed by some other app at the acme tenant 
 
     TAS detects and disallows loops.
+    
   /producers:
     /{CT}:
-       description: |
-          Consuming tenant: the tenant with the app installed that is consuming the API
+      description: |
+        Consuming tenant; the tenant with the app installed that is consuming the API
       /{CA}:
         description: |
-          Consuming app: the app consuming the API
+          Consuming app; the app consuming the API
         get:
           is: [ routeFetcher ]
           description: |
