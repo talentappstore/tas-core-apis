@@ -214,6 +214,9 @@ version: v1
             responses:
               200:
                 description: Verification succeeded
+                body:
+                  application/json:
+                    schema: !include ../schemas/person.json
               401:
                 description: Verification failed - more details may be available in the body, which if present, conforms to rfc7807
                 body:
