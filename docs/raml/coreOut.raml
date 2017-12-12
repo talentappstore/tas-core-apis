@@ -206,17 +206,20 @@ version: v1
           post:
             description: |
               TAS core calls this to ask the tenant's installed password manager to verify the principal's email/password combination (e.g. is
-              this a valid login)
+              this a valid login). All fields in the request except for email and password will be ignored.
+              
+              The response will not include the password.
             body:
               application/json:
                 schema: !include ../schemas/passwordManagerAccount.json
-                example: !include ../examples/passwordManagerAccount-simple.json
+                example: !include ../examples/passwordManagerAccount-create.json
             responses:
               200:
                 description: Verification succeeded
                 body:
                   application/json:
-                    schema: !include ../schemas/person.json
+                    schema: !include ../schemas/passwordManagerAccount.json
+                    example: !include ../examples/passwordManagerAccount-read.json
               401:
                 description: Verification failed - more details may be available in the body, which if present, conforms to rfc7807
                 body:
@@ -224,11 +227,13 @@ version: v1
         /create:
           post:
             description: |
-              TAS core calls this to ask the tenant's installed password manager to create a new account with the given email and password
+              TAS core calls this to ask the tenant's installed password manager to create a new account with the given email and password.
+              
+              Any fields other than the email and password should be ignored.
             body:
               application/json:
                 schema: !include ../schemas/passwordManagerAccount.json
-                example: !include ../examples/passwordManagerAccount-simple.json
+                example: !include ../examples/passwordManagerAccount-create.json
             queryParameters:
               dryRun:
                 type: boolean
@@ -249,11 +254,13 @@ version: v1
         /resetPassword:
           post:
             description: |
-              TAS core calls this to ask the tenant's installed password manager to replace the principal's existing password with the provided value
+              TAS core calls this to ask the tenant's installed password manager to replace the principal's existing password with the provided value.
+              
+              All fields in the request except for the email and password will be ignored.
             body:
               application/json:
                 schema: !include ../schemas/passwordManagerAccount.json
-                example: !include ../examples/passwordManagerAccount-simple.json
+                example: !include ../examples/passwordManagerAccount-create.json
             responses:
               200:
                 description: Reset succeeded
