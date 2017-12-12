@@ -14,6 +14,7 @@
     "passwordManagerCreate": { "$ref": "../schemas/passwordManagerCreate.json" },
     "patchSet": { "$ref": "../schemas/patchSet.json" },
     "patchSetPreparer": { "$ref": "../schemas/patchSetPreparer.json" },
+    "person": { "$ref": "../schemas/person.json" },
     "rebootLaunchKey": { "$ref": "../schemas/rebootLaunchKey.json" },
     "rebootStatus": { "$ref": "../schemas/rebootStatus.json" },
     "rolesList": { "$ref": "../schemas/rolesList.json" },

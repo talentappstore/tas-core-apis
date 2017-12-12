@@ -11,7 +11,8 @@
       "type": "string"
     },
     "image": {
-      "type": "url"
+      "type": "string",
+      "format": "url"
     }
   },
   "type": "object",
