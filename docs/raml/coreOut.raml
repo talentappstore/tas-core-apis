@@ -10,8 +10,8 @@ version: v1
       Called by TAS to inform your app that a new tenant has arrived (i.e. has clicked install on the app). The app can assume the tenant has
       status of "halted".
       
-      The app can perform internal housekeeping (e.g. inserting the new tenant into its customers table) but
-      should wait until the init and start events before producing or consuming APIs, accepting logins, etc.
+      Your app can perform internal housekeeping, e.g. inserting the new tenant into its customers table. Ideally your app should wait
+      for the start event (incoming call to your /tenants/{tenant}/starts endpoint) before consuming any tenant APIs.
         
       See **reboots** under [/tenants](coreIn.raml.html#tenants) for more details.
     responses:
