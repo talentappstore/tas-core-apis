@@ -9,6 +9,6 @@
         "tas.personal.email": "email"
     },
     {
-        "tas.personal.image": "acme.personal.imageURL"
+        "tas.personal.image": "http://acme.personal.imageURL"
     }
 ]
